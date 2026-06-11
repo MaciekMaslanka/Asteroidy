@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://bpuh5mv7mmqcy"]
+
+[ext_resource type="Script" uid="uid://duly8slb8dtiq" path="res://Scripts/PlayerScript.cs" id="1_kyqiw"]
+[ext_resource type="Texture2D" uid="uid://dl3o7nd2cgyo4" path="res://Sprites/Gówienko.png" id="2_gntrk"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dewec"]
+radius = 30.0
+height = 62.0
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_kyqiw"]
+
+[node name="CharacterBody2D" type="CharacterBody2D" unique_id=1184771747]
+collision_mask = 6
+motion_mode = 1
+script = ExtResource("1_kyqiw")
+RotationSpeed = 8.0
+MaxRotationSpeed = 10.0
+RotationBreakingSpeed = 6.0
+toolRotationLimit = 100.0
+diggerRange = 40.0
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=760477680]
+texture_filter = 1
+position = Vector2(0, -12)
+texture = ExtResource("2_gntrk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1798614063]
+shape = SubResource("CapsuleShape2D_dewec")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=795321236]
+zoom = Vector2(1.725, 1.725)
+
+[node name="ToolContainer" type="Node2D" parent="." unique_id=747940764]
+z_index = -1
+position = Vector2(0, -31)
+
+[node name="DiggingTool" type="Node2D" parent="ToolContainer" unique_id=2030342872]
+position = Vector2(-5.9604645e-08, -13.250008)
+scale = Vector2(4, 27.5)
+
+[node name="Sprite" type="Sprite2D" parent="ToolContainer/DiggingTool" unique_id=677150992]
+scale = Vector2(0.99999994, 0.99999994)
+texture = SubResource("PlaceholderTexture2D_kyqiw")
+
+[node name="RayCast2D" type="RayCast2D" parent="ToolContainer/DiggingTool" unique_id=347423408]
+position = Vector2(1.1920929e-07, 0.48181844)
+target_position = Vector2(-1.0430812e-07, -5.7090907)
+collision_mask = 6
+
+[node name="Line2D" type="Line2D" parent="ToolContainer/DiggingTool" unique_id=2139775971]
+position = Vector2(1.4901161e-08, -0.4999997)
+width = 0.32
+default_color = Color(1, 0, 0, 1)

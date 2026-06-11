@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://b0ro51x3qchbv"]
+
+[ext_resource type="PackedScene" uid="uid://bpuh5mv7mmqcy" path="res://Scenes/Player.tscn" id="1_qd23g"]
+[ext_resource type="Texture2D" uid="uid://k2tob3trj15p" path="res://Sprites/Gwiazdy.png" id="2_gt1wq"]
+[ext_resource type="PackedScene" uid="uid://cfw11x5xydcic" path="res://Scenes/AsteroidGenerator.tscn" id="3_lvojy"]
+[ext_resource type="PackedScene" uid="uid://bsnp0jrvf5bfc" path="res://Scenes/Asteroid.tscn" id="4_pm3h0"]
+
+[node name="Node2D" type="Node2D" unique_id=1367986399]
+
+[node name="CharacterBody2D" parent="." unique_id=1184771747 instance=ExtResource("1_qd23g")]
+position = Vector2(245, 0)
+diggerSpeed = 10.0
+
+[node name="Parallax2D" type="Parallax2D" parent="." unique_id=512764058]
+z_index = -100
+scale = Vector2(2.575, 2.575)
+scroll_scale = Vector2(0.2, 0.2)
+repeat_size = Vector2(1000, 1000)
+repeat_times = 6
+
+[node name="Sprite2D" type="Sprite2D" parent="Parallax2D" unique_id=995478668]
+texture_filter = 2
+texture = ExtResource("2_gt1wq")
+
+[node name="AsteroidGenerator" parent="." unique_id=185812262 instance=ExtResource("3_lvojy")]
+
+[node name="Asteroid" parent="." unique_id=369339738 instance=ExtResource("4_pm3h0")]
+position = Vector2(-407, -9)
