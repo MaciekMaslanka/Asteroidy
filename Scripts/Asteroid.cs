@@ -72,6 +72,7 @@ public partial class Asteroid : StaticBody2D
 		}
 		else
 		{
+			UpdateShape(result[0]);
 			for(int i=0; i<result.Count; i++)
 			{
 				
