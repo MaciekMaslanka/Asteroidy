@@ -1,8 +1,10 @@
 using Godot;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 
-public partial class Asteroid : StaticBody2D
+public partial class Asteroid : RigidBody2D
 {
 	[Export] float BaseRadius = 100f;
 	[Export] int PointsAmount = 60;
@@ -10,8 +12,11 @@ public partial class Asteroid : StaticBody2D
 	[Export] float NoiseScale = 1f;
 	[Export] float Frequency = 1f;
 	[Export] int Octaves = 4;
-	[Export] PackedScene DynamicAsteroidScene;
+	[Export] public PackedScene AsteroidScene { get; set; }
 
+	[ExportCategory("Smoothing")]
+	[Export] float minDistance = 12f;
+	[Export] float maxAngleDeviation = 0.35f;
 	Polygon2D body;
 	Polygon2D background;
 	CollisionPolygon2D collider;
@@ -22,6 +27,11 @@ public partial class Asteroid : StaticBody2D
 		body = GetNode<Polygon2D>("Polygon2D");
 		background = GetNode<Polygon2D>("Polygon2DBackground");
 		collider = GetNode<CollisionPolygon2D>("CollisionPolygon2D");
+
+		if (AsteroidScene == null)
+		{
+			AsteroidScene = GD.Load<PackedScene>("res://Scripts/Asteroid.cs");
+		}
 		GenerateShape();
 	}
 	private void UpdateShape(Vector2[] points, bool UpdateBackground = false)
@@ -69,16 +79,34 @@ public partial class Asteroid : StaticBody2D
 		else if (result.Count == 1)
 		{
 			UpdateShape(result[0]);
+			SmoothShape();
 		}
 		else
 		{
-			UpdateShape(result[0]);
-			for(int i=0; i<result.Count; i++)
-			{
-				
-			}
+			HandleMultipleFragments(result);
 		}
 
+	}
+	private void HandleMultipleFragments(Godot.Collections.Array<Vector2[]> result)
+	{
+		UpdateShape(result[0]);
+		for(int i=1; i<result.Count; i++)
+		{
+			Vector2[] fragmentPoints = (Vector2[]) result[i];
+			CreateFragment(fragmentPoints);
+		}
+	}
+	private void CreateFragment(Vector2[] points)
+	{
+		Asteroid fragment = AsteroidScene.Instantiate<Asteroid>();
+		fragment.Position = this.Position;
+    	fragment.Rotation = this.Rotation;
+
+		fragment.UpdateShape(points, true);
+
+		GetParent().AddChild(fragment);
+		//TODO zrobić to poprawnie
+		//dostane autyzmu
 	}
 	private Vector2[] CreateCutter(Vector2 center, float radius, int segments)
 	{
@@ -89,5 +117,27 @@ public partial class Asteroid : StaticBody2D
 			points[i] = center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
 		}
 		return points;
+	}
+	private void SmoothShape()
+	{
+		if(currentShape.Length < 6) return;
+
+		List<Vector2> smoothed = new();
+		smoothed.Add(currentShape[0]);
+
+		for(int i=1; i<currentShape.Length - 1; i++)
+		{
+			Vector2 prev = currentShape[i-1];
+			Vector2 current = currentShape[i];
+			Vector2 next = currentShape[i+1];
+
+			if(current.DistanceTo(prev) < minDistance)
+				continue;
+
+			smoothed.Add(current);
+		}
+		smoothed.Add(currentShape[^1]); // ^ zwraca od konca tablicy
+
+		UpdateShape(smoothed.ToArray());
 	}
 }

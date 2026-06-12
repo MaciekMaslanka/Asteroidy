@@ -2,33 +2,31 @@
 
 [ext_resource type="Texture2D" uid="uid://chep06nk1tccv" path="res://Sprites/Asteroida.png" id="1_e0e3k"]
 [ext_resource type="Script" uid="uid://c8qn8up336aij" path="res://Scripts/Asteroid.cs" id="1_jnrf0"]
-[ext_resource type="PackedScene" uid="uid://bkqsefsycq180" path="res://Scenes/DynamicAsteroid.tscn" id="2_8e40r"]
 
-[node name="Asteroid" type="StaticBody2D" unique_id=1432055061]
-collision_layer = 4
+[node name="Asteroid" type="RigidBody2D" unique_id=2009140096]
+collision_layer = 6
 collision_mask = 0
+gravity_scale = 0.0
 script = ExtResource("1_jnrf0")
 BaseRadius = 200.0
-PointsAmount = 100
-Amplitude = 0.3
-Frequency = 0.8
-DynamicAsteroidScene = ExtResource("2_8e40r")
+Amplitude = 0.4
+NoiseScale = 0.7
+AsteroidScene = null
+minDistance = 5.0
 
-[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1017504708]
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=1189675999]
 texture_filter = 1
 texture_repeat = 2
-position = Vector2(0, -1)
 texture = ExtResource("1_e0e3k")
-polygon = PackedVector2Array(3, -11, 32, 3, 8, 12, -26, 1)
+polygon = PackedVector2Array(-20, -1, 1, -25, 45, 9, 9, 23)
 
-[node name="Polygon2DBackground" type="Polygon2D" parent="." unique_id=1869043655]
+[node name="Polygon2DBackground" type="Polygon2D" parent="." unique_id=7991491]
 z_index = -10
 texture_filter = 1
 texture_repeat = 2
-position = Vector2(0, -1)
-color = Color(0.32915866, 0.3291583, 0.32915846, 1)
+color = Color(0.4351923, 0.43519226, 0.43519226, 1)
 texture = ExtResource("1_e0e3k")
-polygon = PackedVector2Array(3, -11, 32, 3, 8, 12, -26, 1)
+polygon = PackedVector2Array(-20, 3, 12, -21, 49, 22, -13, 13)
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=539310397]
-polygon = PackedVector2Array(-26, 0, 8, 11, 32, 2, 3, -12)
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=1753429025]
+polygon = PackedVector2Array(-20, 0, 2, -27, 50, 5, 8, 32)
