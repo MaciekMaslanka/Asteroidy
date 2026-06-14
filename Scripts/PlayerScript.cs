@@ -131,7 +131,6 @@ public partial class PlayerScript : RigidBody2D
 		{
 			Vector2 hitPoint = diggerRay.GetCollisionPoint();
 
-			//tutaj kod kolizji
 			if(diggerRay.GetCollider() is Asteroid asteroid)
 			{
 				if(diggingTimer <= 0)
@@ -161,5 +160,4 @@ public partial class PlayerScript : RigidBody2D
 			diggerLine.Visible = false;
 		}
 	}
-
 }

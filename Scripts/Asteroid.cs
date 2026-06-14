@@ -12,7 +12,6 @@ public partial class Asteroid : RigidBody2D
 	[Export] float NoiseScale = 1f;
 	[Export] float Frequency = 1f;
 	[Export] int Octaves = 4;
-	[Export] public PackedScene AsteroidScene { get; set; }
 
 	[ExportCategory("Smoothing")]
 	[Export] float minDistance = 12f;
@@ -28,10 +27,6 @@ public partial class Asteroid : RigidBody2D
 		background = GetNode<Polygon2D>("Polygon2DBackground");
 		collider = GetNode<CollisionPolygon2D>("CollisionPolygon2D");
 		
-		if(AsteroidScene == null)
-		{
-			GD.PrintErr("Asteroida nie podpięta");
-		}
 		GenerateShape();
 	}
 
@@ -112,7 +107,6 @@ public partial class Asteroid : RigidBody2D
 			UpdateShape(result[0]);
 			SmoothShape();
 		}
-
 	}
 	private Vector2[] CreateCutter(Vector2 center, float radius, int segments)
 	{
