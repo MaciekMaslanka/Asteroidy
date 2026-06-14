@@ -9,13 +9,11 @@ height = 62.0
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_kyqiw"]
 
-[node name="CharacterBody2D" type="CharacterBody2D" unique_id=1184771747]
+[node name="CharacterBody2D" type="RigidBody2D" unique_id=43622812]
 collision_mask = 6
-motion_mode = 1
+gravity_scale = 0.0
 script = ExtResource("1_kyqiw")
-RotationSpeed = 8.0
-MaxRotationSpeed = 10.0
-RotationBreakingSpeed = 6.0
+MaxAngularVelocity = 20.0
 toolRotationLimit = 100.0
 diggerRange = 40.0
 

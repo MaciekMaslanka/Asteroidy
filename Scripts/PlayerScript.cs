@@ -1,20 +1,19 @@
 using Godot;
 using System;
 
-public partial class PlayerScript : CharacterBody2D
+public partial class PlayerScript : RigidBody2D
 {
 	//rotacja
 	[ExportCategory("Rotacja")]
-	[Export] private float RotationSpeed = 5f;
-	[Export] private float MaxRotationSpeed = 5f;
-	[Export] private float RotationBreakingSpeed = 3f;
-	private float currentRotation = 0f;
+	[Export] float RotationForce = 12f;
+	[Export] private float MaxAngularVelocity = 4.5f;
+    [Export] private float AngularDamping = 8f;
 
 	//ruch
 	[ExportCategory("Ruch")]
-	[Export] private float Acceleration = 800f;
-	[Export] private float MaxMovementSpeed = 300f;
-	[Export] private float BrakingSpeed = 600f;
+	[Export] private float ThrustForce = 850f;
+    [Export] private float MaxLinearVelocity = 420f;
+    [Export] private float LinearDamping = 1.2f;
 
 	//narzedzia-wspolne
 	[ExportCategory("Narzedzia")]
@@ -51,65 +50,51 @@ public partial class PlayerScript : CharacterBody2D
 		diggerRange = -diggerRange;
 		diggerRay = toolsContainer.GetNode<Node2D>("DiggingTool").GetNode<RayCast2D>("RayCast2D");
 		diggerLine = toolsContainer.GetNode<Node2D>("DiggingTool").GetNode<Line2D>("Line2D");
+
+		//ustawienia fizyki
+		GravityScale = 0f;
+		AngularDamp = AngularDamping;
+		LinearDamp = LinearDamping;
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
-		DoMovement(delta);
-		RotateTool(delta);
-		HandleMouseInput(delta);
+		float dt = (float) delta;
+		HandleRotation(dt);
+		HandleMovement(dt);
+		RotateTool(dt);
+		HandleMouseInput(dt);
 
 		if(diggingTimer > 0)
 		{
 			diggingTimer -= (float) delta;
 		}
 	}
-	private void DoMovement(double delta)
+	private void HandleRotation(float dt)
 	{
-		float dt = (float)delta;
-
-		//rotacja
-		float leftRight = Input.GetAxis("rotateLeft", "rotateRight");
-
-		if (leftRight != 0)
-		//przyspieszanie rotacji
+		float input = Input.GetAxis("rotateLeft", "rotateRight");
+		if(input != 0)
 		{
-			currentRotation += leftRight * RotationSpeed * dt;
-			currentRotation = Math.Clamp(currentRotation, -MaxRotationSpeed, MaxRotationSpeed);
+			AngularVelocity = Mathf.MoveToward(AngularVelocity, MaxAngularVelocity * input, dt*RotationForce);
 		}
-		else if (currentRotation != 0)
-		//hamowanie rotacji
-		{
-			currentRotation = Mathf.MoveToward(currentRotation, 0f, RotationBreakingSpeed*dt);
-		}
-		Rotation += currentRotation * dt;
-
-		//ruch
+	}
+	private void HandleMovement(float dt)
+	{
 		float throttle = Input.GetAxis("moveUp", "moveDown");
 
-		Vector2 velocity = Velocity;
-
-		if (throttle != 0f)
+		if(throttle != 0)
 		{
-			Vector2 thrustDirection = new Vector2(0, throttle).Rotated(Rotation);
-			velocity += thrustDirection * Acceleration * dt;
-		}
-		else
-		{
-			velocity = velocity.MoveToward(Vector2.Zero, BrakingSpeed * dt);
+			Vector2 direction = new Vector2(0, throttle).Rotated(Rotation);
+			ApplyForce(direction * ThrustForce);
 		}
 
-		if (velocity.Length() > MaxMovementSpeed)
+		if(LinearVelocity.Length() > MaxLinearVelocity)
 		{
-			velocity = velocity.Normalized() * MaxMovementSpeed;
+			LinearVelocity = LinearVelocity.Normalized() * MaxLinearVelocity;
 		}
-
-		Velocity = velocity;
-		MoveAndSlide();
 	}
-	private void RotateTool(double delta)
+	private void RotateTool(float dt)
 	{
-		float dt = (float) delta;
 		Vector2 direction = GetGlobalMousePosition() - toolsContainer.GlobalPosition;
 		float globalAngle = direction.Angle();
 		float targetAngle = globalAngle - GlobalRotation + Mathf.Pi / 2;
@@ -119,22 +104,21 @@ public partial class PlayerScript : CharacterBody2D
 
 		//rotacja w godocie to dziadostwo
 	}
-	private void HandleMouseInput(double delta)
+	private void HandleMouseInput(float dt)
 	{
 		switch(currentTool)
 		{
 			case ToolsEnum.DiggingTool:
 				if(Input.IsActionPressed("mouseLeft"))
-					ActivateDigger(delta);
+					ActivateDigger(dt);
 				else
-					DeactivateDigger(delta);
+					DeactivateDigger(dt);
 				break;
 		}
 
 	}
-	private void ActivateDigger(double delta)
+	private void ActivateDigger(float dt)
 	{
-		float dt = (float) delta;
 		if(!isDiggerActive)
 		{
 			isDiggerActive = true;
@@ -168,7 +152,7 @@ public partial class PlayerScript : CharacterBody2D
 			diggerLine.AddPoint(new Vector2(0, diggerRange));
 		}
 	}
-	private void DeactivateDigger(double delta)
+	private void DeactivateDigger(float dt)
 	{
 		if(isDiggerActive)
 		{

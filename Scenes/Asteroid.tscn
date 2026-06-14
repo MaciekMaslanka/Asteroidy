@@ -15,6 +15,7 @@ AsteroidScene = null
 minDistance = 5.0
 
 [node name="Polygon2D" type="Polygon2D" parent="." unique_id=1189675999]
+z_index = -2
 texture_filter = 1
 texture_repeat = 2
 texture = ExtResource("1_e0e3k")
