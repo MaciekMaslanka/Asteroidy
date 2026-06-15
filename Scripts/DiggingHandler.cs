@@ -9,6 +9,7 @@ public partial class DiggingHandler : Node
 	private int segments;
 	private OreScript ore;
 	private Asteroid parent;
+	const float killThreshold = 100f;
 	public DiggingHandler(Vector2 point, float radius, int segments, Asteroid parent)
 	{
 		this.point = point;
@@ -58,11 +59,63 @@ public partial class DiggingHandler : Node
 		if(result.Count == 0) return;
 		else if(result.Count == 1)
 		{
-			parent.UpdateShape(result[0]);
+			if(CalculatePolygonArea(result[0]) < killThreshold)
+			{
+				parent.QueueFree();
+			}
+			else
+			{
+				parent.UpdateShape(result[0]);
+			}
 		}
 		else
 		{
-			
+			int biggestIndex = 0;
+			float biggestArea = 0f;
+
+			for(int i=0; i<result.Count; i++)
+			{
+				float area = CalculatePolygonArea(result[i]);
+				if(area > biggestArea)
+				{
+					biggestArea = area;
+					biggestIndex = i;
+				}
+			}
+
+			parent.UpdateShape(result[biggestIndex]);
+
+			for(int i=0; i<result.Count; i++)
+			{
+				if(i == biggestIndex) continue;
+				if(CalculatePolygonArea(result[i]) < killThreshold) continue;
+				CreateNewFragment(result[i]);
+			}
 		}
+	}
+	private float CalculatePolygonArea(Vector2[] polygon)
+	{
+		float area = 0f;
+		for (int i=0; i<polygon.Length; i++)
+		{
+			Vector2 a = polygon[i];
+			Vector2 b = polygon[(i+1) % polygon.Length];
+			area += a.X * b.Y - b.X * a.Y;
+		}
+		return Mathf.Abs(area) * 0.5f;
+	}
+	private void CreateNewFragment(Vector2[] points)
+	{
+		if(parent.AsteroidScene == null)
+		{
+			GD.PrintErr("debil");
+			return;
+		}
+		Asteroid fragment = parent.AsteroidScene.Instantiate<Asteroid>();
+		fragment.Position = parent.Position;
+		fragment.Rotation = parent.Rotation;
+		fragment.SetCustomShape(points);
+		parent.GetParent().AddChild(fragment);
+		fragment.GetNode<Polygon2D>("Polygon2D").TextureRotation = parent.body.TextureRotation;
 	}
 }

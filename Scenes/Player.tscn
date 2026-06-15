@@ -12,6 +12,7 @@ height = 62.0
 [node name="CharacterBody2D" type="RigidBody2D" unique_id=43622812]
 collision_mask = 14
 gravity_scale = 0.0
+can_sleep = false
 script = ExtResource("1_kyqiw")
 MaxAngularVelocity = 20.0
 toolRotationLimit = 100.0

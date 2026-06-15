@@ -13,6 +13,7 @@ script = ExtResource("1_jnrf0")
 BaseRadius = 200.0
 Amplitude = 0.4
 NoiseScale = 0.7
+AsteroidScene = null
 OreScene = ExtResource("2_8e40r")
 minDistance = 5.0
 

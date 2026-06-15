@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 
 
 public partial class Asteroid : RigidBody2D
@@ -11,6 +12,7 @@ public partial class Asteroid : RigidBody2D
 	[Export] float NoiseScale = 1f;
 	[Export] float Frequency = 1f;
 	[Export] int Octaves = 4;
+	public PackedScene AsteroidScene {private set; get;}
 	[Export] PackedScene OreScene;
 
 	[ExportCategory("Smoothing")]
@@ -19,18 +21,32 @@ public partial class Asteroid : RigidBody2D
 	Polygon2D background;
 	CollisionPolygon2D collider;
 	public Vector2[] currentShape {private set; get;}
+	private bool hasCustomShape = false;
 
 	public override void _Ready()
 	{
 		body = GetNode<Polygon2D>("Polygon2D");
 		background = GetNode<Polygon2D>("Polygon2DBackground");
 		collider = GetNode<CollisionPolygon2D>("CollisionPolygon2D");
+		AsteroidScene = GD.Load<PackedScene>("res://Scenes/Asteroid.tscn");
 		
-		GenerateShape();
-		GenerateOres();
+		if(!hasCustomShape)
+		{
+			GenerateShape();
+			GenerateOres();
+		}
+		else
+		{
+			UpdateShape(currentShape);
+		}
 	}
 
 	//kształt
+	public void SetCustomShape(Vector2[] points)
+	{
+		currentShape = points;
+		hasCustomShape = true;
+	}
 	public void UpdateShape(Vector2[] points, bool UpdateBackground = false)
 	{
 		currentShape = points;
