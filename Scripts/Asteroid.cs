@@ -12,10 +12,10 @@ public partial class Asteroid : RigidBody2D
 	[Export] float NoiseScale = 1f;
 	[Export] float Frequency = 1f;
 	[Export] int Octaves = 4;
+	[Export] PackedScene OreScene;
 
 	[ExportCategory("Smoothing")]
 	[Export] float minDistance = 12f;
-	[Export] float maxAngleDeviation = 0.35f;
 	Polygon2D body;
 	Polygon2D background;
 	CollisionPolygon2D collider;
@@ -28,6 +28,7 @@ public partial class Asteroid : RigidBody2D
 		collider = GetNode<CollisionPolygon2D>("CollisionPolygon2D");
 		
 		GenerateShape();
+		GenerateOres();
 	}
 
 	//kształt
@@ -87,6 +88,56 @@ public partial class Asteroid : RigidBody2D
 
 		UpdateShape(smoothed.ToArray());
 	}
+	private void GenerateOres(int minAmount = 2, int maxAmount = 7)
+	{
+		if(OreScene == null) return;
+
+		int oreCount = GD.RandRange(minAmount, maxAmount);
+		for(int i=0; i<oreCount; i++)
+		{
+			OreScript ore = OreScene.Instantiate<OreScript>();
+			Vector2 pos = GetRandomPointInAsteroid();
+			ore.Position = pos;
+			AddChild(ore);
+			ore.shape.TextureRotation = body.TextureRotation;
+		}
+	}
+	private Vector2 GetRandomPointInAsteroid()
+	{
+		float minX = currentShape.Min(p => p.X);
+		float maxX = currentShape.Max(p => p.X);
+		float minY = currentShape.Min(p => p.Y);
+		float maxY= currentShape.Max(p => p.Y);
+
+		Vector2 point;
+		int tries = 0;
+
+		do
+		{
+			float x = (float) GD.RandRange(minX, maxX);
+			float y = (float) GD.RandRange(minY, maxY);
+			point = new Vector2(x, y);
+			tries++;
+		}
+		while(!IsPointInsidePolygon(point, currentShape) && tries <= 50);
+
+		return point;
+	}
+	private bool IsPointInsidePolygon(Vector2 point, Vector2[] polygon)
+	{
+		bool inside = false;
+		int j = polygon.Length - 1;
+
+		for(int i=0; i<polygon.Length; j = i++)
+		{
+			if (((polygon[i].Y > point.Y) != (polygon[j].Y > point.Y)) &&
+            (point.X < (polygon[j].X - polygon[i].X) * (point.Y - polygon[i].Y) / (polygon[j].Y - polygon[i].Y) + polygon[i].X))
+			{
+				inside = !inside;
+			}
+		}
+		return inside;
+	}
 
 	//kopanie
 	public void DigAt(Vector2 point, float radius = 10f, int segments = 10)
@@ -117,5 +168,31 @@ public partial class Asteroid : RigidBody2D
 			points[i] = center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
 		}
 		return points;
+	}
+	public void OnOreDestroyed(OreScript ore)
+	{
+		Vector2[] oreLocalShape = ore.GetNode<Polygon2D>("Polygon2D").Polygon;
+    	Vector2 oreLocalPos = ore.Position;
+		Vector2[] cutterPoints = new Vector2[oreLocalShape.Length];
+		for (int i = 0; i < oreLocalShape.Length; i++)
+		{
+			cutterPoints[i] = oreLocalPos + oreLocalShape[i];
+		}
+
+		var result = Geometry2D.ClipPolygons(currentShape, cutterPoints);
+		if(result.Count == 0)
+		{
+			return;
+		}
+		else if(result.Count == 1)
+		{
+			UpdateShape(result[0]);
+			SmoothShape();
+		}
+		else
+		{
+			UpdateShape(result[0]);
+			SmoothShape();
+		}
 	}
 }

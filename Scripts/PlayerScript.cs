@@ -139,6 +139,14 @@ public partial class PlayerScript : RigidBody2D
 					diggingTimer = 1 / diggerSpeed;
 				}
 			}
+			else if (diggerRay.GetCollider() is OreScript ore)
+			{
+				if(diggingTimer <= 0)
+				{
+					ore.TakeDamage(diggerSpeed);
+					diggingTimer = 1 / diggerSpeed;
+				}
+			}
 
 			diggerLine.ClearPoints();
 			diggerLine.AddPoint(Vector2.Zero);

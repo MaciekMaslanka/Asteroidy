@@ -10,7 +10,7 @@ height = 62.0
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_kyqiw"]
 
 [node name="CharacterBody2D" type="RigidBody2D" unique_id=43622812]
-collision_mask = 6
+collision_mask = 14
 gravity_scale = 0.0
 script = ExtResource("1_kyqiw")
 MaxAngularVelocity = 20.0
@@ -43,7 +43,7 @@ texture = SubResource("PlaceholderTexture2D_kyqiw")
 [node name="RayCast2D" type="RayCast2D" parent="ToolContainer/DiggingTool" unique_id=347423408]
 position = Vector2(1.1920929e-07, 0.48181844)
 target_position = Vector2(-1.0430812e-07, -5.7090907)
-collision_mask = 6
+collision_mask = 14
 
 [node name="Line2D" type="Line2D" parent="ToolContainer/DiggingTool" unique_id=2139775971]
 position = Vector2(1.4901161e-08, -0.4999997)
