@@ -1,7 +1,6 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 
 public partial class Asteroid : RigidBody2D
@@ -16,10 +15,10 @@ public partial class Asteroid : RigidBody2D
 
 	[ExportCategory("Smoothing")]
 	[Export] float minDistance = 12f;
-	Polygon2D body;
+	public Polygon2D body {private set; get;}
 	Polygon2D background;
 	CollisionPolygon2D collider;
-	Vector2[] currentShape;
+	public Vector2[] currentShape {private set; get;}
 
 	public override void _Ready()
 	{
@@ -90,54 +89,10 @@ public partial class Asteroid : RigidBody2D
 	}
 	private void GenerateOres(int minAmount = 2, int maxAmount = 7)
 	{
-		if(OreScene == null) return;
-
-		int oreCount = GD.RandRange(minAmount, maxAmount);
-		for(int i=0; i<oreCount; i++)
-		{
-			OreScript ore = OreScene.Instantiate<OreScript>();
-			Vector2 pos = GetRandomPointInAsteroid();
-			ore.Position = pos;
-			AddChild(ore);
-			ore.shape.TextureRotation = body.TextureRotation;
-		}
+		OreGenerator generator = new(this, OreScene, 2, 6, 30f, 100f);
+		generator.GenerateOres();
 	}
-	private Vector2 GetRandomPointInAsteroid()
-	{
-		float minX = currentShape.Min(p => p.X);
-		float maxX = currentShape.Max(p => p.X);
-		float minY = currentShape.Min(p => p.Y);
-		float maxY= currentShape.Max(p => p.Y);
-
-		Vector2 point;
-		int tries = 0;
-
-		do
-		{
-			float x = (float) GD.RandRange(minX, maxX);
-			float y = (float) GD.RandRange(minY, maxY);
-			point = new Vector2(x, y);
-			tries++;
-		}
-		while(!IsPointInsidePolygon(point, currentShape) && tries <= 50);
-
-		return point;
-	}
-	private bool IsPointInsidePolygon(Vector2 point, Vector2[] polygon)
-	{
-		bool inside = false;
-		int j = polygon.Length - 1;
-
-		for(int i=0; i<polygon.Length; j = i++)
-		{
-			if (((polygon[i].Y > point.Y) != (polygon[j].Y > point.Y)) &&
-            (point.X < (polygon[j].X - polygon[i].X) * (point.Y - polygon[i].Y) / (polygon[j].Y - polygon[i].Y) + polygon[i].X))
-			{
-				inside = !inside;
-			}
-		}
-		return inside;
-	}
+	
 
 	//kopanie
 	public void DigAt(Vector2 point, float radius = 10f, int segments = 10)
