@@ -31,7 +31,7 @@ public partial class Asteroid : RigidBody2D
 	}
 
 	//kształt
-	private void UpdateShape(Vector2[] points, bool UpdateBackground = false)
+	public void UpdateShape(Vector2[] points, bool UpdateBackground = false)
 	{
 		currentShape = points;
 		body.Polygon = currentShape;
@@ -89,65 +89,19 @@ public partial class Asteroid : RigidBody2D
 	}
 	private void GenerateOres(int minAmount = 2, int maxAmount = 7)
 	{
-		OreGenerator generator = new(this, OreScene, 2, 6, 30f, 100f);
+		OreGenerator generator = new(this, OreScene, minAmount, maxAmount, 30f, 100f);
 		generator.GenerateOres();
 	}
-	
-
-	//kopanie
 	public void DigAt(Vector2 point, float radius = 10f, int segments = 10)
 	{
-		Vector2 localPoint = ToLocal(point);
-		var cutter = CreateCutter(localPoint, radius, segments);
-
-		var result = Geometry2D.ClipPolygons(currentShape, cutter);
-		if(result.Count == 0)
-			return;
-		else if (result.Count == 1)
-		{
-			UpdateShape(result[0]);
-			SmoothShape();
-		}
-		else
-		{
-			UpdateShape(result[0]);
-			SmoothShape();
-		}
-	}
-	private Vector2[] CreateCutter(Vector2 center, float radius, int segments)
-	{
-		var points = new Vector2[segments];
-		for(int i=0; i<segments; i++)
-		{
-			float angle = Mathf.Tau * i / segments;
-			points[i] = center + new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
-		}
-		return points;
+		DiggingHandler digHandler = new DiggingHandler(ToLocal(point), radius, segments, this);
+		digHandler.NormalDigging();
+		SmoothShape();
 	}
 	public void OnOreDestroyed(OreScript ore)
 	{
-		Vector2[] oreLocalShape = ore.GetNode<Polygon2D>("Polygon2D").Polygon;
-    	Vector2 oreLocalPos = ore.Position;
-		Vector2[] cutterPoints = new Vector2[oreLocalShape.Length];
-		for (int i = 0; i < oreLocalShape.Length; i++)
-		{
-			cutterPoints[i] = oreLocalPos + oreLocalShape[i];
-		}
-
-		var result = Geometry2D.ClipPolygons(currentShape, cutterPoints);
-		if(result.Count == 0)
-		{
-			return;
-		}
-		else if(result.Count == 1)
-		{
-			UpdateShape(result[0]);
-			SmoothShape();
-		}
-		else
-		{
-			UpdateShape(result[0]);
-			SmoothShape();
-		}
+		DiggingHandler digHandler = new DiggingHandler(this, ore);
+		digHandler.OnOreDestroyed();
+		SmoothShape();
 	}
 }
