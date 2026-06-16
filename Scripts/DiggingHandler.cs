@@ -1,6 +1,5 @@
 using System;
 using Godot;
-using System;
 
 public partial class DiggingHandler : Node
 {

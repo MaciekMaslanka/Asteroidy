@@ -38,6 +38,7 @@ public partial class Asteroid : RigidBody2D
 		else
 		{
 			UpdateShape(currentShape);
+			background.Visible = false;
 		}
 	}
 

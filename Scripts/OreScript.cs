@@ -20,7 +20,6 @@ public partial class OreScript : RigidBody2D
     {
         shape = GetNode<Polygon2D>("Polygon2D");
         collider = GetNode<CollisionPolygon2D>("CollisionPolygon2D");
-
         CurrentHealth = MaxHealth;
 
 		GenerateShape();
@@ -63,6 +62,7 @@ public partial class OreScript : RigidBody2D
     }
     private void SelectRandomOreType()
     {
+        GD.Randomize();
         type = (OreType) GD.RandRange(0, Enum.GetNames(typeof(OreType)).Length - 1);
         switch(type)
         {

@@ -2,7 +2,12 @@
 
 [ext_resource type="PackedScene" uid="uid://bpuh5mv7mmqcy" path="res://Scenes/Player.tscn" id="1_qd23g"]
 [ext_resource type="Texture2D" uid="uid://k2tob3trj15p" path="res://Sprites/Gwiazdy.png" id="2_gt1wq"]
-[ext_resource type="PackedScene" uid="uid://cfw11x5xydcic" path="res://Scenes/AsteroidGenerator.tscn" id="3_lvojy"]
+[ext_resource type="PackedScene" uid="uid://bsnp0jrvf5bfc" path="res://Scenes/Asteroid.tscn" id="3_lvojy"]
+[ext_resource type="Texture2D" uid="uid://dl3o7nd2cgyo4" path="res://Sprites/Gówienko.png" id="4_pm3h0"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_5yp1d"]
+radius = 23.0
+height = 84.0
 
 [node name="Node2D" type="Node2D" unique_id=1367986399]
 
@@ -22,4 +27,14 @@ repeat_times = 6
 texture_filter = 2
 texture = ExtResource("2_gt1wq")
 
-[node name="AsteroidGenerator" parent="." unique_id=185812262 instance=ExtResource("3_lvojy")]
+[node name="Asteroid" parent="." unique_id=2009140096 instance=ExtResource("3_lvojy")]
+position = Vector2(-696, -3)
+
+[node name="RigidBody2D" type="RigidBody2D" parent="." unique_id=1556752523]
+gravity_scale = 0.0
+
+[node name="Sprite2D" type="Sprite2D" parent="RigidBody2D" unique_id=538182908]
+texture = ExtResource("4_pm3h0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D" unique_id=35905118]
+shape = SubResource("CapsuleShape2D_5yp1d")

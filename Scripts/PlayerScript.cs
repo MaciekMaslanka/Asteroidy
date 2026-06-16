@@ -126,6 +126,7 @@ public partial class PlayerScript : RigidBody2D
 			diggerLine.Visible = true;
 		}
 		diggerRay.TargetPosition = new Vector2(0, diggerRange); //range lasera
+		diggerRay.ForceRaycastUpdate();
 
 		if(diggerRay.IsColliding())
 		{

@@ -33,6 +33,7 @@ public partial class OreGenerator
 		{
 			OreScript ore = oreScene.Instantiate<OreScript>();
 			Vector2 pos = GetRandomPointInAsteroid();
+			ore.AddCollisionExceptionWith(parent);
 			ore.Position = pos;
 			ores.Add(ore);
 			parent.AddChild(ore);
