@@ -58,6 +58,16 @@ public partial class DiggingHandler : Node
 	}
 	private void HandleFragments(Godot.Collections.Array<Vector2[]> result)
 	{
+		//sprawdzenie czy nie zrobił się problem z otoczeniem polB przez polA
+		var resultCopy = result;
+		foreach (var el in resultCopy)
+		{
+			if(Geometry2D.IsPolygonClockwise(el))
+			{
+				result.Remove(el);
+			}
+		}
+
 		if(result.Count == 0) return;
 		else if(result.Count == 1)
 		{

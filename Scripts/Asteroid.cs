@@ -128,7 +128,6 @@ public partial class Asteroid : RigidBody2D
 	public void UpdateMass()
 	{
 		CenterOfMass = PolygonUtils.GetPolygonCenter(body.Polygon);
-		GD.Print(PolygonUtils.CalculatePolygonArea(body.Polygon));
 		Mass = PolygonUtils.CalculatePolygonArea(body.Polygon) * MassDensity;
 	}
 }
