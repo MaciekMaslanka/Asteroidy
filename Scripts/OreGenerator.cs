@@ -36,6 +36,7 @@ public partial class OreGenerator
 			ore.AddCollisionExceptionWith(parent);
 			ore.Position = pos;
 			ores.Add(ore);
+			parent.ores.Add(ore);
 			parent.AddChild(ore);
 			ore.shape.TextureRotation = parent.body.TextureRotation;
 		}

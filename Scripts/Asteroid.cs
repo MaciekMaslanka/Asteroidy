@@ -12,6 +12,7 @@ public partial class Asteroid : RigidBody2D
 	[Export] float NoiseScale = 1f;
 	[Export] float Frequency = 1f;
 	[Export] int Octaves = 4;
+	[Export] float MassDensity = 1f;
 	public PackedScene AsteroidScene {private set; get;}
 	[Export] PackedScene OreScene;
 
@@ -22,6 +23,7 @@ public partial class Asteroid : RigidBody2D
 	CollisionPolygon2D collider;
 	public Vector2[] currentShape {private set; get;}
 	private bool hasCustomShape = false;
+	public List<OreScript> ores {private set; get;} = new();
 
 	public override void _Ready()
 	{
@@ -40,6 +42,7 @@ public partial class Asteroid : RigidBody2D
 			UpdateShape(currentShape);
 			background.Visible = false;
 		}
+		UpdateMass();
 	}
 
 	//kształt
@@ -93,7 +96,6 @@ public partial class Asteroid : RigidBody2D
 		{
 			Vector2 prev = currentShape[i-1];
 			Vector2 current = currentShape[i];
-			Vector2 next = currentShape[i+1];
 
 			if(current.DistanceTo(prev) < minDistance)
 				continue;
@@ -119,6 +121,14 @@ public partial class Asteroid : RigidBody2D
 	{
 		DiggingHandler digHandler = new DiggingHandler(this, ore);
 		digHandler.OnOreDestroyed();
+		ores.Remove(ore);
+		ore.QueueFree();
 		SmoothShape();
+	}
+	public void UpdateMass()
+	{
+		CenterOfMass = PolygonUtils.GetPolygonCenter(body.Polygon);
+		GD.Print(PolygonUtils.CalculatePolygonArea(body.Polygon));
+		Mass = PolygonUtils.CalculatePolygonArea(body.Polygon) * MassDensity;
 	}
 }

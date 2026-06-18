@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 
 public partial class DiggingHandler : Node
@@ -9,12 +10,14 @@ public partial class DiggingHandler : Node
 	private OreScript ore;
 	private Asteroid parent;
 	const float killThreshold = 100f;
+	private List<OreScript> parentOres;
 	public DiggingHandler(Vector2 point, float radius, int segments, Asteroid parent)
 	{
 		this.point = point;
 		this.radius = radius;
 		this.segments = segments;
 		this.parent = parent;
+		this.parentOres = parent.ores;
 		NormalDigging();
 	}
 	public DiggingHandler(Asteroid parent, OreScript ore)
@@ -58,7 +61,7 @@ public partial class DiggingHandler : Node
 		if(result.Count == 0) return;
 		else if(result.Count == 1)
 		{
-			if(CalculatePolygonArea(result[0]) < killThreshold)
+			if(PolygonUtils.CalculatePolygonArea(result[0]) < killThreshold)
 			{
 				parent.QueueFree();
 			}
@@ -74,7 +77,7 @@ public partial class DiggingHandler : Node
 
 			for(int i=0; i<result.Count; i++)
 			{
-				float area = CalculatePolygonArea(result[i]);
+				float area = PolygonUtils.CalculatePolygonArea(result[i]);
 				if(area > biggestArea)
 				{
 					biggestArea = area;
@@ -87,21 +90,11 @@ public partial class DiggingHandler : Node
 			for(int i=0; i<result.Count; i++)
 			{
 				if(i == biggestIndex) continue;
-				if(CalculatePolygonArea(result[i]) < killThreshold) continue;
+				if(PolygonUtils.CalculatePolygonArea(result[i]) < killThreshold) continue;
 				CreateNewFragment(result[i]);
 			}
 		}
-	}
-	private float CalculatePolygonArea(Vector2[] polygon)
-	{
-		float area = 0f;
-		for (int i=0; i<polygon.Length; i++)
-		{
-			Vector2 a = polygon[i];
-			Vector2 b = polygon[(i+1) % polygon.Length];
-			area += a.X * b.Y - b.X * a.Y;
-		}
-		return Mathf.Abs(area) * 0.5f;
+		parent.UpdateMass();
 	}
 	private void CreateNewFragment(Vector2[] points)
 	{
@@ -115,6 +108,31 @@ public partial class DiggingHandler : Node
 		fragment.Rotation = parent.Rotation;
 		fragment.SetCustomShape(points);
 		parent.GetParent().AddChild(fragment);
+		AssignOres(fragment);
 		fragment.GetNode<Polygon2D>("Polygon2D").TextureRotation = parent.body.TextureRotation;
+	}
+	private void AssignOres(Asteroid newFragment)
+	{
+		if (parentOres == null || parentOres.Count == 0)
+			return;
+
+		var oresToCheck = new List<OreScript>(parentOres);
+
+		foreach (var ore in oresToCheck)
+		{
+			Vector2 oreGlobalPos = ore.GlobalPosition;
+			Vector2 oreLocalToFragment = newFragment.ToLocal(oreGlobalPos);
+
+			if (Geometry2D.IsPointInPolygon(oreLocalToFragment, newFragment.currentShape))
+			{
+				if (ore.GetParent() != null)
+					ore.GetParent().RemoveChild(ore);
+
+				newFragment.AddChild(ore);
+				newFragment.ores.Add(ore);
+
+				parentOres.Remove(ore);
+			}
+		}
 	}
 }

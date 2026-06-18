@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class OreScript : RigidBody2D
+public partial class OreScript : StaticBody2D
 {
 	[Export] private float MaxHealth = 50f;
     [Export] private Texture2D[] oreTextures; 
@@ -33,7 +33,6 @@ public partial class OreScript : RigidBody2D
         if (CurrentHealth <= 0)
         {
             GetParent<Asteroid>().OnOreDestroyed(this);
-            QueueFree();
         }
     }
     private void GenerateShape(float baseRadius = 35f, float amplitude = 0.3f)
