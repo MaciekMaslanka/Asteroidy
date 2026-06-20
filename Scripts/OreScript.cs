@@ -12,7 +12,8 @@ public partial class OreScript : StaticBody2D
     public enum OreType
     {
         Gold,
-        Silver
+        Silver,
+        None
     }
     public OreType type {get; private set;}
 
