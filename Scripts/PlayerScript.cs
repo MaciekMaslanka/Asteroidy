@@ -19,6 +19,9 @@ public partial class PlayerScript : RigidBody2D
 	[ExportCategory("Narzedzia")]
 	[Export] private float toolRotationSpeed = 10f;
 	[Export] private float toolRotationLimit = 135f; //potem zamieniana na radiany
+
+	//eq
+	[Export] public Invectory invectory {get; private set;}
 	private enum ToolsEnum
 	{
 		None,
@@ -55,6 +58,12 @@ public partial class PlayerScript : RigidBody2D
 		GravityScale = 0f;
 		AngularDamp = AngularDamping;
 		LinearDamp = LinearDamping;
+
+		if(invectory == null)
+		{
+			invectory = new Invectory();
+			AddChild(invectory);
+		}
 	}
 
 	public override void _PhysicsProcess(double delta)

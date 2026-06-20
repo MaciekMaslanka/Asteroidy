@@ -121,6 +121,12 @@ public partial class Asteroid : RigidBody2D
 	{
 		DiggingHandler digHandler = new DiggingHandler(this, ore);
 		digHandler.OnOreDestroyed();
+		
+		if(GetTree().GetFirstNodeInGroup("Player") is PlayerScript player)
+		{
+			player.invectory.AddItem(new OreItem(ore.type), 1);
+		}
+
 		ores.Remove(ore);
 		ore.QueueFree();
 		SmoothShape();
