@@ -5,6 +5,7 @@ public partial class OreScript : StaticBody2D
 {
 	[Export] private float MaxHealth = 50f;
     [Export] private Texture2D[] oreTextures; 
+    [Export] public InvItem item {private set; get;}
     public float CurrentHealth { get; private set; }
 
     public Polygon2D shape {get; private set;}
@@ -67,12 +68,15 @@ public partial class OreScript : StaticBody2D
         {
             case OreType.Gold:
                 shape.Texture = oreTextures[(int)OreType.Gold];
+                item = GD.Load<InvItem>("res://Resources/Items/GoldItem.tres");
                 break;
             case OreType.Silver:
                 shape.Texture = oreTextures[(int)OreType.Silver];
+                item = GD.Load<InvItem>("res://Resources/Items/SilverItem.tres");
                 break;
             default:
                 shape.Texture = oreTextures[(int)OreType.Gold];
+                item = GD.Load<InvItem>("res://Resources/Items/GoldItem.tres");
                 GD.PrintErr("Nie dopisałeś case w tekturach od ore");
                 break;
         }

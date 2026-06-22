@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bpuh5mv7mmqcy"]
 
 [ext_resource type="Script" uid="uid://duly8slb8dtiq" path="res://Scripts/Player/PlayerScript.cs" id="1_kyqiw"]
+[ext_resource type="Resource" uid="uid://dvnwyjbperl7p" path="res://Resources/Invectory/PlayerInv.tres" id="2_dewec"]
 [ext_resource type="Texture2D" uid="uid://dl3o7nd2cgyo4" path="res://Sprites/Other/Gówienko.png" id="2_gntrk"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dewec"]
@@ -18,6 +19,7 @@ script = ExtResource("1_kyqiw")
 MaxAngularVelocity = 20.0
 ThrustForce = 85000.0
 toolRotationLimit = 100.0
+Invectory = ExtResource("2_dewec")
 diggerRange = 40.0
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=760477680]

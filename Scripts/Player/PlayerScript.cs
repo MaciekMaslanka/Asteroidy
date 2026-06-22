@@ -19,9 +19,6 @@ public partial class PlayerScript : RigidBody2D
 	[ExportCategory("Narzedzia")]
 	[Export] private float toolRotationSpeed = 10f;
 	[Export] private float toolRotationLimit = 135f; //potem zamieniana na radiany
-
-	//eq
-	[Export] public Invectory Invectory {get; private set;}
 	private enum ToolsEnum
 	{
 		None,
@@ -30,6 +27,9 @@ public partial class PlayerScript : RigidBody2D
 	}
 	private ToolsEnum currentTool = ToolsEnum.DiggingTool;
 	Node2D toolsContainer = null;
+
+	//eq
+	[Export] public Invectory Invectory {get; private set;}
 
 	//narzedzie do kopania
 	[ExportCategory("Kopanie")]
@@ -63,6 +63,7 @@ public partial class PlayerScript : RigidBody2D
 		{
 			Invectory = new Invectory();
 		}
+		AddToGroup("Player", true);
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -176,5 +177,9 @@ public partial class PlayerScript : RigidBody2D
 			diggerRay.Enabled = false;
 			diggerLine.Visible = false;
 		}
+	}
+	public void CollectItem(InvItem item)
+	{
+		Invectory.InsertItem(item);
 	}
 }
