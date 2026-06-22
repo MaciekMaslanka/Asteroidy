@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bsnp0jrvf5bfc"]
 
-[ext_resource type="Texture2D" uid="uid://chep06nk1tccv" path="res://Sprites/Asteroida.png" id="1_e0e3k"]
-[ext_resource type="Script" uid="uid://c8qn8up336aij" path="res://Scripts/Asteroid.cs" id="1_jnrf0"]
+[ext_resource type="Texture2D" uid="uid://chep06nk1tccv" path="res://Sprites/Other/Asteroida.png" id="1_e0e3k"]
+[ext_resource type="Script" uid="uid://c8qn8up336aij" path="res://Scripts/Asteroids/Asteroid.cs" id="1_jnrf0"]
 [ext_resource type="PackedScene" uid="uid://bn55pvpddkrvi" path="res://Scenes/Ore.tscn" id="2_8e40r"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_8e40r"]

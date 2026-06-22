@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bpuh5mv7mmqcy"]
 
-[ext_resource type="Script" uid="uid://duly8slb8dtiq" path="res://Scripts/PlayerScript.cs" id="1_kyqiw"]
-[ext_resource type="Texture2D" uid="uid://dl3o7nd2cgyo4" path="res://Sprites/Gówienko.png" id="2_gntrk"]
+[ext_resource type="Script" uid="uid://duly8slb8dtiq" path="res://Scripts/Player/PlayerScript.cs" id="1_kyqiw"]
+[ext_resource type="Texture2D" uid="uid://dl3o7nd2cgyo4" path="res://Sprites/Other/Gówienko.png" id="2_gntrk"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dewec"]
 radius = 30.0

@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://63b84g8fpp3u"]
+
+[ext_resource type="Script" uid="uid://bo8b1i7akgrnv" path="res://Scripts/UI/InvUIHandler.cs" id="1_2ydh2"]
+
+[node name="Inv_UI" type="Control" unique_id=2128682179]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_2ydh2")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=989411142]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0

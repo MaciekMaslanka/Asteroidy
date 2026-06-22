@@ -106,16 +106,12 @@ public partial class Asteroid : RigidBody2D
 
 		UpdateShape(smoothed.ToArray());
 	}
+
+	//rudy
 	private void GenerateOres(int minAmount = 2, int maxAmount = 7)
 	{
 		OreGenerator generator = new(this, OreScene, minAmount, maxAmount, 30f, 100f);
 		generator.GenerateOres();
-	}
-	public void DigAt(Vector2 point, float radius = 10f, int segments = 10)
-	{
-		DiggingHandler digHandler = new DiggingHandler(ToLocal(point), radius, segments, this);
-		digHandler.NormalDigging();
-		SmoothShape();
 	}
 	public void OnOreDestroyed(OreScript ore)
 	{
@@ -124,13 +120,22 @@ public partial class Asteroid : RigidBody2D
 		
 		if(GetTree().GetFirstNodeInGroup("Player") is PlayerScript player)
 		{
-			player.invectory.AddItem(new OreItem(ore.type), 1);
+			// player.invectory.AddItem(new OreItem(ore.type), 1);
 		}
 
 		ores.Remove(ore);
 		ore.QueueFree();
 		SmoothShape();
 	}
+
+	//kopanie
+	public void DigAt(Vector2 point, float radius = 10f, int segments = 10)
+	{
+		DiggingHandler digHandler = new DiggingHandler(ToLocal(point), radius, segments, this);
+		digHandler.NormalDigging();
+		SmoothShape();
+	}
+
 	public void UpdateMass()
 	{
 		CenterOfMass = PolygonUtils.GetPolygonCenter(body.Polygon);

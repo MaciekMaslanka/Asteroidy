@@ -21,7 +21,7 @@ public partial class PlayerScript : RigidBody2D
 	[Export] private float toolRotationLimit = 135f; //potem zamieniana na radiany
 
 	//eq
-	[Export] public Invectory invectory {get; private set;}
+	[Export] public Invectory Invectory {get; private set;}
 	private enum ToolsEnum
 	{
 		None,
@@ -59,10 +59,9 @@ public partial class PlayerScript : RigidBody2D
 		AngularDamp = AngularDamping;
 		LinearDamp = LinearDamping;
 
-		if(invectory == null)
+		if(Invectory == null)
 		{
-			invectory = new Invectory();
-			AddChild(invectory);
+			Invectory = new Invectory();
 		}
 	}
 

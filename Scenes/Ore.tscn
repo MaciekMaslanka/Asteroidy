@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bn55pvpddkrvi"]
 
-[ext_resource type="Script" uid="uid://ca3i5xtt3155f" path="res://Scripts/OreScript.cs" id="1_i8ymc"]
+[ext_resource type="Script" uid="uid://ca3i5xtt3155f" path="res://Scripts/Ores/OreScript.cs" id="1_i8ymc"]
 [ext_resource type="Texture2D" uid="uid://q7nili8xfdcx" path="res://Sprites/Ores/Gold.png" id="2_bb785"]
 [ext_resource type="Texture2D" uid="uid://voidkygj3e4b" path="res://Sprites/Ores/Silver.png" id="3_4i16t"]
 

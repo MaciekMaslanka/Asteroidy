@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://chep06nk1tccv"
-path="res://.godot/imported/Asteroida.png-9828f8e02ad0e3149e41f7a743586a41.ctex"
+path="res://.godot/imported/Asteroida.png-62441f06dec01e9c53f17254afa19cdd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Asteroida.png"
-dest_files=["res://.godot/imported/Asteroida.png-9828f8e02ad0e3149e41f7a743586a41.ctex"]
+source_file="res://Sprites/Other/Asteroida.png"
+dest_files=["res://.godot/imported/Asteroida.png-62441f06dec01e9c53f17254afa19cdd.ctex"]
 
 [params]
 

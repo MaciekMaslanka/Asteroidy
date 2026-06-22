@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Invectory" format=3 uid="uid://dvnwyjbperl7p"]
+
+[ext_resource type="Resource" uid="uid://b2ia3ss6infei" path="res://Resources/Items/GoldItem.tres" id="1_dasbd"]
+[ext_resource type="Script" uid="uid://cp7s6q0pjyuhj" path="res://Scripts/Invectory/Invectory.cs" id="2_alaio"]
+
+[resource]
+script = ExtResource("2_alaio")
+items = [ExtResource("1_dasbd"), null, null, null, null, null, null, null, null, null, null, null]
+metadata/_custom_type_script = "uid://cp7s6q0pjyuhj"
