@@ -1,8 +1,19 @@
 using Godot;
 using System;
+using System.Threading.Tasks;
 
 public partial class PlayerScript : RigidBody2D
 {
+	//hp i inny shit
+	[ExportCategory("HP")]
+	[Export] float MaxHP = 500f;
+	[Export] float MaxShields = 500f;
+	[Export] float ShieldsRegenDelay = 20f;
+	[Export] float ShieldsRegenRate = 20f;
+	private float currentHP;
+	private float currentShields;
+	private float timeSinceLastHit = 0f;
+
 	//rotacja
 	[ExportCategory("Rotacja")]
 	[Export] float RotationForce = 12f;
@@ -45,6 +56,9 @@ public partial class PlayerScript : RigidBody2D
     public override void _Ready()
 	{
 		//ważne!!- nie zmieniać nazw nodeów, bo się spieprzy
+		//hp
+		currentHP = MaxHP;
+		currentShields = MaxShields;
 		//narzedzia
 		toolsContainer = GetNode<Node2D>("ToolContainer");
 		toolRotationLimit = Mathf.DegToRad(toolRotationLimit);
@@ -73,10 +87,50 @@ public partial class PlayerScript : RigidBody2D
 		HandleMovement(dt);
 		RotateTool(dt);
 		HandleMouseInput(dt);
+		HandleShieldsRegen(dt);
 
 		if(diggingTimer > 0)
 		{
 			diggingTimer -= (float) delta;
+		}
+	}
+	public void TakeDamage(float amount)
+	{
+		timeSinceLastHit = 0f;
+		if(currentShields > 0f)
+		{
+			currentShields -= amount;
+			if(currentShields < 0f)
+			{
+				float overflowDamage = -currentShields;
+				currentShields = 0f;
+				TakeHPDamage(currentShields);
+			}
+		}
+		else
+		{
+			TakeHPDamage(amount);
+		}
+	}
+	private void TakeHPDamage(float amount)
+	{
+		currentHP -= amount;
+		if(currentHP <= 0f)
+		{
+			Die();
+		}
+	}
+	private void Die()
+	{
+		GD.Print("Zdechłeś cwelu");
+	}
+	private void HandleShieldsRegen(float dt)
+	{
+		timeSinceLastHit += dt;
+		if(timeSinceLastHit >= ShieldsRegenDelay && currentShields < MaxShields)
+		{
+			currentShields += ShieldsRegenRate * dt;
+			currentShields = Mathf.Min(currentShields, MaxShields);
 		}
 	}
 	private void HandleRotation(float dt)
