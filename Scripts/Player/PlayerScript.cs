@@ -4,6 +4,12 @@ using System.Threading.Tasks;
 
 public partial class PlayerScript : RigidBody2D
 {
+	//sygnały
+	[Signal]
+	public delegate void ShieldChangedEventHandler(float currentShields, float maxShields);
+	[Signal]
+	public delegate void HealthChangedEventHandler(float currentHealth, float maxHealth);
+
 	//hp i inny shit
 	[ExportCategory("HP")]
 	[Export] float MaxHP = 500f;
@@ -59,6 +65,8 @@ public partial class PlayerScript : RigidBody2D
 		//hp
 		currentHP = MaxHP;
 		currentShields = MaxShields;
+		EmitSignal(SignalName.HealthChanged, currentHP, MaxHP);
+		EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
 		//narzedzia
 		toolsContainer = GetNode<Node2D>("ToolContainer");
 		toolRotationLimit = Mathf.DegToRad(toolRotationLimit);
@@ -100,12 +108,14 @@ public partial class PlayerScript : RigidBody2D
 		if(currentShields > 0f)
 		{
 			currentShields -= amount;
-			if(currentShields < 0f)
+			if(currentShields <= 0f)
 			{
 				float overflowDamage = -currentShields;
 				currentShields = 0f;
-				TakeHPDamage(currentShields);
+
+				TakeHPDamage(overflowDamage);
 			}
+			EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
 		}
 		else
 		{
@@ -115,6 +125,7 @@ public partial class PlayerScript : RigidBody2D
 	private void TakeHPDamage(float amount)
 	{
 		currentHP -= amount;
+		EmitSignal(SignalName.HealthChanged, currentHP, MaxHP);
 		if(currentHP <= 0f)
 		{
 			Die();
@@ -127,10 +138,13 @@ public partial class PlayerScript : RigidBody2D
 	private void HandleShieldsRegen(float dt)
 	{
 		timeSinceLastHit += dt;
+
 		if(timeSinceLastHit >= ShieldsRegenDelay && currentShields < MaxShields)
 		{
 			currentShields += ShieldsRegenRate * dt;
 			currentShields = Mathf.Min(currentShields, MaxShields);
+
+			EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
 		}
 	}
 	private void HandleRotation(float dt)

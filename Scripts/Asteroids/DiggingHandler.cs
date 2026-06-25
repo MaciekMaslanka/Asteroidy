@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using Godot;
 
 public partial class DiggingHandler : Node
@@ -10,14 +11,12 @@ public partial class DiggingHandler : Node
 	private OreScript ore;
 	private Asteroid parent;
 	const float killThreshold = 100f;
-	private List<OreScript> parentOres;
 	public DiggingHandler(Vector2 point, float radius, int segments, Asteroid parent)
 	{
 		this.point = point;
 		this.radius = radius;
 		this.segments = segments;
 		this.parent = parent;
-		this.parentOres = parent.ores;
 		NormalDigging();
 	}
 	public DiggingHandler(Asteroid parent, OreScript ore)
@@ -69,79 +68,87 @@ public partial class DiggingHandler : Node
 		}
 
 		if(result.Count == 0) return;
-		else if(result.Count == 1)
+
+		int biggestIndex = 0;
+		float biggestArea = 0f;
+
+		for(int i=0; i<result.Count; i++)
 		{
-			if(PolygonUtils.CalculatePolygonArea(result[0]) < killThreshold)
+			float area = PolygonUtils.CalculatePolygonArea(result[i]);
+			if(area > biggestArea)
 			{
-				parent.QueueFree();
-			}
-			else
-			{
-				parent.UpdateShape(result[0]);
+				biggestArea = area;
+				biggestIndex = i;
 			}
 		}
-		else
+
+		parent.UpdateShape(result[biggestIndex]);
+
+		if(biggestArea < killThreshold)
 		{
-			int biggestIndex = 0;
-			float biggestArea = 0f;
-
-			for(int i=0; i<result.Count; i++)
-			{
-				float area = PolygonUtils.CalculatePolygonArea(result[i]);
-				if(area > biggestArea)
-				{
-					biggestArea = area;
-					biggestIndex = i;
-				}
-			}
-
-			parent.UpdateShape(result[biggestIndex]);
-
-			for(int i=0; i<result.Count; i++)
-			{
-				if(i == biggestIndex) continue;
-				if(PolygonUtils.CalculatePolygonArea(result[i]) < killThreshold) continue;
-				CreateNewFragment(result[i]);
-			}
+			parent.QueueFree();
+			return;
 		}
+
+		List<Asteroid> newFragments = new();
+
+		for (int i=0; i<result.Count; i++)
+		{
+			if(i==biggestIndex) continue;
+			if(PolygonUtils.CalculatePolygonArea(result[i]) < killThreshold) continue;
+
+			Asteroid fragment = CreateNewFragment(result[i]);
+			if(fragment != null)
+				newFragments.Add(fragment);
+		}
+		DistributeOresToFragments(newFragments);
+
 		parent.UpdateMass();
 	}
-	private void CreateNewFragment(Vector2[] points)
+	private Asteroid CreateNewFragment(Vector2[] points)
 	{
 		if(parent.AsteroidScene == null)
 		{
 			GD.PrintErr("debil");
-			return;
+			return null;
 		}
 		Asteroid fragment = parent.AsteroidScene.Instantiate<Asteroid>();
 		fragment.Position = parent.Position;
 		fragment.Rotation = parent.Rotation;
 		fragment.SetCustomShape(points);
-		parent.GetParent().AddChild(fragment);
-		AssignOres(fragment);
-		fragment.GetNode<Polygon2D>("Polygon2D").TextureRotation = parent.body.TextureRotation;
-	}
-	private void AssignOres(Asteroid newFragment)
-	{
-		if (parentOres == null || parentOres.Count == 0)
-			return;
 
+		parent.GetParent().AddChild(fragment);
+		fragment.GetNode<Polygon2D>("Polygon2D").TextureRotation = parent.body.TextureRotation;
+
+		return fragment;
+	}
+	private void DistributeOresToFragments(List<Asteroid> fragments)
+	{
+		var parentOres = parent.ores;
+
+		if(parentOres == null || parentOres.Count == 0 || fragments.Count == 0)
+			return;
+			
 		var oresToCheck = new List<OreScript>(parentOres);
 
-		foreach (var ore in oresToCheck)
+		foreach(var ore in oresToCheck)
 		{
-			Vector2 oreGlobalPos = ore.GlobalPosition;
-			Vector2 oreLocalToFragment = newFragment.ToLocal(oreGlobalPos);
+			if (!GodotObject.IsInstanceValid(ore)) continue;
 
-			if (Geometry2D.IsPointInPolygon(oreLocalToFragment, newFragment.currentShape))
+			Vector2 oreGlobal = ore.GlobalPosition;
+			foreach (var fragment in fragments)
 			{
-				if (ore.GetParent() != null)
-					ore.GetParent().RemoveChild(ore);
+				if (!GodotObject.IsInstanceValid(fragment)) continue;
+				
+				Vector2 oreLocal = fragment.ToLocal(oreGlobal);
 
-				newFragment.AddChild(ore);
-				newFragment.ores.Add(ore);
-
-				parentOres.Remove(ore);
+				if (Geometry2D.IsPointInPolygon(oreLocal, fragment.currentShape))
+				{
+					ore.Reparent(fragment);
+					fragment.ores.Add(ore);
+					parentOres.Remove(ore);
+					break; // przypisujemy tylko do pierwszego pasującego fragmentu
+				}
 			}
 		}
 	}
