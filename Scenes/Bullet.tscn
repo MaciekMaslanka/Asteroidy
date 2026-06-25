@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://diy7v3bb12uso"]
+
+[ext_resource type="Script" uid="uid://de6ok44l5vgy0" path="res://Scripts/Enemies/Bullet.cs" id="1_vlxeq"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_nr8tw"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_vlxeq"]
+radius = 6.0
+height = 54.0
+
+[node name="Node2D" type="CharacterBody2D" unique_id=1189485208]
+scale = Vector2(0.35, 0.35)
+collision_layer = 16
+collision_mask = 13
+motion_mode = 1
+script = ExtResource("1_vlxeq")
+Speed = 1000.0
+Damage = 100.0
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1299033435]
+position = Vector2(4.7683716e-07, 1.9073486e-06)
+rotation = 1.5707964
+scale = Vector2(11.999999, 54.000004)
+texture = SubResource("PlaceholderTexture2D_nr8tw")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1001833695]
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_vlxeq")

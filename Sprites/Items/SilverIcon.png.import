@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dl3o7nd2cgyo4"
-path="res://.godot/imported/Gówienko.png-94c9e0cd2b53de57618177bb02a6cf13.ctex"
+uid="uid://c3ggkh5ma1sfc"
+path="res://.godot/imported/SilverIcon.png-8260c24e1c0d428a85e88ea970123a10.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Gówienko.png"
-dest_files=["res://.godot/imported/Gówienko.png-94c9e0cd2b53de57618177bb02a6cf13.ctex"]
+source_file="res://Sprites/Items/SilverIcon.png"
+dest_files=["res://.godot/imported/SilverIcon.png-8260c24e1c0d428a85e88ea970123a10.ctex"]
 
 [params]
 

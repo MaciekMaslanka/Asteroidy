@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://chep06nk1tccv"
-path="res://.godot/imported/Asteroida.png-9828f8e02ad0e3149e41f7a743586a41.ctex"
+uid="uid://d3w5i63bbpeyu"
+path="res://.godot/imported/Hp bar.png-b0408a5e323c21ec4cc69cb8ab4ae335.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Asteroida.png"
-dest_files=["res://.godot/imported/Asteroida.png-9828f8e02ad0e3149e41f7a743586a41.ctex"]
+source_file="res://Sprites/UI/Hp bar/Hp bar.png"
+dest_files=["res://.godot/imported/Hp bar.png-b0408a5e323c21ec4cc69cb8ab4ae335.ctex"]
 
 [params]
 

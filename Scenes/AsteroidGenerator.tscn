@@ -1,9 +1,6 @@
 [gd_scene format=3 uid="uid://cfw11x5xydcic"]
 
-[ext_resource type="Script" uid="uid://bhi25wx6g0wg5" path="res://Scripts/AsteroidGeneratorScript.cs" id="1_pdeyf"]
-[ext_resource type="Texture2D" uid="uid://chep06nk1tccv" path="res://Sprites/Asteroida.png" id="2_7il1a"]
+[ext_resource type="Script" uid="uid://bhi25wx6g0wg5" path="res://Scripts/Asteroids/AsteroidGeneratorScript.cs" id="1_pdeyf"]
 
 [node name="AsteroidGenerator" type="Node2D" unique_id=185812262]
 script = ExtResource("1_pdeyf")
-Texture = ExtResource("2_7il1a")
-TextureScale = 0.35

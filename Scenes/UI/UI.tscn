@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://d52cp50abs6e"]
+
+[ext_resource type="PackedScene" uid="uid://63b84g8fpp3u" path="res://Scenes/UI/Inv_ui.tscn" id="1_s86y4"]
+[ext_resource type="PackedScene" uid="uid://db6p8h8c3fqjs" path="res://Scenes/UI/HP_UI.tscn" id="2_636u5"]
+
+[node name="UI" type="CanvasLayer" unique_id=1062009323]
+
+[node name="Control" type="Control" parent="." unique_id=2009421785]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(3.49, 3.49)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+
+[node name="CenterContainer" type="CenterContainer" parent="Control" unique_id=1929979272]
+custom_minimum_size = Vector2(300, 300)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -150.0
+offset_right = 150.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Inv_UI" parent="Control/CenterContainer" unique_id=2128682179 instance=ExtResource("1_s86y4")]
+layout_mode = 2
+
+[node name="HPbar" parent="." unique_id=200908839 instance=ExtResource("2_636u5")]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_right = 0.0
+grow_horizontal = 1
+grow_vertical = 0
+scale = Vector2(1.415, 1.415)

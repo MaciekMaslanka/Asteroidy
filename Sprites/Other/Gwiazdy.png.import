@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://k2tob3trj15p"
-path="res://.godot/imported/Gwiazdy.png-b2bd9ff04ba39cb313c6697ccf393190.ctex"
+path="res://.godot/imported/Gwiazdy.png-aa5a59628e759437f1f03c8595c3fd0d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Gwiazdy.png"
-dest_files=["res://.godot/imported/Gwiazdy.png-b2bd9ff04ba39cb313c6697ccf393190.ctex"]
+source_file="res://Sprites/Other/Gwiazdy.png"
+dest_files=["res://.godot/imported/Gwiazdy.png-aa5a59628e759437f1f03c8595c3fd0d.ctex"]
 
 [params]
 
