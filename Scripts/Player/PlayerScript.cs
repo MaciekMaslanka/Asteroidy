@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Threading.Tasks;
 
 public partial class PlayerScript : RigidBody2D
@@ -45,9 +46,6 @@ public partial class PlayerScript : RigidBody2D
 	private ToolsEnum currentTool = ToolsEnum.DiggingTool;
 	Node2D toolsContainer = null;
 
-	//eq
-	[Export] public Invectory Invectory {get; private set;}
-
 	//narzedzie do kopania
 	[ExportCategory("Kopanie")]
 	[Export] private float diggerRange = 100f; //potem ujemny bo dziwne rzeczy się dzieją z raycastem
@@ -55,9 +53,20 @@ public partial class PlayerScript : RigidBody2D
 	private float diggingTimer = 0f;
 	private RayCast2D diggerRay;
 	private Line2D diggerLine;
+	private Node2D diggerContainer;
 	private bool isDiggerActive = false;
 
 	//narzedzie do strzelania
+	[ExportCategory("Strzelanie")]
+	[Export] private float firingCd = 0.5f;
+	private float firingTimer = 0f;
+	private Node2D gunContainer;
+	private Node2D bulletSpawn;
+	[Export] PackedScene BulletScene;
+
+	//eq
+	[ExportCategory("EQ")]
+	[Export] public Invectory Invectory {get; private set;}
 
     public override void _Ready()
 	{
@@ -67,14 +76,23 @@ public partial class PlayerScript : RigidBody2D
 		currentShields = MaxShields;
 		EmitSignal(SignalName.HealthChanged, currentHP, MaxHP);
 		EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
+
 		//narzedzia
 		toolsContainer = GetNode<Node2D>("ToolContainer");
 		toolRotationLimit = Mathf.DegToRad(toolRotationLimit);
 
 		//digger
 		diggerRange = -diggerRange;
-		diggerRay = toolsContainer.GetNode<Node2D>("DiggingTool").GetNode<RayCast2D>("RayCast2D");
-		diggerLine = toolsContainer.GetNode<Node2D>("DiggingTool").GetNode<Line2D>("Line2D");
+		diggerRay = toolsContainer.GetNode<RayCast2D>("DiggingTool/RayCast2D");
+		diggerLine = toolsContainer.GetNode<Line2D>("DiggingTool/Line2D");
+		diggerContainer = toolsContainer.GetNode<Node2D>("DiggingTool");
+
+		//broń
+		gunContainer = toolsContainer.GetNode<Node2D>("GunTool");
+		bulletSpawn = toolsContainer.GetNode<Node2D>("GunTool/BulletsSpawn");
+
+		diggerContainer.Visible = true;
+		gunContainer.Visible = false;
 
 		//ustawienia fizyki
 		GravityScale = 0f;
@@ -94,12 +112,17 @@ public partial class PlayerScript : RigidBody2D
 		HandleRotation(dt);
 		HandleMovement(dt);
 		RotateTool(dt);
+		HandleToolChanges();
 		HandleMouseInput(dt);
 		HandleShieldsRegen(dt);
 
 		if(diggingTimer > 0)
 		{
 			diggingTimer -= (float) delta;
+		}
+		if(firingTimer > 0)
+		{
+			firingTimer -= (float) delta;
 		}
 	}
 	public void TakeDamage(float amount)
@@ -181,6 +204,21 @@ public partial class PlayerScript : RigidBody2D
 
 		//rotacja w godocie to dziadostwo
 	}
+	private void HandleToolChanges()
+	{
+		if(Input.IsActionJustPressed("diggingToolSelect"))
+		{
+			currentTool = ToolsEnum.DiggingTool;
+			diggerContainer.Visible = true;
+			gunContainer.Visible = false;
+		}
+		if(Input.IsActionJustPressed("gunToolSelect"))
+		{
+			currentTool = ToolsEnum.GunTool;
+			diggerContainer.Visible = false;
+			gunContainer.Visible = true;
+		}
+	}
 	private void HandleMouseInput(float dt)
 	{
 		switch(currentTool)
@@ -190,6 +228,12 @@ public partial class PlayerScript : RigidBody2D
 					ActivateDigger(dt);
 				else
 					DeactivateDigger(dt);
+				break;
+			case ToolsEnum.GunTool:
+				if(Input.IsActionPressed("mouseLeft"))
+				{
+					Shoot();
+				}
 				break;
 		}
 
@@ -244,6 +288,19 @@ public partial class PlayerScript : RigidBody2D
 			isDiggerActive = false;
 			diggerRay.Enabled = false;
 			diggerLine.Visible = false;
+		}
+	}
+	private void Shoot()
+	{
+		if(firingTimer <= 0)
+		{
+			firingTimer = firingCd;
+			var bullet = BulletScene.Instantiate<Bullet>();
+			bullet.GlobalPosition = bulletSpawn.GlobalPosition;
+			bullet.Rotation = toolsContainer.GlobalRotation - Mathf.Pi/2;
+			bullet.AddCollisionExceptionWith(this);
+			bullet.SetCollisionMaskValue(2, true); //kolizja z enemy
+			GetTree().CurrentScene.AddChild(bullet);
 		}
 	}
 	public void CollectItem(InvItem item)

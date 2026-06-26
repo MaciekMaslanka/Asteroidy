@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dl3o7nd2cgyo4"
-path="res://.godot/imported/Gówienko.png-7402cf6865df3045aa50204e20de2467.ctex"
+uid="uid://bduxlxoulsvy2"
+path="res://.godot/imported/diggingToolPlaceholder.png-8c4b288cbad38eb86cf31880d7850c79.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/Other/Gówienko.png"
-dest_files=["res://.godot/imported/Gówienko.png-7402cf6865df3045aa50204e20de2467.ctex"]
+source_file="res://Sprites/Player/diggingToolPlaceholder.png"
+dest_files=["res://.godot/imported/diggingToolPlaceholder.png-8c4b288cbad38eb86cf31880d7850c79.ctex"]
 
 [params]
 

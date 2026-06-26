@@ -2,13 +2,14 @@
 
 [ext_resource type="Script" uid="uid://duly8slb8dtiq" path="res://Scripts/Player/PlayerScript.cs" id="1_kyqiw"]
 [ext_resource type="Resource" uid="uid://dvnwyjbperl7p" path="res://Resources/Invectory/PlayerInv.tres" id="2_dewec"]
-[ext_resource type="Texture2D" uid="uid://dl3o7nd2cgyo4" path="res://Sprites/Other/Gówienko.png" id="2_gntrk"]
+[ext_resource type="PackedScene" uid="uid://diy7v3bb12uso" path="res://Scenes/Bullet.tscn" id="2_nn08x"]
+[ext_resource type="Texture2D" uid="uid://b0vsacokc7ir0" path="res://Sprites/Player/Gówienko.png" id="3_5ixxa"]
+[ext_resource type="Texture2D" uid="uid://bduxlxoulsvy2" path="res://Sprites/Player/diggingToolPlaceholder.png" id="4_5ixxa"]
+[ext_resource type="Texture2D" uid="uid://bv2ospmuu8bmc" path="res://Sprites/Player/weaponPlaceholder.png" id="5_nn08x"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dewec"]
 radius = 30.0
 height = 62.0
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_kyqiw"]
 
 [node name="CharacterBody2D" type="RigidBody2D" unique_id=43622812]
 collision_mask = 30
@@ -17,15 +18,17 @@ gravity_scale = 0.0
 can_sleep = false
 script = ExtResource("1_kyqiw")
 MaxAngularVelocity = 20.0
+AngularDamping = 1.0
 ThrustForce = 85000.0
 toolRotationLimit = 100.0
-Invectory = ExtResource("2_dewec")
 diggerRange = 40.0
+BulletScene = ExtResource("2_nn08x")
+Invectory = ExtResource("2_dewec")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=760477680]
 texture_filter = 1
 position = Vector2(0, -12)
-texture = ExtResource("2_gntrk")
+texture = ExtResource("3_5ixxa")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1798614063]
 shape = SubResource("CapsuleShape2D_dewec")
@@ -41,9 +44,10 @@ position = Vector2(0, -31)
 position = Vector2(-5.9604645e-08, -13.250008)
 scale = Vector2(4, 27.5)
 
-[node name="Sprite" type="Sprite2D" parent="ToolContainer/DiggingTool" unique_id=677150992]
-scale = Vector2(0.99999994, 0.99999994)
-texture = SubResource("PlaceholderTexture2D_kyqiw")
+[node name="Sprite2D" type="Sprite2D" parent="ToolContainer/DiggingTool" unique_id=677150992]
+position = Vector2(2.9802322e-08, 0.027272914)
+scale = Vector2(0.0012232416, 0.0004072989)
+texture = ExtResource("4_5ixxa")
 
 [node name="RayCast2D" type="RayCast2D" parent="ToolContainer/DiggingTool" unique_id=347423408]
 position = Vector2(1.1920929e-07, 0.48181844)
@@ -54,3 +58,14 @@ collision_mask = 14
 position = Vector2(1.4901161e-08, -0.4999997)
 width = 0.32
 default_color = Color(1, 0, 0, 1)
+
+[node name="GunTool" type="Node2D" parent="ToolContainer" unique_id=2025891924]
+
+[node name="Sprite2D" type="Sprite2D" parent="ToolContainer/GunTool" unique_id=712248252]
+position = Vector2(0.34671566, -13.9037895)
+rotation = -1.5707964
+scale = Vector2(0.013197942, 0.016809465)
+texture = ExtResource("5_nn08x")
+
+[node name="BulletsSpawn" type="Node2D" parent="ToolContainer/GunTool" unique_id=705286700]
+position = Vector2(0, -24)

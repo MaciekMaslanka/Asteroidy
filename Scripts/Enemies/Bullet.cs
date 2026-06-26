@@ -31,6 +31,12 @@ public partial class Bullet : CharacterBody2D
             if(collision.GetCollider() is PlayerScript player)
             {
                 player.TakeDamage(Damage);
+                continue;
+            }
+            if(collision.GetCollider() is Enemy enemy)
+            {
+                enemy.TakeDamage(Damage);
+                continue;
             }
         }
         QueueFree();

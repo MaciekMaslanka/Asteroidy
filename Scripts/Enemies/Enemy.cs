@@ -8,10 +8,13 @@ public partial class Enemy : RigidBody2D
 	[Export] private float MovementRandomizerDelay = 3f;
 	[Export] private float RotationRate = 5f;
 	[Export] private PackedScene bulletScene;
+	[Export] private float MaxHealth = 100f;
+	private float currentHealth;
 	private float movementRandomizerTimer = 0f;
 	private float currentRotationTarget = 0f;
 	public override void _Ready()
 	{
+		currentHealth = MaxHealth;
 	}
 	public override void _Process(double delta)
 	{
@@ -41,5 +44,17 @@ public partial class Enemy : RigidBody2D
 		bullet.Rotation = direction.Angle();
 		bullet.AddCollisionExceptionWith(this);
 		GetTree().CurrentScene.AddChild(bullet);
+	}
+	public void TakeDamage(float amount)
+	{
+		currentHealth -= amount;
+		if(currentHealth <= 0)
+		{
+			Die();
+		}
+	}
+	private void Die()
+	{
+		QueueFree();
 	}
 }
