@@ -9,17 +9,26 @@ radius = 30.0
 height = 62.0
 
 [node name="Enemy" type="RigidBody2D" unique_id=431999929]
+collision_layer = 2
+collision_mask = 29
 mass = 100.0
 gravity_scale = 0.0
+linear_damp = 1.2
 script = ExtResource("1_wovta")
-bulletScene = ExtResource("2_kpr8r")
+LoseAggroTime = 5.0
+BulletScene = ExtResource("2_kpr8r")
 MaxHealth = 1000.0
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=748898151]
 modulate = Color(1, 0, 0, 1)
 texture_filter = 1
-position = Vector2(0, -12)
+position = Vector2(8, 0)
+rotation = 1.5707964
 texture = ExtResource("3_xeo28")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1896214907]
+rotation = 1.5707964
 shape = SubResource("CapsuleShape2D_kpr8r")
+
+[node name="RayCast2D" type="RayCast2D" parent="." unique_id=1843465919]
+collision_mask = 13

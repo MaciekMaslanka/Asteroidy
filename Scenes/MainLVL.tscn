@@ -31,3 +31,4 @@ position = Vector2(-696, -3)
 
 [node name="Enemy" parent="." unique_id=431999929 instance=ExtResource("5_5yp1d")]
 position = Vector2(-241, -21)
+can_sleep = false
