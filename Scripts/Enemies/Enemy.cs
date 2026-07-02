@@ -1,6 +1,8 @@
 using Godot;
 using System;
 using System.Numerics;
+using System.Runtime.CompilerServices;
+using System.Transactions;
 using Vector2 = Godot.Vector2;
 
 public partial class Enemy : RigidBody2D
@@ -16,16 +18,21 @@ public partial class Enemy : RigidBody2D
 	[Export] private PackedScene BulletScene;
 
 	[ExportCategory("Ruch")]
+	[Export] private float AvoidStrength = 3f;
 	[Export] private float IdleTurnSpeed = 1.5f;
 	[Export] private float IdleThrust = 15000f;
 	[Export] private float IdleMaxMoveSpeed = 240f;
-	[Export] private float IdleDirectionChangeTime = 3.5f;
+	[Export] private float IdleDirectionChangeTime = 10f;
 	[Export] private float AggroTurnSpeed = 4f;
 	private float shootTimer = 0f;
 	private float loseAggroTimer = 0f;
 	private float idleMoveTimer = 0f;
-	private float targetRotation = 0f;
+	private Vector2 targetDirection = new();
 	private float currentThrust = 0f;
+
+	private RayCast2D centerRay;
+	private RayCast2D leftRay;
+	private RayCast2D rightRay;
 
 	[ExportCategory("HP")]
 	[Export] private float MaxHealth = 100f;
@@ -35,16 +42,12 @@ public partial class Enemy : RigidBody2D
 	private RayCast2D visionRay;
 	public override void _Ready()
 	{
-		targetRotation = (float) GD.RandRange(0, Mathf.Tau);
-		player = (PlayerScript) GetTree().GetFirstNodeInGroup("Player");
-		visionRay = GetNode<RayCast2D>("RayCast2D");
-		currentThrust = IdleThrust;
-	}
-	public override void _Process(double delta)
-	{
-		float dt = (float) delta;
+		targetDirection = Vector2.Right.Rotated((float) GD.RandRange(0, Mathf.Tau));
+		rightRay = GetNode<RayCast2D>("Sensors/RightRay");
+		leftRay = GetNode<RayCast2D>("Sensors/LeftRay");
 
-		
+		player = (PlayerScript) GetTree().GetFirstNodeInGroup("Player");
+		currentThrust = IdleThrust;
 	}
     public override void _PhysicsProcess(double delta)
 	{
@@ -52,12 +55,50 @@ public partial class Enemy : RigidBody2D
 
 		UpdateState(dt);
 		HandleBehaviour(dt);
-
-		if(currentState == State.Idle)
+		HandleRotation(dt);
+		HandleMovement(dt);
+	}
+	private void HandleRotation(float dt)
+	{
+		//unikanie
+		Vector2 avoid = Vector2.Zero;
+		if(leftRay.IsColliding())
 		{
-			HandleIdlePhysics(dt);
+			float distance = leftRay.GetCollisionPoint().DistanceTo(GlobalPosition);
+			float strength = 1 / (distance * distance);
+			strength = Mathf.Clamp(strength, 0f, 3f);
+			avoid += Vector2.Down.Rotated(Rotation) * strength;
 		}
-		GD.Randomize();
+		if(rightRay.IsColliding())
+		{
+			float distance = rightRay.GetCollisionPoint().DistanceTo(GlobalPosition);
+			float strength = 1 / (distance * distance);
+			strength = Mathf.Clamp(strength, 0f, 3f);
+			avoid += Vector2.Down.Rotated(Rotation) * strength;
+		}
+		Vector2 desiredDir = targetDirection.Normalized() + avoid.Normalized() * AvoidStrength;
+		targetDirection = desiredDir;
+		float targetRotation = desiredDir.Angle();
+		float angleErr = Mathf.AngleDifference(Rotation, targetRotation);
+
+		float kp = 100000f;
+		float kd = 15000f;
+
+		float torque = angleErr * kp - AngularVelocity * kd;
+		ApplyTorque(torque);
+	}
+	private void HandleMovement(float dt)
+	{
+		float angleErr = Mathf.Abs(Mathf.AngleDifference(Rotation, targetDirection.Angle()));
+		Vector2 forward = Vector2.Right.Rotated(Rotation);
+		if(angleErr < Mathf.DegToRad(20))
+		{
+			if(LinearVelocity.Length() < IdleMaxMoveSpeed)
+			{
+				float thrustFactor = Mathf.Clamp(1f-angleErr / Mathf.Pi, 0f, 1f);
+				ApplyForce(forward * currentThrust * thrustFactor);
+			}
+		}
 	}
 	private void UpdateState(float dt)
 	{
@@ -87,7 +128,7 @@ public partial class Enemy : RigidBody2D
 				if(loseAggroTimer >= LoseAggroTime)
 				{
 					currentState = State.Idle;
-					targetRotation = (float) GD.RandRange(0, Mathf.Tau);
+					targetDirection = Vector2.Right.Rotated((float) GD.RandRange(0, Mathf.Tau));
 				}
 			}
 		}
@@ -122,7 +163,7 @@ public partial class Enemy : RigidBody2D
 		}
 		else
 		{
-			HandleIdleLogic(dt);
+			HandleIdle(dt);
 		}
 	}
 	private void HandleAggro(float dt)
@@ -132,12 +173,6 @@ public partial class Enemy : RigidBody2D
 			GD.PrintErr("Gracza nie widzi enemy");
 			return;
 		}
-
-		Vector2 direction = (player.GlobalPosition - GlobalPosition).Normalized();
-		targetRotation = direction.Angle();
-
-		Rotation = Mathf.RotateToward(Rotation, targetRotation, AggroTurnSpeed * dt);
-
 		//strzelanie
 		shootTimer += dt;
 		if(shootTimer >= ShootCooldown)
@@ -146,7 +181,7 @@ public partial class Enemy : RigidBody2D
 			ShootAt(player.GlobalPosition);
 		}
 	}
-	private void HandleIdleLogic(float dt)
+	private void HandleIdle(float dt)
 	{
 		idleMoveTimer += dt;
 
@@ -155,25 +190,12 @@ public partial class Enemy : RigidBody2D
 			idleMoveTimer = 0f;
 			IdleDirectionChangeTime = (float) GD.RandRange(2.5f, 5.0f);
 
-			float randomOffset = (float) GD.RandRange(-1.2f, 1.2f);
-			targetRotation = Rotation + randomOffset;
-			GD.Print(Mathf.RadToDeg(targetRotation));
-			currentThrust = GD.Randf() > 0.35f ? IdleThrust : 0f;
-			//do naprawy (KURWA JEBANA)
-		}
+			//rotacja
+			float randomOffset = (float) GD.RandRange(-2.8f, 2.8f);
+			targetDirection = targetDirection.Rotated(randomOffset);
 
-		Rotation = Mathf.RotateToward(Rotation, targetRotation, IdleTurnSpeed * dt);
-	}
-	private void HandleIdlePhysics(float dt)
-	{
-		if(currentThrust > 0f)
-		{
-			Vector2 forward = Vector2.Right.Rotated(Rotation);
-			ApplyForce(forward * currentThrust);
-		}
-		if(LinearVelocity.Length() > IdleMaxMoveSpeed)
-		{
-			LinearVelocity = LinearVelocity.Normalized() * IdleMaxMoveSpeed;
+			//ciąg
+			currentThrust = GD.Randf() > 0.35f ? IdleThrust : 0f;
 		}
 	}
 	private void ShootAt(Vector2 targetGlobalPos)

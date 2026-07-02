@@ -27,8 +27,20 @@ texture = ExtResource("2_gt1wq")
 [node name="Asteroid" parent="." unique_id=2009140096 instance=ExtResource("3_lvojy")]
 position = Vector2(-696, -3)
 
+[node name="Asteroid2" parent="." unique_id=2006137835 instance=ExtResource("3_lvojy")]
+position = Vector2(-130, -479)
+
+[node name="Asteroid3" parent="." unique_id=123094080 instance=ExtResource("3_lvojy")]
+position = Vector2(-24, 728)
+
+[node name="Asteroid4" parent="." unique_id=149884076 instance=ExtResource("3_lvojy")]
+position = Vector2(881, -8)
+
+[node name="Asteroid5" parent="." unique_id=1450947492 instance=ExtResource("3_lvojy")]
+position = Vector2(527, -508)
+
 [node name="UI" parent="." unique_id=1062009323 instance=ExtResource("4_pm3h0")]
 
 [node name="Enemy" parent="." unique_id=431999929 instance=ExtResource("5_5yp1d")]
-position = Vector2(-241, -21)
+position = Vector2(63, -6)
 can_sleep = false

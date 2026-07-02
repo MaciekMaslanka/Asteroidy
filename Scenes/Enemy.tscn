@@ -17,6 +17,9 @@ linear_damp = 1.2
 script = ExtResource("1_wovta")
 LoseAggroTime = 5.0
 BulletScene = ExtResource("2_kpr8r")
+AvoidStrength = 2.0
+IdleTurnSpeed = 12.0
+IdleThrust = 18000.0
 MaxHealth = 1000.0
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=748898151]
@@ -30,5 +33,14 @@ texture = ExtResource("3_xeo28")
 rotation = 1.5707964
 shape = SubResource("CapsuleShape2D_kpr8r")
 
-[node name="RayCast2D" type="RayCast2D" parent="." unique_id=1843465919]
-collision_mask = 13
+[node name="Sensors" type="Node2D" parent="." unique_id=113185535]
+
+[node name="LeftRay" type="RayCast2D" parent="Sensors" unique_id=162307302]
+rotation = -0.34906584
+target_position = Vector2(150, 0)
+collision_mask = 14
+
+[node name="RightRay" type="RayCast2D" parent="Sensors" unique_id=1574307786]
+rotation = 0.34906584
+target_position = Vector2(150, 0)
+collision_mask = 14
