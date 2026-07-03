@@ -1,8 +1,5 @@
 using Godot;
 using System;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Transactions;
 using Vector2 = Godot.Vector2;
 
 public partial class Enemy : RigidBody2D
@@ -23,10 +20,13 @@ public partial class Enemy : RigidBody2D
 	[Export] private float IdleThrust = 15000f;
 	[Export] private float IdleMaxMoveSpeed = 240f;
 	[Export] private float IdleDirectionChangeTime = 10f;
+	[Export] private float TargetPositionMaxDistance = 4000f;
+	[Export] private float TargetPositionMinDistance = 100f;
 	[Export] private float AggroTurnSpeed = 4f;
 	private float shootTimer = 0f;
 	private float loseAggroTimer = 0f;
 	private float idleMoveTimer = 0f;
+	private Vector2 targetPosition = new();
 	private Vector2 targetDirection = new();
 	private float currentThrust = 0f;
 
@@ -74,15 +74,16 @@ public partial class Enemy : RigidBody2D
 			float distance = rightRay.GetCollisionPoint().DistanceTo(GlobalPosition);
 			float strength = 1 / (distance * distance);
 			strength = Mathf.Clamp(strength, 0f, 3f);
-			avoid += Vector2.Down.Rotated(Rotation) * strength;
+			avoid += Vector2.Up.Rotated(Rotation) * strength;
 		}
+
 		Vector2 desiredDir = targetDirection.Normalized() + avoid.Normalized() * AvoidStrength;
-		targetDirection = desiredDir;
+
 		float targetRotation = desiredDir.Angle();
 		float angleErr = Mathf.AngleDifference(Rotation, targetRotation);
 
 		float kp = 100000f;
-		float kd = 15000f;
+		float kd = 20000f;
 
 		float torque = angleErr * kp - AngularVelocity * kd;
 		ApplyTorque(torque);
@@ -190,9 +191,9 @@ public partial class Enemy : RigidBody2D
 			idleMoveTimer = 0f;
 			IdleDirectionChangeTime = (float) GD.RandRange(2.5f, 5.0f);
 
-			//rotacja
-			float randomOffset = (float) GD.RandRange(-2.8f, 2.8f);
-			targetDirection = targetDirection.Rotated(randomOffset);
+			//cel
+			SelectRandomTarget();
+			targetDirection = Vector2.Right.Rotated(targetPosition.Angle());
 
 			//ciąg
 			currentThrust = GD.Randf() > 0.35f ? IdleThrust : 0f;
@@ -207,4 +208,43 @@ public partial class Enemy : RigidBody2D
 		bullet.AddCollisionExceptionWith(this);
 		GetTree().CurrentScene.AddChild(bullet);
 	}
+	private void SelectRandomTarget()
+	{
+		Vector2 randomLocalPoint;
+		for(int i=0; i<100; i++)
+		{
+			float angle = (float) GD.RandRange(0, Mathf.Tau);
+			float distance = (float) GD.RandRange(TargetPositionMinDistance, TargetPositionMaxDistance);
+			randomLocalPoint = Vector2.Right.Rotated(angle) * distance;
+
+			if(HasLineOFSight(ToGlobal(randomLocalPoint)))
+			{
+				targetPosition = ToGlobal(randomLocalPoint);
+				return;
+			}
+		}
+		targetPosition = GlobalPosition;
+	}
+	private bool HasLineOFSight(Vector2 targetGlobal)
+	{
+		var spaceState = GetWorld2D().DirectSpaceState;
+
+		var query = new PhysicsRayQueryParameters2D();
+		query.From = GlobalPosition;
+		query.To = targetGlobal;
+		query.CollideWithBodies = true;
+
+		var result = spaceState.IntersectRay(query);
+		if(result.Count == 0)
+		{
+			return true;
+		}
+		return false;
+	}
 }
+/*
+TODO:
+-losowanie gdy doleci do celu, nie gdy minie timer
+-gówno
+-upadek izraela
+*/
