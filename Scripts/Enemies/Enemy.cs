@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.ComponentModel;
 using Vector2 = Godot.Vector2;
 
 public partial class Enemy : RigidBody2D
@@ -16,13 +17,21 @@ public partial class Enemy : RigidBody2D
 
 	[ExportCategory("Ruch")]
 	[Export] private float AvoidStrength = 3f;
+
+	[ExportGroup("RandomMovement")]
+	[Export] private float TargetPositionMaxDistance = 4000f;
+	[Export] private float TargetPositionMinDistance = 100f;
+	[Export] private float TargetPositionMarginError = 15f;
+
+	[ExportGroup("Idle")]
 	[Export] private float IdleTurnSpeed = 1.5f;
 	[Export] private float IdleThrust = 15000f;
 	[Export] private float IdleMaxMoveSpeed = 240f;
 	[Export] private float IdleDirectionChangeTime = 10f;
-	[Export] private float TargetPositionMaxDistance = 4000f;
-	[Export] private float TargetPositionMinDistance = 100f;
+
+	[ExportGroup("Aggro")]
 	[Export] private float AggroTurnSpeed = 4f;
+	
 	private float shootTimer = 0f;
 	private float loseAggroTimer = 0f;
 	private float idleMoveTimer = 0f;
@@ -30,7 +39,6 @@ public partial class Enemy : RigidBody2D
 	private Vector2 targetDirection = new();
 	private float currentThrust = 0f;
 
-	private RayCast2D centerRay;
 	private RayCast2D leftRay;
 	private RayCast2D rightRay;
 
@@ -40,11 +48,15 @@ public partial class Enemy : RigidBody2D
 	private PlayerScript player;
 
 	private RayCast2D visionRay;
+
+	//debug
+	[Export] private Sprite2D targetSpr;
 	public override void _Ready()
 	{
-		targetDirection = Vector2.Right.Rotated((float) GD.RandRange(0, Mathf.Tau));
+		SelectRandomTarget();
 		rightRay = GetNode<RayCast2D>("Sensors/RightRay");
 		leftRay = GetNode<RayCast2D>("Sensors/LeftRay");
+		visionRay = GetNode<RayCast2D>("Sensors/VisionRay");
 
 		player = (PlayerScript) GetTree().GetFirstNodeInGroup("Player");
 		currentThrust = IdleThrust;
@@ -77,7 +89,10 @@ public partial class Enemy : RigidBody2D
 			avoid += Vector2.Up.Rotated(Rotation) * strength;
 		}
 
-		Vector2 desiredDir = targetDirection.Normalized() + avoid.Normalized() * AvoidStrength;
+		float distToTarget = GlobalPosition.DistanceTo(targetPosition);
+		float avoidFactor = Mathf.Clamp(distToTarget / 450f, 0.15f, 1f);
+
+		Vector2 desiredDir = targetDirection.Normalized() + avoid.Normalized() * avoidFactor * AvoidStrength;
 
 		float targetRotation = desiredDir.Angle();
 		float angleErr = Mathf.AngleDifference(Rotation, targetRotation);
@@ -92,7 +107,7 @@ public partial class Enemy : RigidBody2D
 	{
 		float angleErr = Mathf.Abs(Mathf.AngleDifference(Rotation, targetDirection.Angle()));
 		Vector2 forward = Vector2.Right.Rotated(Rotation);
-		if(angleErr < Mathf.DegToRad(20))
+		if(angleErr < Mathf.DegToRad(30))
 		{
 			if(LinearVelocity.Length() < IdleMaxMoveSpeed)
 			{
@@ -186,17 +201,22 @@ public partial class Enemy : RigidBody2D
 	{
 		idleMoveTimer += dt;
 
+		if(GlobalPosition.DistanceTo(targetPosition) < TargetPositionMarginError)
+		{
+			SelectRandomTarget();
+			GD.Print("nowy pkt");
+			targetSpr.GlobalPosition = targetPosition;
+		}
+		
+		targetDirection = (targetPosition - GlobalPosition).Normalized();
+
 		if(idleMoveTimer >= IdleDirectionChangeTime)
 		{
 			idleMoveTimer = 0f;
 			IdleDirectionChangeTime = (float) GD.RandRange(2.5f, 5.0f);
 
-			//cel
-			SelectRandomTarget();
-			targetDirection = Vector2.Right.Rotated(targetPosition.Angle());
-
 			//ciąg
-			currentThrust = GD.Randf() > 0.35f ? IdleThrust : 0f;
+			currentThrust = GD.Randf() > 0.10f ? IdleThrust : 0f;
 		}
 	}
 	private void ShootAt(Vector2 targetGlobalPos)
@@ -217,7 +237,7 @@ public partial class Enemy : RigidBody2D
 			float distance = (float) GD.RandRange(TargetPositionMinDistance, TargetPositionMaxDistance);
 			randomLocalPoint = Vector2.Right.Rotated(angle) * distance;
 
-			if(HasLineOFSight(ToGlobal(randomLocalPoint)))
+			if(HasLineOfSight(ToGlobal(randomLocalPoint)))
 			{
 				targetPosition = ToGlobal(randomLocalPoint);
 				return;
@@ -225,26 +245,25 @@ public partial class Enemy : RigidBody2D
 		}
 		targetPosition = GlobalPosition;
 	}
-	private bool HasLineOFSight(Vector2 targetGlobal)
+	private bool HasLineOfSight(Vector2 targetGlobal)
 	{
 		var spaceState = GetWorld2D().DirectSpaceState;
 
-		var query = new PhysicsRayQueryParameters2D();
-		query.From = GlobalPosition;
-		query.To = targetGlobal;
-		query.CollideWithBodies = true;
+		var query = new PhysicsRayQueryParameters2D
+		{
+			From = GlobalPosition,
+			To = targetGlobal,
+			CollideWithBodies = true
+		};
 
 		var result = spaceState.IntersectRay(query);
-		if(result.Count == 0)
-		{
-			return true;
-		}
-		return false;
+		return result.Count == 0;
 	}
 }
 /*
 TODO:
--losowanie gdy doleci do celu, nie gdy minie timer
 -gówno
 -upadek izraela
+-przerobić to żeby używało navigational shitu (do asteroid dodać ustawianie navigational obstacle)
 */
+//this code is actual cancer

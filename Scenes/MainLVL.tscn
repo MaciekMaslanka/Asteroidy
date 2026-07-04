@@ -6,10 +6,12 @@
 [ext_resource type="PackedScene" uid="uid://d52cp50abs6e" path="res://Scenes/UI/UI.tscn" id="4_pm3h0"]
 [ext_resource type="PackedScene" uid="uid://b6e5k5283jnaq" path="res://Scenes/Enemy.tscn" id="5_5yp1d"]
 
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5yp1d"]
+
 [node name="Node2D" type="Node2D" unique_id=1367986399]
 
 [node name="Player" parent="." unique_id=1184771747 instance=ExtResource("1_qd23g")]
-position = Vector2(245, 0)
+position = Vector2(249, 368)
 diggerSpeed = 10.0
 
 [node name="Parallax2D" type="Parallax2D" parent="." unique_id=512764058]
@@ -39,8 +41,38 @@ position = Vector2(881, -8)
 [node name="Asteroid5" parent="." unique_id=1450947492 instance=ExtResource("3_lvojy")]
 position = Vector2(527, -508)
 
+[node name="Asteroid6" parent="." unique_id=1192301445 instance=ExtResource("3_lvojy")]
+position = Vector2(215, -531)
+
+[node name="Asteroid7" parent="." unique_id=1870766056 instance=ExtResource("3_lvojy")]
+position = Vector2(-428, -264)
+
+[node name="Asteroid8" parent="." unique_id=880882050 instance=ExtResource("3_lvojy")]
+position = Vector2(-518, 260)
+
+[node name="Asteroid9" parent="." unique_id=61532267 instance=ExtResource("3_lvojy")]
+position = Vector2(-309, 576)
+
+[node name="Asteroid10" parent="." unique_id=1340917618 instance=ExtResource("3_lvojy")]
+position = Vector2(332, 709)
+
+[node name="Asteroid11" parent="." unique_id=899064374 instance=ExtResource("3_lvojy")]
+position = Vector2(710, 539)
+
+[node name="Asteroid12" parent="." unique_id=240580799 instance=ExtResource("3_lvojy")]
+position = Vector2(763, -324)
+
+[node name="Asteroid13" parent="." unique_id=2010104811 instance=ExtResource("3_lvojy")]
+position = Vector2(130, -64)
+
 [node name="UI" parent="." unique_id=1062009323 instance=ExtResource("4_pm3h0")]
 
-[node name="Enemy" parent="." unique_id=431999929 instance=ExtResource("5_5yp1d")]
-position = Vector2(63, -6)
+[node name="Enemy" parent="." unique_id=431999929 node_paths=PackedStringArray("targetSpr") instance=ExtResource("5_5yp1d")]
+position = Vector2(67, 362)
 can_sleep = false
+targetSpr = NodePath("../target")
+
+[node name="target" type="Sprite2D" parent="." unique_id=1662076378]
+position = Vector2(0, -4.7683716e-07)
+scale = Vector2(42, 26)
+texture = SubResource("PlaceholderTexture2D_5yp1d")
