@@ -24,12 +24,14 @@ public partial class Asteroid : RigidBody2D
 	public Vector2[] currentShape {private set; get;}
 	private bool hasCustomShape = false;
 	public List<OreScript> ores {private set; get;} = new();
+	private NavigationObstacle2D obstacle;
 
 	public override void _Ready()
 	{
 		body = GetNode<Polygon2D>("Polygon2D");
 		background = GetNode<Polygon2D>("Polygon2DBackground");
 		collider = GetNode<CollisionPolygon2D>("CollisionPolygon2D");
+		obstacle = GetNode<NavigationObstacle2D>("NavigationObstacle2D");
 		AsteroidScene = GD.Load<PackedScene>("res://Scenes/Asteroid.tscn");
 		
 		if(!hasCustomShape)
@@ -66,7 +68,7 @@ public partial class Asteroid : RigidBody2D
 		noise.Frequency = Frequency;
 		noise.FractalOctaves = 4;
 		Vector2[] points = new Vector2[PointsAmount];
-
+		float MaxRadius = 0f;
 		for(int i=0; i<PointsAmount; i++)
 		{
 			float angle = Mathf.Tau * i / PointsAmount;
@@ -77,6 +79,8 @@ public partial class Asteroid : RigidBody2D
 			);
 
 			float radius = BaseRadius * (1f + noiseValue * Amplitude);
+			if(radius > MaxRadius) MaxRadius = radius;
+
 			points[i] = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle)) * radius;
 		}
 		UpdateShape(points, UpdateBackground: true);
@@ -84,6 +88,7 @@ public partial class Asteroid : RigidBody2D
 		float textureRotation =  (float) GD.RandRange(0d, Math.Tau);
 		body.TextureRotation = textureRotation;
 		background.TextureRotation = textureRotation;
+		obstacle.Radius = MaxRadius + 20f;
 	}
 	private void SmoothShape()
 	{

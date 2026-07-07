@@ -1,62 +1,66 @@
 using Godot;
 using System;
 using System.ComponentModel;
+using System.Net;
+using System.Runtime.ExceptionServices;
+using System.Security.Cryptography;
 using Vector2 = Godot.Vector2;
 
 public partial class Enemy : RigidBody2D
 {
 	public enum State { Idle, Aggro}
+
 	[ExportCategory("AI")]
 	private State currentState = State.Idle;
 	[Export] private float DetectionRange = 2000f;
 	[Export] private float LoseAggroTime = 4f;
 
+	[ExportCategory("Context Map")]
+	[Export] private int ContextMapResolution = 16;
+	[Export] private float ContextMapRayDistance = 650f;
+	[Export] private float InterestWeight = 1.0f;
+	[Export] private float DangerWeight = 1.8f;
+	private ContextMap contextMap;
+	private Vector2 desiredDirection;
+
 	[ExportCategory("Strzelanie")]
 	[Export] private float ShootCooldown = 1.5f;
 	[Export] private PackedScene BulletScene;
+	private float shootTimer = 0f;
 
-	[ExportCategory("Ruch")]
-	[Export] private float AvoidStrength = 3f;
-
-	[ExportGroup("RandomMovement")]
-	[Export] private float TargetPositionMaxDistance = 4000f;
-	[Export] private float TargetPositionMinDistance = 100f;
+	[ExportCategory("RandomMovement")]
+	[Export] private float TargetMaxDistance = 4000f;
+	[Export] private float TargetMinDistance = 100f;
 	[Export] private float TargetPositionMarginError = 15f;
 
-	[ExportGroup("Idle")]
-	[Export] private float IdleTurnSpeed = 1.5f;
+	[ExportCategory("Idle")]
 	[Export] private float IdleThrust = 15000f;
 	[Export] private float IdleMaxMoveSpeed = 240f;
 	[Export] private float IdleDirectionChangeTime = 10f;
-
-	[ExportGroup("Aggro")]
-	[Export] private float AggroTurnSpeed = 4f;
-	
-	private float shootTimer = 0f;
-	private float loseAggroTimer = 0f;
 	private float idleMoveTimer = 0f;
-	private Vector2 targetPosition = new();
-	private Vector2 targetDirection = new();
-	private float currentThrust = 0f;
 
-	private RayCast2D leftRay;
-	private RayCast2D rightRay;
+	[ExportCategory("Aggro")]
+	[Export] private float AggroTurnSpeed = 4f;
+	private float loseAggroTimer = 0f;
 
 	[ExportCategory("HP")]
 	[Export] private float MaxHealth = 100f;
 	private float currentHealth;
+	
+	//inne rzeczy (burdel)
+	private Vector2 targetPosition = new();
+	private Vector2 targetDirection = new();
+	private float currentThrust = 0f;
 	private PlayerScript player;
-
 	private RayCast2D visionRay;
+	private NavigationAgent2D navAgent;
 
-	//debug
-	[Export] private Sprite2D targetSpr;
 	public override void _Ready()
 	{
-		SelectRandomTarget();
-		rightRay = GetNode<RayCast2D>("Sensors/RightRay");
-		leftRay = GetNode<RayCast2D>("Sensors/LeftRay");
 		visionRay = GetNode<RayCast2D>("Sensors/VisionRay");
+
+		navAgent = GetNode<NavigationAgent2D>("NavigationAgent2D");
+		contextMap = new(ContextMapResolution);
 
 		player = (PlayerScript) GetTree().GetFirstNodeInGroup("Player");
 		currentThrust = IdleThrust;
@@ -72,29 +76,7 @@ public partial class Enemy : RigidBody2D
 	}
 	private void HandleRotation(float dt)
 	{
-		//unikanie
-		Vector2 avoid = Vector2.Zero;
-		if(leftRay.IsColliding())
-		{
-			float distance = leftRay.GetCollisionPoint().DistanceTo(GlobalPosition);
-			float strength = 1 / (distance * distance);
-			strength = Mathf.Clamp(strength, 0f, 3f);
-			avoid += Vector2.Down.Rotated(Rotation) * strength;
-		}
-		if(rightRay.IsColliding())
-		{
-			float distance = rightRay.GetCollisionPoint().DistanceTo(GlobalPosition);
-			float strength = 1 / (distance * distance);
-			strength = Mathf.Clamp(strength, 0f, 3f);
-			avoid += Vector2.Up.Rotated(Rotation) * strength;
-		}
-
-		float distToTarget = GlobalPosition.DistanceTo(targetPosition);
-		float avoidFactor = Mathf.Clamp(distToTarget / 450f, 0.15f, 1f);
-
-		Vector2 desiredDir = targetDirection.Normalized() + avoid.Normalized() * avoidFactor * AvoidStrength;
-
-		float targetRotation = desiredDir.Angle();
+		float targetRotation = desiredDirection.Angle();
 		float angleErr = Mathf.AngleDifference(Rotation, targetRotation);
 
 		float kp = 100000f;
@@ -105,13 +87,14 @@ public partial class Enemy : RigidBody2D
 	}
 	private void HandleMovement(float dt)
 	{
-		float angleErr = Mathf.Abs(Mathf.AngleDifference(Rotation, targetDirection.Angle()));
+		float angleErr = Mathf.Abs(Mathf.AngleDifference(Rotation, desiredDirection.Angle()));
 		Vector2 forward = Vector2.Right.Rotated(Rotation);
+
 		if(angleErr < Mathf.DegToRad(30))
 		{
 			if(LinearVelocity.Length() < IdleMaxMoveSpeed)
 			{
-				float thrustFactor = Mathf.Clamp(1f-angleErr / Mathf.Pi, 0f, 1f);
+				float thrustFactor = Mathf.Clamp(1f-angleErr / Mathf.Pi, 0.4f, 1f);
 				ApplyForce(forward * currentThrust * thrustFactor);
 			}
 		}
@@ -143,8 +126,7 @@ public partial class Enemy : RigidBody2D
 				loseAggroTimer += dt;
 				if(loseAggroTimer >= LoseAggroTime)
 				{
-					currentState = State.Idle;
-					targetDirection = Vector2.Right.Rotated((float) GD.RandRange(0, Mathf.Tau));
+					
 				}
 			}
 		}
@@ -200,24 +182,61 @@ public partial class Enemy : RigidBody2D
 	private void HandleIdle(float dt)
 	{
 		idleMoveTimer += dt;
-
-		if(GlobalPosition.DistanceTo(targetPosition) < TargetPositionMarginError)
+		if (navAgent.IsNavigationFinished() || idleMoveTimer >= IdleDirectionChangeTime)
 		{
 			SelectRandomTarget();
-			GD.Print("nowy pkt");
-			targetSpr.GlobalPosition = targetPosition;
-		}
-		
-		targetDirection = (targetPosition - GlobalPosition).Normalized();
-
-		if(idleMoveTimer >= IdleDirectionChangeTime)
-		{
 			idleMoveTimer = 0f;
-			IdleDirectionChangeTime = (float) GD.RandRange(2.5f, 5.0f);
-
-			//ciąg
-			currentThrust = GD.Randf() > 0.10f ? IdleThrust : 0f;
+			IdleDirectionChangeTime = (float) GD.RandRange(5f, 10f);
 		}
+
+		if(!navAgent.IsNavigationFinished())
+		{
+			Vector2 nextPos = navAgent.GetNextPathPosition();
+			targetDirection = (nextPos - GlobalPosition).Normalized();
+		}
+
+		var spaceState = GetWorld2D().DirectSpaceState;
+		contextMap.Update(GlobalPosition, targetDirection, spaceState, ContextMapRayDistance);
+
+		desiredDirection = contextMap.GetBestDirection(InterestWeight, DangerWeight);
+
+		currentThrust = IdleThrust;
+	}
+	private void SelectRandomTarget()
+	{
+		for (int i=0; i<50; i++)
+		{
+			float angle = (float) GD.RandRange(0, Mathf.Tau);
+			float distance = (float) GD.RandRange(TargetMinDistance, TargetMaxDistance);
+
+			Vector2 randomPoint =GlobalPosition + Vector2.Right.Rotated(angle) * distance;
+
+			if(HasLineOfSight(randomPoint))
+			{
+				navAgent.TargetPosition = randomPoint;
+				targetPosition = randomPoint;
+				return;
+			}
+		}
+
+		//jeśli nie znajdzie dobrego celu
+		targetPosition = GlobalPosition;
+		navAgent.TargetPosition = GlobalPosition;
+	}
+	private bool HasLineOfSight(Vector2 targetGlobal)
+	{
+		var spaceState = GetWorld2D().DirectSpaceState;
+
+		var query = new PhysicsRayQueryParameters2D
+		{
+			From = GlobalPosition,
+			To = targetGlobal,
+			CollideWithBodies = true,
+			Exclude = new Godot.Collections.Array<Rid> {GetRid()}
+		};
+
+		var result = spaceState.IntersectRay(query);
+		return result.Count == 0;
 	}
 	private void ShootAt(Vector2 targetGlobalPos)
 	{
@@ -228,42 +247,11 @@ public partial class Enemy : RigidBody2D
 		bullet.AddCollisionExceptionWith(this);
 		GetTree().CurrentScene.AddChild(bullet);
 	}
-	private void SelectRandomTarget()
-	{
-		Vector2 randomLocalPoint;
-		for(int i=0; i<100; i++)
-		{
-			float angle = (float) GD.RandRange(0, Mathf.Tau);
-			float distance = (float) GD.RandRange(TargetPositionMinDistance, TargetPositionMaxDistance);
-			randomLocalPoint = Vector2.Right.Rotated(angle) * distance;
-
-			if(HasLineOfSight(ToGlobal(randomLocalPoint)))
-			{
-				targetPosition = ToGlobal(randomLocalPoint);
-				return;
-			}
-		}
-		targetPosition = GlobalPosition;
-	}
-	private bool HasLineOfSight(Vector2 targetGlobal)
-	{
-		var spaceState = GetWorld2D().DirectSpaceState;
-
-		var query = new PhysicsRayQueryParameters2D
-		{
-			From = GlobalPosition,
-			To = targetGlobal,
-			CollideWithBodies = true
-		};
-
-		var result = spaceState.IntersectRay(query);
-		return result.Count == 0;
-	}
 }
 /*
 TODO:
 -gówno
 -upadek izraela
--przerobić to żeby używało navigational shitu (do asteroid dodać ustawianie navigational obstacle)
+-poprawić unikanie i pozbyć się navagenta
 */
 //this code is actual cancer
