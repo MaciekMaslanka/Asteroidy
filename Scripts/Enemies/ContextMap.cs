@@ -63,21 +63,20 @@ public partial class ContextMap
             }
         }
     }
-    public Vector2 GetBestDirection(float interestWeight = 1f, float dangerWeight = 1.5f)
+    public Vector2 GetSteeringDirection(float interestWeight = 1f, float dangerWeight = 1.5f)
     {
-        float bestScore = float.MinValue;
-        int bestIndex = 0;
+        Vector2 steering = Vector2.Zero;
 
-        for(int i=0; i<_resolution; i++)
+        for (int i=0; i<_resolution; i++)
         {
-            float score = (_interest[i] * interestWeight) - (_danger[i] * dangerWeight);
-            if(score > bestScore)
-            {
-                bestScore = score;
-                bestIndex = i;
-            }
+            float weight = _interest[i] * (1f - _danger[i] * dangerWeight);
+            steering += _directions[i] * weight;
         }
 
-        return _directions[bestIndex];
+        if(steering == Vector2.Zero)
+        {
+            return Vector2.Right;
+        }
+        return steering.Normalized();
     }
 }

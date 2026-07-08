@@ -1,9 +1,6 @@
+using System.Formats.Tar;
+using System.Numerics;
 using Godot;
-using System;
-using System.ComponentModel;
-using System.Net;
-using System.Runtime.ExceptionServices;
-using System.Security.Cryptography;
 using Vector2 = Godot.Vector2;
 
 public partial class Enemy : RigidBody2D
@@ -13,13 +10,13 @@ public partial class Enemy : RigidBody2D
 	[ExportCategory("AI")]
 	private State currentState = State.Idle;
 	[Export] private float DetectionRange = 2000f;
-	[Export] private float LoseAggroTime = 4f;
+	[Export] private float LoseAggroTime = 5f;
 
 	[ExportCategory("Context Map")]
 	[Export] private int ContextMapResolution = 16;
-	[Export] private float ContextMapRayDistance = 650f;
+	[Export] private float ContextMapRayDistance = 800f;
 	[Export] private float InterestWeight = 1.0f;
-	[Export] private float DangerWeight = 1.8f;
+	[Export] private float DangerWeight = 1.5f;
 	private ContextMap contextMap;
 	private Vector2 desiredDirection;
 
@@ -29,12 +26,12 @@ public partial class Enemy : RigidBody2D
 	private float shootTimer = 0f;
 
 	[ExportCategory("RandomMovement")]
-	[Export] private float TargetMaxDistance = 4000f;
-	[Export] private float TargetMinDistance = 100f;
-	[Export] private float TargetPositionMarginError = 15f;
+	[Export] private float TargetMaxDistance = 3000f;
+	[Export] private float TargetMinDistance = 400f;
+	[Export] private float TargetPositionMarginError = 200f;
 
 	[ExportCategory("Idle")]
-	[Export] private float IdleThrust = 15000f;
+	[Export] private float IdleThrust = 18000f;
 	[Export] private float IdleMaxMoveSpeed = 240f;
 	[Export] private float IdleDirectionChangeTime = 10f;
 	private float idleMoveTimer = 0f;
@@ -44,7 +41,7 @@ public partial class Enemy : RigidBody2D
 	private float loseAggroTimer = 0f;
 
 	[ExportCategory("HP")]
-	[Export] private float MaxHealth = 100f;
+	[Export] private float MaxHealth = 1000f;
 	private float currentHealth;
 	
 	//inne rzeczy (burdel)
@@ -53,17 +50,18 @@ public partial class Enemy : RigidBody2D
 	private float currentThrust = 0f;
 	private PlayerScript player;
 	private RayCast2D visionRay;
-	private NavigationAgent2D navAgent;
 
 	public override void _Ready()
 	{
 		visionRay = GetNode<RayCast2D>("Sensors/VisionRay");
 
-		navAgent = GetNode<NavigationAgent2D>("NavigationAgent2D");
 		contextMap = new(ContextMapResolution);
 
 		player = (PlayerScript) GetTree().GetFirstNodeInGroup("Player");
 		currentThrust = IdleThrust;
+
+		SelectRandomTarget();
+		targetDirection = (targetPosition - GlobalPosition).Normalized();
 	}
     public override void _PhysicsProcess(double delta)
 	{
@@ -77,6 +75,7 @@ public partial class Enemy : RigidBody2D
 	private void HandleRotation(float dt)
 	{
 		float targetRotation = desiredDirection.Angle();
+		GD.Print(Mathf.RadToDeg(targetRotation));
 		float angleErr = Mathf.AngleDifference(Rotation, targetRotation);
 
 		float kp = 100000f;
@@ -87,15 +86,19 @@ public partial class Enemy : RigidBody2D
 	}
 	private void HandleMovement(float dt)
 	{
-		float angleErr = Mathf.Abs(Mathf.AngleDifference(Rotation, desiredDirection.Angle()));
+		float angleToDesired = Mathf.Abs(Mathf.AngleDifference(Rotation, desiredDirection.Angle()));
 		Vector2 forward = Vector2.Right.Rotated(Rotation);
 
-		if(angleErr < Mathf.DegToRad(30))
+		float deviation = Mathf.Abs(Mathf.AngleDifference(desiredDirection.Angle(), targetDirection.Angle()));
+		float dangerFactor = Mathf.Clamp(1f - (deviation / Mathf.Pi), 0.3f, 1f);
+
+		if(angleToDesired < Mathf.DegToRad(30))
 		{
 			if(LinearVelocity.Length() < IdleMaxMoveSpeed)
 			{
-				float thrustFactor = Mathf.Clamp(1f-angleErr / Mathf.Pi, 0.4f, 1f);
-				ApplyForce(forward * currentThrust * thrustFactor);
+				float thrustFactor = Mathf.Clamp(1f - angleToDesired / Mathf.Pi, 0.3f, 1f);
+				float finalThrust = currentThrust * thrustFactor * dangerFactor;
+				ApplyForce(forward * finalThrust);
 			}
 		}
 	}
@@ -181,25 +184,16 @@ public partial class Enemy : RigidBody2D
 	}
 	private void HandleIdle(float dt)
 	{
-		idleMoveTimer += dt;
-		if (navAgent.IsNavigationFinished() || idleMoveTimer >= IdleDirectionChangeTime)
+		if (GlobalPosition.DistanceTo(targetPosition) < TargetPositionMarginError)
 		{
 			SelectRandomTarget();
-			idleMoveTimer = 0f;
-			IdleDirectionChangeTime = (float) GD.RandRange(5f, 10f);
-		}
-
-		if(!navAgent.IsNavigationFinished())
-		{
-			Vector2 nextPos = navAgent.GetNextPathPosition();
-			targetDirection = (nextPos - GlobalPosition).Normalized();
+			targetDirection = (targetPosition - GlobalPosition).Normalized();
 		}
 
 		var spaceState = GetWorld2D().DirectSpaceState;
 		contextMap.Update(GlobalPosition, targetDirection, spaceState, ContextMapRayDistance);
 
-		desiredDirection = contextMap.GetBestDirection(InterestWeight, DangerWeight);
-
+		desiredDirection = contextMap.GetSteeringDirection(InterestWeight, DangerWeight);
 		currentThrust = IdleThrust;
 	}
 	private void SelectRandomTarget()
@@ -213,7 +207,6 @@ public partial class Enemy : RigidBody2D
 
 			if(HasLineOfSight(randomPoint))
 			{
-				navAgent.TargetPosition = randomPoint;
 				targetPosition = randomPoint;
 				return;
 			}
@@ -221,7 +214,6 @@ public partial class Enemy : RigidBody2D
 
 		//jeśli nie znajdzie dobrego celu
 		targetPosition = GlobalPosition;
-		navAgent.TargetPosition = GlobalPosition;
 	}
 	private bool HasLineOfSight(Vector2 targetGlobal)
 	{

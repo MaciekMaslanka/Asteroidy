@@ -6,11 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://d52cp50abs6e" path="res://Scenes/UI/UI.tscn" id="4_pm3h0"]
 [ext_resource type="PackedScene" uid="uid://b6e5k5283jnaq" path="res://Scenes/Enemy.tscn" id="5_5yp1d"]
 
-[sub_resource type="NavigationPolygon" id="NavigationPolygon_5yp1d"]
-vertices = PackedVector2Array(2085.1406, 1478.8984, -1637.8672, 1445.0938, -1604.1172, -1299.0234, 2126.8438, -1308.9688)
-polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(-1614, -1309, 2137, -1319, 2095, 1489, -1648, 1455)])
-
 [node name="Node2D" type="Node2D" unique_id=1367986399]
 
 [node name="Player" parent="." unique_id=1184771747 instance=ExtResource("1_qd23g")]
@@ -70,10 +65,6 @@ position = Vector2(130, -64)
 
 [node name="UI" parent="." unique_id=1062009323 instance=ExtResource("4_pm3h0")]
 
-[node name="Enemy" parent="." unique_id=431999929 node_paths=PackedStringArray("targetSpr") instance=ExtResource("5_5yp1d")]
+[node name="Enemy" parent="." unique_id=431999929 instance=ExtResource("5_5yp1d")]
 position = Vector2(67, 362)
 can_sleep = false
-targetSpr = NodePath("")
-
-[node name="NavigationRegion2D" type="NavigationRegion2D" parent="." unique_id=1143959728]
-navigation_polygon = SubResource("NavigationPolygon_5yp1d")
