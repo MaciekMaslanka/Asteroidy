@@ -1,14 +1,15 @@
 using Godot;
-using System;
+using System.Collections.Generic;
 
 public partial class LevelGenerator : Node2D
 {
     [ExportCategory("asteroidy")]
     [Export] private PackedScene AsteroidScene;
-    [Export] private int MapSize = 8000;
-    [Export] private int GenerationSize = 8500;
-    [Export] private float AsteroidDensity = 0.25f;
-    [Export] private int GenerationStep = 120;
+    [Export] private int MapSize = 16000;
+    [Export] private int GenerationSize = 16500;
+    [Export] private int MaxAsteroidsCount = 200;
+    [Export] private int MinAsteroidCount = 100;
+    [Export] private float MinDistanceBetweenAsteroids = 200f;
     [Export] private Node2D asteroidContainer;
 
     private FastNoiseLite noise;
@@ -26,32 +27,48 @@ public partial class LevelGenerator : Node2D
 
     private void GenerateLevel()
     {
-        noise = new FastNoiseLite();
-        noise.NoiseType = FastNoiseLite.NoiseTypeEnum.Simplex;
-        noise.Seed = (int) GD.RandRange(1, 99999);
-        noise.Frequency = 0.0010f;
 
-        for(int x = -GenerationSize / 2; x < GenerationSize / 2; x += GenerationStep)
+        int half = GenerationSize / 2;
+
+        int asteroidsAmount = GD.RandRange(MinAsteroidCount, MaxAsteroidsCount);
+        int attempts = asteroidsAmount * 12;
+        var spawnedPositions = new List<Vector2>();
+
+        for(int i=0; i < asteroidsAmount; i++)
         {
-            for(int y = -GenerationSize / 2; y < GenerationSize / 2; y += GenerationStep)
+            for(int j=0; j < attempts; j++)
             {
-                float noiseValue = noise.GetNoise2D(x, y);
+                float x = (float) GD.RandRange(-half, half);
+                float y = (float) GD.RandRange(-half, half);
+                Vector2 position = new(x, y);
 
-                if(noiseValue > (1f - AsteroidDensity))
+                bool tooClose = false;
+                foreach(var spawnPos in spawnedPositions)
                 {
-                    Vector2 position = new Vector2(x, y);
-                    SpawnAsteroid(position);
+                    //wydajność maxing
+                    if(spawnPos.DistanceSquaredTo(position) < MinDistanceBetweenAsteroids * MinDistanceBetweenAsteroids)
+                    {
+                        tooClose = true;
+                        break;
+                    }
                 }
+
+                if(tooClose)
+                    continue;
+
+                SpawnAsteroid(position);
+                spawnedPositions.Add(position);
+                break;
             }
         }
     }
     private void SpawnAsteroid(Vector2 position)
     {
-        RigidBody2D asteroid = AsteroidScene.Instantiate<RigidBody2D>();
-        asteroidContainer.AddChild(asteroid);
-
+        Asteroid asteroid = AsteroidScene.Instantiate<Asteroid>();
         asteroid.GlobalPosition = position;
-
         asteroid.Rotation = (float) GD.RandRange(0, Mathf.Tau);
+
+        asteroidContainer.CallDeferred("add_child", asteroid);
     }
 }
+

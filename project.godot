@@ -83,6 +83,7 @@ gunToolSelect={
 2d_physics/layer_3="Asteroids"
 2d_physics/layer_4="Ores"
 2d_physics/layer_5="Bullets"
+2d_physics/layer_6="Border"
 
 [physics]
 
