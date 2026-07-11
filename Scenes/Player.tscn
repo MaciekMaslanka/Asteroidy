@@ -27,10 +27,9 @@ Invectory = ExtResource("2_dewec")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=760477680]
 texture_filter = 1
-position = Vector2(0, -12)
 texture = ExtResource("3_5ixxa")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1798614063]
+[node name="Hitbox" type="CollisionShape2D" parent="." unique_id=1798614063]
 shape = SubResource("CapsuleShape2D_dewec")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=795321236]
@@ -38,7 +37,7 @@ zoom = Vector2(1.725, 1.725)
 
 [node name="ToolContainer" type="Node2D" parent="." unique_id=747940764]
 z_index = -1
-position = Vector2(0, -31)
+position = Vector2(0, -26)
 
 [node name="DiggingTool" type="Node2D" parent="ToolContainer" unique_id=2030342872]
 position = Vector2(-5.9604645e-08, -13.250008)

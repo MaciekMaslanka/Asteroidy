@@ -1,6 +1,0 @@
-[gd_scene format=3 uid="uid://cfw11x5xydcic"]
-
-[ext_resource type="Script" uid="uid://bhi25wx6g0wg5" path="res://Scripts/Asteroids/AsteroidGeneratorScript.cs" id="1_pdeyf"]
-
-[node name="AsteroidGenerator" type="Node2D" unique_id=185812262]
-script = ExtResource("1_pdeyf")

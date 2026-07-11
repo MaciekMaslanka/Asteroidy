@@ -35,7 +35,7 @@ public partial class Bullet : CharacterBody2D
             }
             if(collision.GetCollider() is Enemy enemy)
             {
-                //enemy.TakeDamage(Damage);
+                enemy.TakeDamage(Damage);
                 continue;
             }
         }

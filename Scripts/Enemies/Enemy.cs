@@ -1,5 +1,3 @@
-using System.Formats.Tar;
-using System.Numerics;
 using Godot;
 using Vector2 = Godot.Vector2;
 
@@ -10,7 +8,6 @@ public partial class Enemy : RigidBody2D
 	[ExportCategory("AI")]
 	private State currentState = State.Idle;
 	[Export] private float DetectionRange = 2000f;
-	[Export] private float LoseAggroTime = 5f;
 
 	[ExportCategory("Context Map")]
 	[Export] private int ContextMapResolution = 16;
@@ -28,7 +25,7 @@ public partial class Enemy : RigidBody2D
 	[ExportCategory("RandomMovement")]
 	[Export] private float TargetMaxDistance = 3000f;
 	[Export] private float TargetMinDistance = 400f;
-	[Export] private float TargetPositionMarginError = 200f;
+	[Export] private float TargetPositionMarginError = 300f;
 
 	[ExportCategory("Idle")]
 	[Export] private float IdleThrust = 18000f;
@@ -37,12 +34,18 @@ public partial class Enemy : RigidBody2D
 	private float idleMoveTimer = 0f;
 
 	[ExportCategory("Aggro")]
-	[Export] private float AggroTurnSpeed = 4f;
+	[Export] private float AggroThrust = 25000f;
+	[Export] private float PreferredDistance = 650f;
+	[Export] private float CircleStrength = 1.6f;
+	[Export] private float AggroMaxSpeed = 320f;
+	[Export] private float LoseAggroTime = 10f;
 	private float loseAggroTimer = 0f;
 
 	[ExportCategory("HP")]
 	[Export] private float MaxHealth = 1000f;
 	private float currentHealth;
+	private Vector2 hpBarOffset;
+	private ProgressBar hpBar;
 	
 	//inne rzeczy (burdel)
 	private Vector2 targetPosition = new();
@@ -62,6 +65,13 @@ public partial class Enemy : RigidBody2D
 
 		SelectRandomTarget();
 		targetDirection = (targetPosition - GlobalPosition).Normalized();
+
+		currentHealth = MaxHealth;
+		hpBar = GetNode<ProgressBar>("HpBar");
+		hpBar.MaxValue = 100;
+		hpBar.Value = hpBar.MaxValue;
+		hpBarOffset = hpBar.Position;
+		hpBar.Visible = false;
 	}
     public override void _PhysicsProcess(double delta)
 	{
@@ -71,43 +81,40 @@ public partial class Enemy : RigidBody2D
 		HandleBehaviour(dt);
 		HandleRotation(dt);
 		HandleMovement(dt);
+
+		hpBar.Position = hpBarOffset.Rotated(-Rotation);
+		hpBar.Rotation = -Rotation;
 	}
 	private void HandleRotation(float dt)
 	{
 		float targetRotation = desiredDirection.Angle();
-		GD.Print(Mathf.RadToDeg(targetRotation));
 		float angleErr = Mathf.AngleDifference(Rotation, targetRotation);
 
-		float kp = 100000f;
-		float kd = 20000f;
+		float kp = 160000f;
+		float kd = 38000f;
 
 		float torque = angleErr * kp - AngularVelocity * kd;
+		torque = Mathf.Clamp(torque, -850000f, 850000f);
 		ApplyTorque(torque);
 	}
 	private void HandleMovement(float dt)
 	{
+		float maxSpeed = (currentState == State.Aggro) ? AggroMaxSpeed : IdleMaxMoveSpeed;
+
 		float angleToDesired = Mathf.Abs(Mathf.AngleDifference(Rotation, desiredDirection.Angle()));
 		Vector2 forward = Vector2.Right.Rotated(Rotation);
 
-		float deviation = Mathf.Abs(Mathf.AngleDifference(desiredDirection.Angle(), targetDirection.Angle()));
-		float dangerFactor = Mathf.Clamp(1f - (deviation / Mathf.Pi), 0.3f, 1f);
-
 		if(angleToDesired < Mathf.DegToRad(30))
 		{
-			if(LinearVelocity.Length() < IdleMaxMoveSpeed)
+			if(LinearVelocity.Length() < maxSpeed)
 			{
-				float thrustFactor = Mathf.Clamp(1f - angleToDesired / Mathf.Pi, 0.3f, 1f);
-				float finalThrust = currentThrust * thrustFactor * dangerFactor;
-				ApplyForce(forward * finalThrust);
+				float thrustFactor = Mathf.Clamp(1f - angleToDesired / Mathf.Pi, 0.35f, 1f);
+				ApplyForce(forward * currentThrust * thrustFactor);
 			}
 		}
 	}
 	private void UpdateState(float dt)
 	{
-		//do testu
-		currentState = State.Idle;
-		return;
-		//faktyczny kod
 		bool canSeePlayer = CanSeePlayer();
 
 		if(currentState == State.Idle)
@@ -129,7 +136,7 @@ public partial class Enemy : RigidBody2D
 				loseAggroTimer += dt;
 				if(loseAggroTimer >= LoseAggroTime)
 				{
-					
+					currentState = State.Idle;
 				}
 			}
 		}
@@ -174,18 +181,51 @@ public partial class Enemy : RigidBody2D
 			GD.PrintErr("Gracza nie widzi enemy");
 			return;
 		}
+
+		Vector2 toPlayer = player.GlobalPosition - GlobalPosition;
+		float distanceToPlayer = toPlayer.Length();
+
+		Vector2 predictedPos = player.GlobalPosition + player.LinearVelocity * 0.4f;
+		Vector2 directionToPlayer = (predictedPos - GlobalPosition).Normalized();
+
+		//krążenie wokół gracza
+		if(distanceToPlayer < PreferredDistance * 1.4f)
+		{
+			Vector2 perpendicular = new Vector2(-directionToPlayer.Y, directionToPlayer.X);
+			directionToPlayer = (directionToPlayer + perpendicular * CircleStrength).Normalized();
+		}
+
+		targetDirection = directionToPlayer;
+
+		//ciąg
+		if(distanceToPlayer > PreferredDistance)
+		{
+			currentThrust = AggroThrust;
+		}
+		else
+		{
+			currentThrust = AggroThrust * 0.65f;
+		}
+
+		//unikanie
+		var spaceState = GetWorld2D().DirectSpaceState;
+		contextMap.Update(GlobalPosition, targetDirection, spaceState, ContextMapRayDistance);
+		desiredDirection = contextMap.GetSteeringDirection(InterestWeight, DangerWeight);
+
 		//strzelanie
 		shootTimer += dt;
-		if(shootTimer >= ShootCooldown)
+		if(shootTimer >= ShootCooldown && distanceToPlayer < DetectionRange * 0.9 && CanSeePlayer())
 		{
 			shootTimer = 0f;
-			ShootAt(player.GlobalPosition);
+			ShootAt(predictedPos);
 		}
 	}
 	private void HandleIdle(float dt)
 	{
-		if (GlobalPosition.DistanceTo(targetPosition) < TargetPositionMarginError)
+		idleMoveTimer += dt;
+		if (GlobalPosition.DistanceTo(targetPosition) < TargetPositionMarginError || idleMoveTimer >= IdleDirectionChangeTime)
 		{
+			idleMoveTimer = 0;
 			SelectRandomTarget();
 			targetDirection = (targetPosition - GlobalPosition).Normalized();
 		}
@@ -239,7 +279,19 @@ public partial class Enemy : RigidBody2D
 		bullet.AddCollisionExceptionWith(this);
 		GetTree().CurrentScene.AddChild(bullet);
 	}
+	public void TakeDamage(float damage)
+	{
+		hpBar.Visible = true;
+		currentHealth -= damage;
+		if(currentHealth <= 0)
+		{
+			QueueFree();
+			return;
+		}
+		hpBar.Value = currentHealth / MaxHealth * hpBar.MaxValue;
+	}
 }
+
 /*
 TODO:
 -gówno

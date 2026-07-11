@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://bsnp0jrvf5bfc" path="res://Scenes/Asteroid.tscn" id="3_lvojy"]
 [ext_resource type="PackedScene" uid="uid://d52cp50abs6e" path="res://Scenes/UI/UI.tscn" id="4_pm3h0"]
 [ext_resource type="PackedScene" uid="uid://b6e5k5283jnaq" path="res://Scenes/Enemy.tscn" id="5_5yp1d"]
+[ext_resource type="Script" uid="uid://cxm3wofvdxglr" path="res://Scripts/Map/LevelGenerator.cs" id="5_pobvj"]
 
 [node name="Node2D" type="Node2D" unique_id=1367986399]
 
@@ -24,47 +25,18 @@ texture_filter = 2
 position = Vector2(-0.776699, -0.776699)
 texture = ExtResource("2_gt1wq")
 
-[node name="Asteroid" parent="." unique_id=2009140096 instance=ExtResource("3_lvojy")]
-position = Vector2(-696, -3)
-
-[node name="Asteroid2" parent="." unique_id=2006137835 instance=ExtResource("3_lvojy")]
-position = Vector2(-130, -479)
-
-[node name="Asteroid3" parent="." unique_id=123094080 instance=ExtResource("3_lvojy")]
-position = Vector2(-24, 728)
-
-[node name="Asteroid4" parent="." unique_id=149884076 instance=ExtResource("3_lvojy")]
-position = Vector2(881, -8)
-
-[node name="Asteroid5" parent="." unique_id=1450947492 instance=ExtResource("3_lvojy")]
-position = Vector2(527, -508)
-
-[node name="Asteroid6" parent="." unique_id=1192301445 instance=ExtResource("3_lvojy")]
-position = Vector2(215, -531)
-
-[node name="Asteroid7" parent="." unique_id=1870766056 instance=ExtResource("3_lvojy")]
-position = Vector2(-428, -264)
-
-[node name="Asteroid8" parent="." unique_id=880882050 instance=ExtResource("3_lvojy")]
-position = Vector2(-518, 260)
-
-[node name="Asteroid9" parent="." unique_id=61532267 instance=ExtResource("3_lvojy")]
-position = Vector2(-309, 576)
-
-[node name="Asteroid10" parent="." unique_id=1340917618 instance=ExtResource("3_lvojy")]
-position = Vector2(332, 709)
-
-[node name="Asteroid11" parent="." unique_id=899064374 instance=ExtResource("3_lvojy")]
-position = Vector2(710, 539)
-
-[node name="Asteroid12" parent="." unique_id=240580799 instance=ExtResource("3_lvojy")]
-position = Vector2(763, -324)
-
-[node name="Asteroid13" parent="." unique_id=2010104811 instance=ExtResource("3_lvojy")]
-position = Vector2(130, -64)
-
 [node name="UI" parent="." unique_id=1062009323 instance=ExtResource("4_pm3h0")]
 
 [node name="Enemy" parent="." unique_id=431999929 instance=ExtResource("5_5yp1d")]
 position = Vector2(67, 362)
 can_sleep = false
+
+[node name="AsteroidContainer" type="Node2D" parent="." unique_id=786263158]
+
+[node name="BorderContainer" type="Node2D" parent="." unique_id=917783548]
+
+[node name="LevelGenerator" type="Node2D" parent="." unique_id=111583895 node_paths=PackedStringArray("asteroidContainer", "BorderContainer")]
+script = ExtResource("5_pobvj")
+AsteroidScene = ExtResource("3_lvojy")
+asteroidContainer = NodePath("../AsteroidContainer")
+BorderContainer = NodePath("../BorderContainer")
