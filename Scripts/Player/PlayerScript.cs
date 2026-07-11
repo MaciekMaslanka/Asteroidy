@@ -3,7 +3,7 @@ using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Threading.Tasks;
 
-public partial class PlayerScript : RigidBody2D
+public partial class PlayerScript : RigidBody2D, IDamagable
 {
 	//sygnały
 	[Signal]

@@ -28,15 +28,9 @@ public partial class Bullet : CharacterBody2D
         for(int i=0; i<GetSlideCollisionCount(); i++)
         {
             var collision = GetSlideCollision(i);
-            if(collision.GetCollider() is PlayerScript player)
+            if(collision.GetCollider() is IDamagable collider)
             {
-                player.TakeDamage(Damage);
-                continue;
-            }
-            if(collision.GetCollider() is Enemy enemy)
-            {
-                enemy.TakeDamage(Damage);
-                continue;
+                collider.TakeDamage(Damage);
             }
         }
         QueueFree();

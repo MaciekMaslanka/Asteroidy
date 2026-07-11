@@ -1,7 +1,7 @@
 using Godot;
 using Vector2 = Godot.Vector2;
 
-public partial class Enemy : RigidBody2D
+public partial class Enemy : RigidBody2D, IDamagable
 {
 	public enum State { Idle, Aggro}
 
