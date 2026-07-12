@@ -9,7 +9,7 @@ public partial class LevelGenerator : Node2D
     [Export] private int GenerationSize = 16500;
     [Export] private int MaxAsteroidsCount = 200;
     [Export] private int MinAsteroidCount = 100;
-    [Export] private float MinDistanceBetweenAsteroids = 200f;
+    [Export] private float MinDistanceBetweenAsteroids = 250f;
     [Export] private Node2D asteroidContainer;
 
     private FastNoiseLite noise;

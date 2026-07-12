@@ -1,29 +1,39 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
 
 
 public partial class Asteroid : RigidBody2D
 {
-	[Export] float BaseRadius = 100f;
+	[Export] public AsteroidSettings Settings {private set; get;}
+	[Export] float BaseRadius = 200f;
 	[Export] int PointsAmount = 60;
-	[Export] float Amplitude = 0.5f;
-	[Export] float NoiseScale = 1f;
+	[Export] float Amplitude = 0.4f;
+	[Export] float NoiseScale = 0.7f;
 	[Export] float Frequency = 1f;
 	[Export] int Octaves = 4;
-	[Export] float MassDensity = 1f;
+	[Export] float MassDensity = 0.05f;
 	public PackedScene AsteroidScene {private set; get;}
-	[Export] PackedScene OreScene;
 
 	[ExportCategory("Smoothing")]
 	[Export] float minDistance = 12f;
+
+	[ExportCategory("Ores")]
+	[Export] PackedScene OreScene;
+	[Export] private int OresMinAmount;
+	[Export] private int OresMaxAmount;
+	[Export] private float MinDistanceBetweenOres;
+	[Export] private float OresGenerationOffset;
+	[Export] private Godot.Collections.Array<OreRarity> OreRarities;
+	public List<OreScript> ores {private set; get;} = new();
+
+	//shape
 	public Polygon2D body {private set; get;}
 	Polygon2D background;
 	CollisionPolygon2D collider;
 	public Vector2[] currentShape {private set; get;}
 	private bool hasCustomShape = false;
-	public List<OreScript> ores {private set; get;} = new();
+	
 
 	public override void _Ready()
 	{
@@ -31,11 +41,20 @@ public partial class Asteroid : RigidBody2D
 		background = GetNode<Polygon2D>("Polygon2DBackground");
 		collider = GetNode<CollisionPolygon2D>("CollisionPolygon2D");
 		AsteroidScene = GD.Load<PackedScene>("res://Scenes/Asteroid.tscn");
+
+		if(Settings != null)
+		{
+			ApplySettings();
+		}
 		
 		if(!hasCustomShape)
 		{
 			GenerateShape();
-			GenerateOres();
+
+			if(Settings != null)
+				GenerateOres(OresMinAmount, OresMaxAmount, MinDistanceBetweenOres, OresGenerationOffset, OreRarities);
+			else
+				GenerateOres();
 		}
 		else
 		{
@@ -43,6 +62,23 @@ public partial class Asteroid : RigidBody2D
 			background.Visible = false;
 		}
 		UpdateMass();
+	}
+	private void ApplySettings()
+	{
+		//asteroida
+		BaseRadius = Settings.BaseRadius;
+		PointsAmount = Settings.PointsAmount;
+		Amplitude = Settings.Amplitude;
+		NoiseScale = Settings.NoiseScale;
+		Frequency = Settings.Frequency;
+		Octaves = Settings.Octaves;
+		MassDensity = Settings.MassDensity;
+
+		//ore
+		OresMinAmount = Settings.MinAmount;
+		OresMaxAmount = Settings.MaxAmount;
+		MinDistanceBetweenOres = Settings.MinDistanceBetweenOres;
+		OreRarities = Settings.OreRarities;
 	}
 
 	//kształt
@@ -110,9 +146,9 @@ public partial class Asteroid : RigidBody2D
 	}
 
 	//rudy
-	private void GenerateOres(int minAmount = 2, int maxAmount = 7)
+	private void GenerateOres(int minAmount = 2, int maxAmount = 7, float minDistanceBetweenOres = 1, float oresGenerationOffset = 1, Godot.Collections.Array<OreRarity> rarity = null)
 	{
-		OreGenerator generator = new(this, OreScene, minAmount, maxAmount, 30f, 100f);
+		OreGenerator generator = new(this, OreScene, minAmount, maxAmount, oresGenerationOffset, minDistanceBetweenOres, rarity);
 		generator.GenerateOres();
 	}
 	public void OnOreDestroyed(OreScript ore)

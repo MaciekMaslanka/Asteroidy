@@ -1,5 +1,10 @@
 using Godot;
 using System;
+public enum OreType
+{
+    Gold,
+    Silver
+}
 
 public partial class OreScript : StaticBody2D
 {
@@ -10,11 +15,6 @@ public partial class OreScript : StaticBody2D
 
     public Polygon2D shape {get; private set;}
 	private CollisionPolygon2D collider;
-    public enum OreType
-    {
-        Gold,
-        Silver
-    }
     public OreType type {get; private set;}
 
     public override void _Ready()
@@ -24,7 +24,6 @@ public partial class OreScript : StaticBody2D
         CurrentHealth = MaxHealth;
 
 		GenerateShape();
-        SelectRandomOreType();
     }
 
     public void TakeDamage(float amount)
@@ -60,10 +59,9 @@ public partial class OreScript : StaticBody2D
         shape.Polygon = points;
 		collider.Polygon = points;
     }
-    private void SelectRandomOreType()
+    public void SetOreType(OreType newType)
     {
-        GD.Randomize();
-        type = (OreType) GD.RandRange(0, Enum.GetNames(typeof(OreType)).Length - 1);
+        type = newType;
         switch(type)
         {
             case OreType.Gold:
