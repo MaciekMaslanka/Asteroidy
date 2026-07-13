@@ -1,5 +1,5 @@
 using Godot;
-using System;
+using Godot.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -13,8 +13,9 @@ public partial class OreGenerator
 	private float offset;
 	private float minimalDistance;
 	private List<OreScript> ores = new();
+	private Array<OreRarity> rarities;
 
-	public OreGenerator(Asteroid parent, PackedScene oreScene, int minAmount, int maxAmount, float offset, float minimalDistance)
+	public OreGenerator(Asteroid parent, PackedScene oreScene, int minAmount, int maxAmount, float offset, float minimalDistance, Array<OreRarity> rarities = null)
 	{
 		this.parent = parent;
 		this.oreScene = oreScene;
@@ -22,24 +23,60 @@ public partial class OreGenerator
 		this.maxAmount = maxAmount;
 		this.offset = offset;
 		this.minimalDistance = minimalDistance;
+		this.rarities = rarities;
 		parentShape = parent.currentShape;
 	}
 	public void GenerateOres()
 	{
 		if(oreScene == null) return;
 
-		int oreCount = GD.RandRange(minAmount, maxAmount);
-		for(int i=0; i<oreCount; i++)
+		int amount = GD.RandRange(minAmount, maxAmount);
+
+		for(int i=0; i<amount; i++)
 		{
 			OreScript ore = oreScene.Instantiate<OreScript>();
+			ore.SetOreType(GetRandomType());
+
 			Vector2 pos = GetRandomPointInAsteroid();
-			ore.AddCollisionExceptionWith(parent);
 			ore.Position = pos;
+
+			ore.AddCollisionExceptionWith(parent);
+
 			ores.Add(ore);
 			parent.ores.Add(ore);
 			parent.AddChild(ore);
+
 			ore.shape.TextureRotation = parent.body.TextureRotation;
 		}
+	}
+	private OreType GetRandomType()
+	{
+		if(rarities == null || rarities.Count == 0) return OreType.Gold;
+
+		float totalWeight = 0;
+		foreach(var r in rarities)
+		{
+			totalWeight += r.Weight;
+		}
+
+		if(totalWeight <= 0)
+		{
+			return OreType.Gold;
+		}
+
+		float random = (float) GD.RandRange(0, totalWeight);
+		float current = 0;
+
+		foreach(var r in rarities)
+		{
+			current += r.Weight;
+			if(random <= current)
+			{
+				return r.Type;
+			}
+		}
+		
+		return rarities[0].Type;
 	}
 	private Vector2 GetRandomPointInAsteroid()
 	{

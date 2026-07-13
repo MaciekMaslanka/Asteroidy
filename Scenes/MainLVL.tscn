@@ -5,12 +5,29 @@
 [ext_resource type="PackedScene" uid="uid://bsnp0jrvf5bfc" path="res://Scenes/Asteroid.tscn" id="3_lvojy"]
 [ext_resource type="PackedScene" uid="uid://d52cp50abs6e" path="res://Scenes/UI/UI.tscn" id="4_pm3h0"]
 [ext_resource type="PackedScene" uid="uid://b6e5k5283jnaq" path="res://Scenes/Enemy.tscn" id="5_5yp1d"]
+[ext_resource type="Script" uid="uid://cxm3wofvdxglr" path="res://Scripts/Map/LevelGenerator.cs" id="5_pobvj"]
+
+[sub_resource type="Gradient" id="Gradient_pobvj"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_a4ucx"]
+gradient = SubResource("Gradient_pobvj")
+width = 10
+height = 10
+fill_from = Vector2(0.5, 0)
+fill_to = Vector2(0.5, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pobvj"]
+size = Vector2(100, 16100)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a4ucx"]
+size = Vector2(16100, 100)
 
 [node name="Node2D" type="Node2D" unique_id=1367986399]
 
 [node name="Player" parent="." unique_id=1184771747 instance=ExtResource("1_qd23g")]
-position = Vector2(245, 0)
-AngularDamping = 1.0
+position = Vector2(249, 368)
 diggerSpeed = 10.0
 
 [node name="Parallax2D" type="Parallax2D" parent="." unique_id=512764058]
@@ -25,10 +42,44 @@ texture_filter = 2
 position = Vector2(-0.776699, -0.776699)
 texture = ExtResource("2_gt1wq")
 
-[node name="Asteroid" parent="." unique_id=2009140096 instance=ExtResource("3_lvojy")]
-position = Vector2(-696, -3)
-
 [node name="UI" parent="." unique_id=1062009323 instance=ExtResource("4_pm3h0")]
 
 [node name="Enemy" parent="." unique_id=431999929 instance=ExtResource("5_5yp1d")]
-position = Vector2(-241, -21)
+position = Vector2(67, 362)
+can_sleep = false
+
+[node name="AsteroidContainer" type="Node2D" parent="." unique_id=786263158]
+
+[node name="LevelGenerator" type="Node2D" parent="." unique_id=111583895 node_paths=PackedStringArray("asteroidContainer")]
+script = ExtResource("5_pobvj")
+AsteroidScene = ExtResource("3_lvojy")
+asteroidContainer = NodePath("../AsteroidContainer")
+
+[node name="Border" type="StaticBody2D" parent="." unique_id=975424245]
+z_index = -10
+collision_layer = 32
+collision_mask = 0
+
+[node name="Line2D" type="Line2D" parent="Border" unique_id=2140923817]
+points = PackedVector2Array(7955, -7955, 7955, 7955, -7955, 7955, -7955, -7955)
+closed = true
+width = 20.0
+texture = SubResource("GradientTexture2D_a4ucx")
+texture_mode = 2
+joint_mode = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Border" unique_id=908588018]
+position = Vector2(8000, 0)
+shape = SubResource("RectangleShape2D_pobvj")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Border" unique_id=109834001]
+position = Vector2(-8000, 0)
+shape = SubResource("RectangleShape2D_pobvj")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Border" unique_id=1349749612]
+position = Vector2(0, 8000)
+shape = SubResource("RectangleShape2D_a4ucx")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="Border" unique_id=740175870]
+position = Vector2(0, -8000)
+shape = SubResource("RectangleShape2D_a4ucx")

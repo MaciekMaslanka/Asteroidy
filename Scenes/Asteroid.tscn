@@ -23,12 +23,8 @@ max_contacts_reported = 10
 linear_damp = 2.0
 angular_damp = 2.0
 script = ExtResource("1_jnrf0")
-BaseRadius = 200.0
-Amplitude = 0.4
-NoiseScale = 0.7
-MassDensity = 0.05
-OreScene = ExtResource("2_8e40r")
 minDistance = 5.0
+OreScene = ExtResource("2_8e40r")
 
 [node name="Polygon2D" type="Polygon2D" parent="." unique_id=1189675999]
 z_index = -2
@@ -46,4 +42,4 @@ texture = ExtResource("1_e0e3k")
 polygon = PackedVector2Array(-20, 3, 12, -21, 49, 22, -13, 13)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=1753429025]
-polygon = PackedVector2Array(-20, 0, 2, -27, 50, 5, 8, 32)
+polygon = PackedVector2Array(-1, -21, -13, -3, 13, 12)
