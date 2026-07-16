@@ -3,7 +3,8 @@ using System;
 public enum OreType
 {
     Gold,
-    Silver
+    Silver,
+    Coal
 }
 
 public partial class OreScript : StaticBody2D
@@ -71,6 +72,10 @@ public partial class OreScript : StaticBody2D
             case OreType.Silver:
                 shape.Texture = oreTextures[(int)OreType.Silver];
                 item = GD.Load<InvItem>("res://Resources/Items/SilverItem.tres");
+                break;
+            case OreType.Coal:
+                shape.Texture = oreTextures[(int)OreType.Coal];
+                item = GD.Load<InvItem>("res://Resources/Items/CoalItem.tres");
                 break;
             default:
                 shape.Texture = oreTextures[(int)OreType.Gold];

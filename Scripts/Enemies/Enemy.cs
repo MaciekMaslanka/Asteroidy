@@ -289,13 +289,6 @@ public partial class Enemy : RigidBody2D, IDamagable
 			return;
 		}
 		hpBar.Value = currentHealth / MaxHealth * hpBar.MaxValue;
+		currentState = State.Aggro;
 	}
 }
-
-/*
-TODO:
--gówno
--upadek izraela
--poprawić unikanie i pozbyć się navagenta
-*/
-//this code is actual cancer

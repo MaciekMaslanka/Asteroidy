@@ -17,13 +17,11 @@ public partial class DiggingHandler : Node
 		this.radius = radius;
 		this.segments = segments;
 		this.parent = parent;
-		NormalDigging();
 	}
 	public DiggingHandler(Asteroid parent, OreScript ore)
 	{
 		this.parent = parent;
 		this.ore = ore;
-		OnOreDestroyed();
 	}
 	private Vector2[] CreateCutter(Vector2 center, float radius, int segments)
 	{
@@ -109,7 +107,7 @@ public partial class DiggingHandler : Node
 	{
 		if(parent.AsteroidScene == null)
 		{
-			GD.PrintErr("debil");
+			GD.PrintErr("asteroid scene to null");
 			return null;
 		}
 		Asteroid fragment = parent.AsteroidScene.Instantiate<Asteroid>();

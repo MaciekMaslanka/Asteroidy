@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="AsteroidSettings" format=3 uid="uid://gtx1nmessprp"]
+
+[ext_resource type="Script" uid="uid://dmxqhn01e3505" path="res://Scripts/Asteroids/OreRarity.cs" id="1_smre0"]
+[ext_resource type="Texture2D" uid="uid://chep06nk1tccv" path="res://Sprites/Other/Asteroida.png" id="2_vwcyr"]
+[ext_resource type="Script" uid="uid://bpupky20bd08s" path="res://Scripts/Asteroids/AsteroidSettings.cs" id="3_6hynu"]
+
+[sub_resource type="Resource" id="Resource_wl3mn"]
+script = ExtResource("1_smre0")
+Type = 1
+Weight = 50.0
+metadata/_custom_type_script = "uid://dmxqhn01e3505"
+
+[sub_resource type="Resource" id="Resource_smre0"]
+script = ExtResource("1_smre0")
+Weight = 50.0
+metadata/_custom_type_script = "uid://dmxqhn01e3505"
+
+[sub_resource type="Resource" id="Resource_vwcyr"]
+script = ExtResource("1_smre0")
+Type = 2
+Weight = 50.0
+metadata/_custom_type_script = "uid://dmxqhn01e3505"
+
+[resource]
+script = ExtResource("3_6hynu")
+Texture = ExtResource("2_vwcyr")
+BaseRadius = 70.0
+PointsAmount = 30
+Amplitude = 0.4
+NoiseScale = 0.7
+Frequency = 1.0
+Octaves = 4
+MassDensity = 0.05
+MaxAmount = 1
+MinDistanceBetweenOres = 5.0
+OresGenerationOffset = 10.0
+OreRarities = Array[ExtResource("1_smre0")]([SubResource("Resource_wl3mn"), SubResource("Resource_smre0"), SubResource("Resource_vwcyr")])
+metadata/_custom_type_script = "uid://bpupky20bd08s"

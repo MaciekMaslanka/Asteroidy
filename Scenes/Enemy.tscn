@@ -29,6 +29,7 @@ mass = 100.0
 gravity_scale = 0.0
 linear_damp = 1.2
 script = ExtResource("1_wovta")
+DetectionRange = 500.0
 BulletScene = ExtResource("2_kpr8r")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=748898151]

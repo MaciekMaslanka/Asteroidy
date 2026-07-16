@@ -3,13 +3,14 @@
 [ext_resource type="Script" uid="uid://ca3i5xtt3155f" path="res://Scripts/Ores/OreScript.cs" id="1_i8ymc"]
 [ext_resource type="Texture2D" uid="uid://q7nili8xfdcx" path="res://Sprites/Ores/Gold.png" id="2_bb785"]
 [ext_resource type="Texture2D" uid="uid://voidkygj3e4b" path="res://Sprites/Ores/Silver.png" id="3_4i16t"]
+[ext_resource type="Texture2D" uid="uid://djiray5urg6ys" path="res://Sprites/Ores/Coal.png" id="4_sw110"]
 
 [node name="RigidBody2D" type="StaticBody2D" unique_id=574043206]
 z_index = 1
 collision_layer = 8
 collision_mask = 11
 script = ExtResource("1_i8ymc")
-oreTextures = Array[Texture2D]([ExtResource("2_bb785"), ExtResource("3_4i16t")])
+oreTextures = Array[Texture2D]([ExtResource("2_bb785"), ExtResource("3_4i16t"), ExtResource("4_sw110")])
 
 [node name="Polygon2D" type="Polygon2D" parent="." unique_id=802372938]
 texture_filter = 1

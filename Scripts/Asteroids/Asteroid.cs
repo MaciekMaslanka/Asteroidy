@@ -65,6 +65,10 @@ public partial class Asteroid : RigidBody2D
 	}
 	private void ApplySettings()
 	{
+		//visuals
+		if(Settings.Texture != null)
+			body.Texture = Settings.Texture;
+			
 		//asteroida
 		BaseRadius = Settings.BaseRadius;
 		PointsAmount = Settings.PointsAmount;
@@ -140,7 +144,7 @@ public partial class Asteroid : RigidBody2D
 
 			smoothed.Add(current);
 		}
-		smoothed.Add(currentShape[^1]); // ^ zwraca od konca tablicy
+		smoothed.Add(currentShape[^1]); // ^ zwraca od konca tablicy (nie wiedziałem że takie coś istnieje)
 
 		UpdateShape(smoothed.ToArray());
 	}
