@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="AsteroidShapeSettings" format=3 uid="uid://s20f57vbv5s7"]
+
+[ext_resource type="Script" uid="uid://c8egtii8olrc6" path="res://Scripts/Asteroids/AsteroidShapeSettings.cs" id="1_1vmta"]
+
+[resource]
+script = ExtResource("1_1vmta")
+BaseRadius = 200.0
+PointsAmount = 60
+Amplitude = 0.4
+NoiseScale = 0.7
+Frequency = 1.0
+Octaves = 4
+MassDensity = 0.05
+MinOreAmount = 4
+MaxOreAmount = 8
+metadata/_custom_type_script = "uid://c8egtii8olrc6"

@@ -103,7 +103,8 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		{
 			Invectory = new Invectory();
 		}
-		AddToGroup("Player", true);
+
+		GameManager.Instance.RegisterPlayer(this);
 	}
 
 	public override void _PhysicsProcess(double delta)

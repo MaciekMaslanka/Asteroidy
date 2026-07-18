@@ -8,13 +8,20 @@ public partial class HpUiScript : Control
 	
 	public override void _Ready()
 	{
-		var player = GetTree().GetFirstNodeInGroup("Player") as PlayerScript;
-		
-		if(player != null)
+		if(GameManager.Instance.Player != null)
 		{
-			player.HealthChanged += OnHealthChanged;
-			player.ShieldChanged += OnShieldsChanged;
+			Init();
 		}
+		else
+		{
+			GameManager.Instance.PlayerReady += Init;
+		}
+	}
+	private void Init()
+	{
+		var player = GameManager.Instance.Player;
+		player.HealthChanged += OnHealthChanged;
+		player.ShieldChanged += OnShieldsChanged;
 	}
 	private void OnHealthChanged(float current, float max)
 	{

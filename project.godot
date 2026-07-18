@@ -15,6 +15,10 @@ run/main_scene="uid://b0ro51x3qchbv"
 config/features=PackedStringArray("4.6", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+gameManager="*uid://bsco1wx5hf6vp"
+
 [dotnet]
 
 project/assembly_name="asteoridki"

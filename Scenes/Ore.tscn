@@ -25,5 +25,3 @@ polygon = PackedVector2Array(0, -16, 4, 0, 0, 12, -4, 0)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=1152881620]
 polygon = PackedVector2Array(0, -16, 4, 0, 0, 12, -4, 0)
-
-[node name="Camera2D" type="Camera2D" parent="." unique_id=1646108361]

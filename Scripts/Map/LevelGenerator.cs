@@ -1,6 +1,13 @@
 using Godot;
 using System.Collections.Generic;
 
+public enum BiomeType
+{
+    Normal,
+    Ice,
+    Radioactive,
+    Rare
+}
 public partial class LevelGenerator : Node2D
 {
     [ExportCategory("asteroidy")]

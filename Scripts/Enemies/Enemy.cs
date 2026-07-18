@@ -60,7 +60,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 
 		contextMap = new(ContextMapResolution);
 
-		player = (PlayerScript) GetTree().GetFirstNodeInGroup("Player");
+		player = GameManager.Instance.Player;
 		currentThrust = IdleThrust;
 
 		SelectRandomTarget();
@@ -72,6 +72,20 @@ public partial class Enemy : RigidBody2D, IDamagable
 		hpBar.Value = hpBar.MaxValue;
 		hpBarOffset = hpBar.Position;
 		hpBar.Visible = false;
+
+
+		if(GameManager.Instance.Player != null)
+		{
+			Init();
+		}
+		else
+		{
+			GameManager.Instance.PlayerReady += Init;
+		}
+	}
+	private void Init()
+	{
+		player = GameManager.Instance.Player;
 	}
     public override void _PhysicsProcess(double delta)
 	{

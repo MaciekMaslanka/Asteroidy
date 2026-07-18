@@ -2,8 +2,9 @@
 
 [ext_resource type="Texture2D" uid="uid://chep06nk1tccv" path="res://Sprites/Other/Asteroida.png" id="1_e0e3k"]
 [ext_resource type="Script" uid="uid://c8qn8up336aij" path="res://Scripts/Asteroids/Asteroid.cs" id="1_jnrf0"]
+[ext_resource type="Resource" uid="uid://87ljwtksh0xn" path="res://Resources/Asteroids and ores/Other/NormalBiome.tres" id="2_3euil"]
 [ext_resource type="PackedScene" uid="uid://bn55pvpddkrvi" path="res://Scenes/Ore.tscn" id="2_8e40r"]
-[ext_resource type="Resource" uid="uid://gtx1nmessprp" path="res://Resources/Asteroids and ores/small.tres" id="2_lfwe0"]
+[ext_resource type="Resource" uid="uid://cmj5f7j64qcjs" path="res://Resources/Asteroids and ores/Shapes/SmallSetting.tres" id="3_3euil"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_8e40r"]
 friction = 0.6
@@ -24,7 +25,8 @@ max_contacts_reported = 10
 linear_damp = 2.0
 angular_damp = 2.0
 script = ExtResource("1_jnrf0")
-Settings = ExtResource("2_lfwe0")
+Settings = ExtResource("2_3euil")
+ShapeSettings = ExtResource("3_3euil")
 minDistance = 5.0
 OreScene = ExtResource("2_8e40r")
 
