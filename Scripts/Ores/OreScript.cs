@@ -1,16 +1,23 @@
-using Godot;
 using System;
+using System.Collections.Generic;
+using Godot;
+
 public enum OreType
 {
+    Coal,
+    Copper,
+    Diamond,
     Gold,
+    Iron,
     Silver,
-    Coal
+    Uranium
 }
 
 public partial class OreScript : StaticBody2D
 {
 	[Export] private float MaxHealth = 50f;
-    [Export] private Texture2D[] oreTextures; 
+    [Export] private Godot.Collections.Array<OreData> OreInfo;
+    private Dictionary<OreType, OreData> oreLookup;
     [Export] public InvItem item {private set; get;}
     public float CurrentHealth { get; private set; }
 
@@ -25,6 +32,12 @@ public partial class OreScript : StaticBody2D
         CurrentHealth = MaxHealth;
 
 		GenerateShape();
+
+        oreLookup = new();
+        foreach (var ore in OreInfo)
+        {
+            oreLookup.Add(ore.Type, ore);
+        }
     }
 
     public void TakeDamage(float amount)
@@ -63,25 +76,7 @@ public partial class OreScript : StaticBody2D
     public void SetOreType(OreType newType)
     {
         type = newType;
-        switch(type)
-        {
-            case OreType.Gold:
-                shape.Texture = oreTextures[(int)OreType.Gold];
-                item = GD.Load<InvItem>("res://Resources/Items/GoldItem.tres");
-                break;
-            case OreType.Silver:
-                shape.Texture = oreTextures[(int)OreType.Silver];
-                item = GD.Load<InvItem>("res://Resources/Items/SilverItem.tres");
-                break;
-            case OreType.Coal:
-                shape.Texture = oreTextures[(int)OreType.Coal];
-                item = GD.Load<InvItem>("res://Resources/Items/CoalItem.tres");
-                break;
-            default:
-                shape.Texture = oreTextures[(int)OreType.Gold];
-                item = GD.Load<InvItem>("res://Resources/Items/GoldItem.tres");
-                GD.PrintErr("Nie dopisałeś case w tekturach od ore");
-                break;
-        }
+        shape.Texture = oreLookup[type].Texture;
+        item = oreLookup[type].Item;
     }
 }

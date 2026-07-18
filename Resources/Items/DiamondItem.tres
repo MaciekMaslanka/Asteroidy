@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="InvItem" format=3 uid="uid://cyd2t5gg6hvk7"]
+
+[ext_resource type="Texture2D" uid="uid://be2ew6t6k1ex6" path="res://Sprites/Items/DiamondIcon.png" id="1_cftrs"]
+[ext_resource type="Script" uid="uid://bm3hmph7l8y4o" path="res://Scripts/Invectory/InvItem.cs" id="2_n4u0u"]
+
+[resource]
+script = ExtResource("2_n4u0u")
+ItemName = "Diamond"
+Icon = ExtResource("1_cftrs")
+metadata/_custom_type_script = "uid://bm3hmph7l8y4o"

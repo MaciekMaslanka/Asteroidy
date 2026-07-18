@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="OreData" format=3 uid="uid://ccip67j7tfuue"]
+
+[ext_resource type="Script" uid="uid://p3og1x53jgqk" path="res://Scripts/Ores/OreData.cs" id="1_8c5ut"]
+[ext_resource type="Resource" uid="uid://c7vuk7dwda00a" path="res://Resources/Items/UraniumItem.tres" id="1_m5uus"]
+[ext_resource type="Texture2D" uid="uid://b3t67slbgm6ms" path="res://Sprites/Ores/Uranium.png" id="2_okvup"]
+
+[resource]
+script = ExtResource("1_8c5ut")
+Type = 6
+Texture = ExtResource("2_okvup")
+Item = ExtResource("1_m5uus")
+metadata/_custom_type_script = "uid://p3og1x53jgqk"
