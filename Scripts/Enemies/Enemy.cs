@@ -60,7 +60,6 @@ public partial class Enemy : RigidBody2D, IDamagable
 
 		contextMap = new(ContextMapResolution);
 
-		player = GameManager.Instance.Player;
 		currentThrust = IdleThrust;
 
 		SelectRandomTarget();
