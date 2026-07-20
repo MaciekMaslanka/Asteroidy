@@ -11,7 +11,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	[Signal]
 	public delegate void HealthChangedEventHandler(float currentHealth, float maxHealth);
 
-	//hp i inny shit
+	//hp
 	[ExportCategory("HP")]
 	[Export] float MaxHP = 500f;
 	[Export] float MaxShields = 500f;

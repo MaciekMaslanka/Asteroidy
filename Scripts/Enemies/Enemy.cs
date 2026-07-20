@@ -72,7 +72,6 @@ public partial class Enemy : RigidBody2D, IDamagable
 		hpBarOffset = hpBar.Position;
 		hpBar.Visible = false;
 
-
 		if(GameManager.Instance.Player != null)
 		{
 			Init();
