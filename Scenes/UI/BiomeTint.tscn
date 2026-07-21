@@ -2,8 +2,9 @@
 
 [ext_resource type="Script" uid="uid://es6irav7lurc" path="res://Scripts/UI/BiomeTint.cs" id="1_heoa0"]
 
-[node name="CanvasLayer" type="CanvasLayer" unique_id=596781071]
+[node name="CanvasLayer" type="CanvasLayer" unique_id=596781071 node_paths=PackedStringArray("biomeTint")]
 script = ExtResource("1_heoa0")
+biomeTint = NodePath("ColorRect")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=568223963]
 anchors_preset = 15

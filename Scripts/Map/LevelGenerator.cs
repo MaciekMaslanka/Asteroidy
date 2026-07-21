@@ -1,17 +1,23 @@
 using Godot;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 public enum BiomeType
 {
     Normal,
     Ice,
     Radioactive,
+    Small,
     Rare
 }
 public partial class LevelGenerator : Node2D
 {
-    [ExportCategory("asteroidy")]
+    [ExportCategory("Biomy")]
+    [Export] private AsteroidSettings normalBiome;
+    [Export] private AsteroidSettings iceBiome;
+    [Export] private AsteroidSettings radioactiveBiome;
+    [Export] private AsteroidSettings smallBiome;
+    [Export] private AsteroidSettings rareBiome;
+    [ExportCategory("Asteroidy")]
     [Export] private PackedScene AsteroidScene;
     [Export] private int MapSize = 16000;
     [Export] private int GenerationSize = 16500;
@@ -21,11 +27,11 @@ public partial class LevelGenerator : Node2D
     [Export] private Node2D asteroidContainer;
 
     [Export] private FastNoiseLite biomeNoise;
-    [Export] private FastNoiseLite asteroidsNoise;
 
     private float normalThreshold;
     private float iceThreshold;
-    private float radioactioveThreshold;
+    private float radioactiveThreshold;
+    private float smallThreshold;
     
     public override void _Ready()
     {
@@ -65,15 +71,18 @@ public partial class LevelGenerator : Node2D
         values.Sort();
 
         normalThreshold = values[(int) (samples * 0.40f)];
-        iceThreshold = values[(int)(samples * 0.75)];
-        radioactioveThreshold = values[(int)(samples * 0.95f)];
+        iceThreshold = values[(int)(samples * 0.65)];
+        radioactiveThreshold = values[(int)(samples * 0.85f)];
+        smallThreshold = values[(int) (samples * 0.95f)];
+
         /*
         normal - 40%
-        ice - 35%
+        ice - 25%
         rad - 20%
+        small - 10%
         rare - 5%
         */
-        GameManager.Instance.SetBiomeNoise(biomeNoise, normalThreshold, iceThreshold, radioactioveThreshold);
+        GameManager.Instance.SetBiomeNoise(biomeNoise, normalThreshold, iceThreshold, radioactiveThreshold, smallThreshold);
     }
     private void GenerateAsteroids()
     {
@@ -110,6 +119,7 @@ public partial class LevelGenerator : Node2D
                 break;
             }
         }
+        GD.Print(spawnedPositions.Count);
     }
     private BiomeType GetBiomeAt(Vector2 pos)
     {
@@ -121,14 +131,37 @@ public partial class LevelGenerator : Node2D
         if(noise < iceThreshold)
             return BiomeType.Ice;
 
-        if(noise < radioactioveThreshold)
+        if(noise < radioactiveThreshold)
             return BiomeType.Radioactive;
+
+        if(noise < smallThreshold)
+            return BiomeType.Small;
 
         return BiomeType.Rare;
     }
-    private AsteroidShapeSettings GetAsteroidShape(BiomeType biome)
+    private AsteroidShapeSettings GetAsteroidShapeSettings(AsteroidSettings settings)
     {
-        return null;
+        float totalWeight = 0f;
+
+        foreach(var el in settings.SizeSettings)
+        {
+            totalWeight += el.Weight;
+        }
+
+        float random = (float) GD.RandRange(0, totalWeight);
+        float current = 0;
+
+        foreach(var el in settings.SizeSettings)
+        {
+            current += el.Weight;
+
+            if(random < current)
+            {
+                return el.ShapeSetting;
+            }
+        }
+
+        return settings.SizeSettings[0].ShapeSetting;
     }
     private void SpawnAsteroid(Vector2 position)
     {
@@ -144,15 +177,27 @@ public partial class LevelGenerator : Node2D
         switch(biome)
         {
             case BiomeType.Normal:
-                settings = GD.Load<AsteroidSettings>("res://Resources/Asteroids/Other/NormalBiome.tres");
+                settings = normalBiome;
                 break;
-
+            case BiomeType.Ice:
+                settings = iceBiome;
+                break;
+            case BiomeType.Radioactive:
+                settings = radioactiveBiome;
+                break;
+            case BiomeType.Small:
+                settings = smallBiome;
+                break;
+            case BiomeType.Rare:
+                settings = rareBiome;
+                break;
+            default:
+                settings = normalBiome;
+                break;
         }
-        shapeSettings = GetAsteroidShape(biome);
-        
-        float random = GD.Randf();
 
-
+        shapeSettings = GetAsteroidShapeSettings(settings);
+        asteroid.SetSettings(settings, shapeSettings);
         asteroidContainer.CallDeferred("add_child", asteroid);
     }
 }

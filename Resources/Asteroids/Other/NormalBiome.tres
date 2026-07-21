@@ -1,8 +1,13 @@
 [gd_resource type="Resource" script_class="AsteroidSettings" format=3 uid="uid://87ljwtksh0xn"]
 
 [ext_resource type="Script" uid="uid://dmxqhn01e3505" path="res://Scripts/Asteroids/OreRarity.cs" id="1_42ih3"]
+[ext_resource type="Script" uid="uid://ehe68fke3ons" path="res://Scripts/Asteroids/SizeSettings.cs" id="2_dinwu"]
 [ext_resource type="Texture2D" uid="uid://chep06nk1tccv" path="res://Sprites/Other/Asteroida.png" id="2_mxyrd"]
 [ext_resource type="Script" uid="uid://bpupky20bd08s" path="res://Scripts/Asteroids/AsteroidSettings.cs" id="3_mc2yn"]
+[ext_resource type="Resource" uid="uid://cmj5f7j64qcjs" path="res://Resources/Asteroids/Shapes/SmallSetting.tres" id="3_x733e"]
+[ext_resource type="Resource" uid="uid://s20f57vbv5s7" path="res://Resources/Asteroids/Shapes/MidSetting.tres" id="4_buh7g"]
+[ext_resource type="Resource" uid="uid://dc8o1b8os52ed" path="res://Resources/Asteroids/Shapes/BigSetting.tres" id="5_blxup"]
+[ext_resource type="Resource" uid="uid://dnuysfqwnfos7" path="res://Resources/Asteroids/Shapes/HugeSetting.tres" id="6_2pqw3"]
 
 [sub_resource type="Resource" id="Resource_uvnws"]
 script = ExtResource("1_42ih3")
@@ -44,10 +49,38 @@ script = ExtResource("1_42ih3")
 Type = 6
 metadata/_custom_type_script = "uid://dmxqhn01e3505"
 
+[sub_resource type="Resource" id="Resource_sdlvu"]
+script = ExtResource("2_dinwu")
+ShapeSetting = ExtResource("3_x733e")
+Weight = 30.0
+metadata/_custom_type_script = "uid://ehe68fke3ons"
+
+[sub_resource type="Resource" id="Resource_qt8my"]
+script = ExtResource("2_dinwu")
+Size = 1
+ShapeSetting = ExtResource("4_buh7g")
+Weight = 40.0
+metadata/_custom_type_script = "uid://ehe68fke3ons"
+
+[sub_resource type="Resource" id="Resource_4f6mb"]
+script = ExtResource("2_dinwu")
+Size = 2
+ShapeSetting = ExtResource("5_blxup")
+Weight = 20.0
+metadata/_custom_type_script = "uid://ehe68fke3ons"
+
+[sub_resource type="Resource" id="Resource_to5di"]
+script = ExtResource("2_dinwu")
+Size = 3
+ShapeSetting = ExtResource("6_2pqw3")
+Weight = 10.0
+metadata/_custom_type_script = "uid://ehe68fke3ons"
+
 [resource]
 script = ExtResource("3_mc2yn")
 Texture = ExtResource("2_mxyrd")
 MinDistanceBetweenOres = 80.0
 OresGenerationOffset = 5.0
 OreRarities = Array[ExtResource("1_42ih3")]([SubResource("Resource_uvnws"), SubResource("Resource_4oy5u"), SubResource("Resource_n7ki1"), SubResource("Resource_80k6m"), SubResource("Resource_yq55s"), SubResource("Resource_l2iqo"), SubResource("Resource_snh45")])
+SizeSettings = Array[ExtResource("2_dinwu")]([SubResource("Resource_sdlvu"), SubResource("Resource_qt8my"), SubResource("Resource_4f6mb"), SubResource("Resource_to5di")])
 metadata/_custom_type_script = "uid://bpupky20bd08s"

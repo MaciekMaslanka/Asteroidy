@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using System.Collections.Generic;
 
 [GlobalClass]
 public partial class AsteroidSettings : Resource
@@ -12,6 +10,10 @@ public partial class AsteroidSettings : Resource
     [Export] public float MinDistanceBetweenOres;
     [Export] public float OresGenerationOffset;
     [Export] public Godot.Collections.Array<OreRarity> OreRarities = new();
+
     [ExportCategory("Biome")]
     [Export] public BiomeType Biome = BiomeType.Normal;
+
+    [ExportCategory("Size")]
+    [Export] public Godot.Collections.Array<SizeSettings> SizeSettings = new();
 }

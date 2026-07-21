@@ -1,0 +1,88 @@
+[gd_resource type="Resource" script_class="AsteroidSettings" format=3 uid="uid://cs1spesy0jg30"]
+
+[ext_resource type="Script" uid="uid://dmxqhn01e3505" path="res://Scripts/Asteroids/OreRarity.cs" id="1_mac5d"]
+[ext_resource type="Script" uid="uid://ehe68fke3ons" path="res://Scripts/Asteroids/SizeSettings.cs" id="2_tyiso"]
+[ext_resource type="Resource" uid="uid://cmj5f7j64qcjs" path="res://Resources/Asteroids/Shapes/SmallSetting.tres" id="3_is42c"]
+[ext_resource type="Script" uid="uid://bpupky20bd08s" path="res://Scripts/Asteroids/AsteroidSettings.cs" id="3_s0l7o"]
+[ext_resource type="Resource" uid="uid://s20f57vbv5s7" path="res://Resources/Asteroids/Shapes/MidSetting.tres" id="4_u5ptk"]
+[ext_resource type="Resource" uid="uid://dc8o1b8os52ed" path="res://Resources/Asteroids/Shapes/BigSetting.tres" id="5_gmu05"]
+[ext_resource type="Resource" uid="uid://dnuysfqwnfos7" path="res://Resources/Asteroids/Shapes/HugeSetting.tres" id="6_morbi"]
+
+[sub_resource type="Resource" id="Resource_is42c"]
+script = ExtResource("1_mac5d")
+Weight = 15.0
+metadata/_custom_type_script = "uid://dmxqhn01e3505"
+
+[sub_resource type="Resource" id="Resource_u5ptk"]
+script = ExtResource("1_mac5d")
+Type = 1
+Weight = 25.3
+metadata/_custom_type_script = "uid://dmxqhn01e3505"
+
+[sub_resource type="Resource" id="Resource_gmu05"]
+script = ExtResource("1_mac5d")
+Type = 2
+Weight = 4.5
+metadata/_custom_type_script = "uid://dmxqhn01e3505"
+
+[sub_resource type="Resource" id="Resource_morbi"]
+script = ExtResource("1_mac5d")
+Type = 3
+Weight = 4.5
+metadata/_custom_type_script = "uid://dmxqhn01e3505"
+
+[sub_resource type="Resource" id="Resource_abh58"]
+script = ExtResource("1_mac5d")
+Type = 4
+Weight = 25.3
+metadata/_custom_type_script = "uid://dmxqhn01e3505"
+
+[sub_resource type="Resource" id="Resource_a3nna"]
+script = ExtResource("1_mac5d")
+Type = 5
+Weight = 25.3
+metadata/_custom_type_script = "uid://dmxqhn01e3505"
+
+[sub_resource type="Resource" id="Resource_ltxbq"]
+script = ExtResource("1_mac5d")
+Type = 6
+metadata/_custom_type_script = "uid://dmxqhn01e3505"
+
+[sub_resource type="Resource" id="Resource_lgcbg"]
+script = ExtResource("2_tyiso")
+ShapeSetting = ExtResource("3_is42c")
+Weight = 40.0
+metadata/_custom_type_script = "uid://ehe68fke3ons"
+
+[sub_resource type="Resource" id="Resource_x2b70"]
+script = ExtResource("2_tyiso")
+Size = 1
+ShapeSetting = ExtResource("4_u5ptk")
+Weight = 50.0
+metadata/_custom_type_script = "uid://ehe68fke3ons"
+
+[sub_resource type="Resource" id="Resource_lv72v"]
+script = ExtResource("2_tyiso")
+Size = 2
+ShapeSetting = ExtResource("5_gmu05")
+Weight = 7.5
+metadata/_custom_type_script = "uid://ehe68fke3ons"
+
+[sub_resource type="Resource" id="Resource_p30o4"]
+script = ExtResource("2_tyiso")
+Size = 3
+ShapeSetting = ExtResource("6_morbi")
+Weight = 2.5
+metadata/_custom_type_script = "uid://ehe68fke3ons"
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_2pn5y"]
+
+[resource]
+script = ExtResource("3_s0l7o")
+Texture = SubResource("PlaceholderTexture2D_2pn5y")
+MinDistanceBetweenOres = 80.0
+OresGenerationOffset = 5.0
+OreRarities = Array[ExtResource("1_mac5d")]([SubResource("Resource_is42c"), SubResource("Resource_u5ptk"), SubResource("Resource_gmu05"), SubResource("Resource_morbi"), SubResource("Resource_abh58"), SubResource("Resource_a3nna"), SubResource("Resource_ltxbq")])
+Biome = 1
+SizeSettings = Array[ExtResource("2_tyiso")]([SubResource("Resource_lgcbg"), SubResource("Resource_x2b70"), SubResource("Resource_lv72v"), SubResource("Resource_p30o4")])
+metadata/_custom_type_script = "uid://bpupky20bd08s"

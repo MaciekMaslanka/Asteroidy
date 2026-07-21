@@ -6,6 +6,17 @@
 [ext_resource type="PackedScene" uid="uid://d52cp50abs6e" path="res://Scenes/UI/UI.tscn" id="4_pm3h0"]
 [ext_resource type="PackedScene" uid="uid://b6e5k5283jnaq" path="res://Scenes/Enemy.tscn" id="5_5yp1d"]
 [ext_resource type="Script" uid="uid://cxm3wofvdxglr" path="res://Scripts/Map/LevelGenerator.cs" id="5_pobvj"]
+[ext_resource type="Resource" uid="uid://87ljwtksh0xn" path="res://Resources/Asteroids/Other/NormalBiome.tres" id="6_a4ucx"]
+[ext_resource type="Resource" uid="uid://cs1spesy0jg30" path="res://Resources/Asteroids/Other/IceBiome.tres" id="7_jlbws"]
+[ext_resource type="Resource" uid="uid://dvnxvsny2q621" path="res://Resources/Asteroids/Other/RadioactiveBiome.tres" id="8_f0i0x"]
+[ext_resource type="Resource" uid="uid://booki2iangcms" path="res://Resources/Asteroids/Other/SmallBiome.tres" id="9_33tof"]
+[ext_resource type="Resource" uid="uid://inmdcc461l7a" path="res://Resources/Asteroids/Other/RareBiome.tres" id="10_od46y"]
+[ext_resource type="PackedScene" uid="uid://bpkfyyww7r3qu" path="res://Scenes/UI/BiomeTint.tscn" id="12_f0i0x"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_f0i0x"]
+noise_type = 3
+frequency = 0.0001
+fractal_weighted_strength = 0.5
 
 [sub_resource type="Gradient" id="Gradient_pobvj"]
 offsets = PackedFloat32Array(0, 0.5, 1)
@@ -19,10 +30,10 @@ fill_from = Vector2(0.5, 0)
 fill_to = Vector2(0.5, 1)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pobvj"]
-size = Vector2(100, 16100)
+size = Vector2(100, 32100)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_a4ucx"]
-size = Vector2(16100, 100)
+size = Vector2(32100, 100)
 
 [node name="Node2D" type="Node2D" unique_id=1367986399]
 
@@ -42,8 +53,6 @@ texture_filter = 2
 position = Vector2(-0.776699, -0.776699)
 texture = ExtResource("2_gt1wq")
 
-[node name="UI" parent="." unique_id=1062009323 instance=ExtResource("4_pm3h0")]
-
 [node name="Enemy" parent="." unique_id=431999929 instance=ExtResource("5_5yp1d")]
 position = Vector2(67, 362)
 can_sleep = false
@@ -52,8 +61,18 @@ can_sleep = false
 
 [node name="LevelGenerator" type="Node2D" parent="." unique_id=111583895 node_paths=PackedStringArray("asteroidContainer")]
 script = ExtResource("5_pobvj")
+normalBiome = ExtResource("6_a4ucx")
+iceBiome = ExtResource("7_jlbws")
+radioactiveBiome = ExtResource("8_f0i0x")
+smallBiome = ExtResource("9_33tof")
+rareBiome = ExtResource("10_od46y")
 AsteroidScene = ExtResource("3_lvojy")
+MapSize = 32000
+GenerationSize = 33000
+MaxAsteroidsCount = 1000
+MinAsteroidCount = 300
 asteroidContainer = NodePath("../AsteroidContainer")
+biomeNoise = SubResource("FastNoiseLite_f0i0x")
 
 [node name="Border" type="StaticBody2D" parent="." unique_id=975424245]
 z_index = -10
@@ -61,7 +80,8 @@ collision_layer = 32
 collision_mask = 0
 
 [node name="Line2D" type="Line2D" parent="Border" unique_id=2140923817]
-points = PackedVector2Array(7955, -7955, 7955, 7955, -7955, 7955, -7955, -7955)
+scale = Vector2(0.9991655, 0.9991655)
+points = PackedVector2Array(15970, -15970, 15970, 15970, -15970, 15970, -15970, -15970)
 closed = true
 width = 20.0
 texture = SubResource("GradientTexture2D_a4ucx")
@@ -69,17 +89,22 @@ texture_mode = 2
 joint_mode = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Border" unique_id=908588018]
-position = Vector2(8000, 0)
+position = Vector2(16000, 0)
 shape = SubResource("RectangleShape2D_pobvj")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Border" unique_id=109834001]
-position = Vector2(-8000, 0)
+position = Vector2(-16000, 0)
 shape = SubResource("RectangleShape2D_pobvj")
 
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="Border" unique_id=1349749612]
-position = Vector2(0, 8000)
+position = Vector2(0, 16000)
 shape = SubResource("RectangleShape2D_a4ucx")
 
 [node name="CollisionShape2D4" type="CollisionShape2D" parent="Border" unique_id=740175870]
-position = Vector2(0, -8000)
+position = Vector2(0, -16000)
 shape = SubResource("RectangleShape2D_a4ucx")
+
+[node name="UI" parent="." unique_id=1062009323 instance=ExtResource("4_pm3h0")]
+
+[node name="BiomeTint" parent="." unique_id=596781071 instance=ExtResource("12_f0i0x")]
+layer = 0

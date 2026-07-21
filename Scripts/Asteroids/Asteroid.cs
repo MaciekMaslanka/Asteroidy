@@ -61,14 +61,8 @@ public partial class Asteroid : RigidBody2D
 	}
 	public void SetSettings(AsteroidSettings settings, AsteroidShapeSettings shapeSettings)
 	{
-		if(settings != null || shapeSettings != null)
-		{
-			throw new InvalidOperationException("Ustawienia asteroidy już są ustawione");
-		}
-
 		Settings = settings;
 		ShapeSettings = shapeSettings;
-		
 	}
 	private void ApplySettings()
 	{

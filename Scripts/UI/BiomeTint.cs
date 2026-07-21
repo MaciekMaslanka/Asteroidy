@@ -4,13 +4,14 @@ using System.Collections.Generic;
 
 public partial class BiomeTint : CanvasLayer
 {
-	private ColorRect biomeTint;
+	[Export] private ColorRect biomeTint;
 	private Dictionary<BiomeType, Color> biomeTints = new()
 	{
 		{BiomeType.Normal, new Color("#FFF", 0)},
 		{BiomeType.Ice, new Color("#21c2db", 0.2f)},
 		{BiomeType.Radioactive, new Color("#21db2d", 0.2F)},
-		{BiomeType.Rare, new Color("#fff", 0)}
+		{BiomeType.Rare, new Color("#fff", 0)},
+		{BiomeType.Small, new Color("#FFF", 0)},
 	};
 
 	private BiomeType currentBiome = BiomeType.Normal;
@@ -24,7 +25,6 @@ public partial class BiomeTint : CanvasLayer
 		if (currentBiome == newBiome) return;
 
 		currentBiome = newBiome;
-		var tween = CreateTween();
-		tween.TweenProperty(biomeTint, "color", biomeTints[newBiome], 1.2f);
+		biomeTint.Color = biomeTints[currentBiome];
 	}
 }
