@@ -5,6 +5,8 @@ using System.Collections.Generic;
 public partial class BiomeTint : CanvasLayer
 {
 	[Export] private ColorRect biomeTint;
+	[Export] private float tintChangeDuration = 1f;
+	private Tween biomeTween;
 	private Dictionary<BiomeType, Color> biomeTints = new()
 	{
 		{BiomeType.Normal, new Color("#FFF", 0)},
@@ -25,6 +27,14 @@ public partial class BiomeTint : CanvasLayer
 		if (currentBiome == newBiome) return;
 
 		currentBiome = newBiome;
-		biomeTint.Color = biomeTints[currentBiome];
+
+		if(biomeTween != null && biomeTween.IsRunning())
+		{
+			biomeTween.Kill();
+		}
+
+		biomeTween = CreateTween();
+
+		biomeTween.TweenProperty(biomeTint, "color", biomeTints[newBiome], tintChangeDuration);
 	}
 }

@@ -3,13 +3,21 @@
 [ext_resource type="Script" uid="uid://duly8slb8dtiq" path="res://Scripts/Player/PlayerScript.cs" id="1_kyqiw"]
 [ext_resource type="Resource" uid="uid://dvnwyjbperl7p" path="res://Resources/Invectory/PlayerInv.tres" id="2_dewec"]
 [ext_resource type="PackedScene" uid="uid://diy7v3bb12uso" path="res://Scenes/Bullet.tscn" id="2_nn08x"]
-[ext_resource type="Texture2D" uid="uid://b0vsacokc7ir0" path="res://Sprites/Player/Gówienko.png" id="3_5ixxa"]
 [ext_resource type="Texture2D" uid="uid://bduxlxoulsvy2" path="res://Sprites/Player/diggingToolPlaceholder.png" id="4_5ixxa"]
+[ext_resource type="Texture2D" uid="uid://ckqf1y1wka2yj" path="res://Sprites/Player/playerSprite.png" id="4_nn08x"]
 [ext_resource type="Texture2D" uid="uid://bv2ospmuu8bmc" path="res://Sprites/Player/weaponPlaceholder.png" id="5_nn08x"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dewec"]
-radius = 30.0
-height = 62.0
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nn08x"]
+radius = 12.0
+height = 36.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_52ee3"]
+radius = 13.0
+height = 80.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bhhdu"]
+radius = 7.0
+height = 40.0
 
 [node name="CharacterBody2D" type="RigidBody2D" unique_id=43622812]
 collision_mask = 62
@@ -27,17 +35,28 @@ Invectory = ExtResource("2_dewec")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=760477680]
 texture_filter = 1
-texture = ExtResource("3_5ixxa")
+scale = Vector2(2.355, 2.355)
+texture = ExtResource("4_nn08x")
 
-[node name="Hitbox" type="CollisionShape2D" parent="." unique_id=1798614063]
-shape = SubResource("CapsuleShape2D_dewec")
+[node name="collider 1" type="CollisionShape2D" parent="." unique_id=1753841450]
+position = Vector2(0, -6)
+shape = SubResource("CapsuleShape2D_nn08x")
+
+[node name="collider 2" type="CollisionShape2D" parent="." unique_id=2043126105]
+position = Vector2(0, 11)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_52ee3")
+
+[node name="collider 3" type="CollisionShape2D" parent="." unique_id=699070514]
+position = Vector2(0, -31)
+shape = SubResource("CapsuleShape2D_bhhdu")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=795321236]
 zoom = Vector2(1.725, 1.725)
 
 [node name="ToolContainer" type="Node2D" parent="." unique_id=747940764]
 z_index = -1
-position = Vector2(0, -26)
+position = Vector2(0, -46)
 
 [node name="DiggingTool" type="Node2D" parent="ToolContainer" unique_id=2030342872]
 position = Vector2(-5.9604645e-08, -13.250008)
