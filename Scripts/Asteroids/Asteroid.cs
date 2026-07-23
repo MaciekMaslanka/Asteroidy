@@ -30,8 +30,8 @@ public partial class Asteroid : RigidBody2D
 
 	//shape
 	public Polygon2D body {private set; get;}
-	Polygon2D background;
-	CollisionPolygon2D collider;
+	private Polygon2D background;
+	private CollisionPolygon2D collider;
 	public Vector2[] currentShape {private set; get;}
 	private bool hasCustomShape = false;
 	
@@ -69,6 +69,7 @@ public partial class Asteroid : RigidBody2D
 		//visuals
 		if(Settings.Texture != null)
 			body.Texture = Settings.Texture;
+			background.Texture = Settings.Texture;
 			
 		//asteroida
 		BaseRadius = ShapeSettings.BaseRadius;

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 using Godot;
 
 public partial class GameManager : Node
@@ -8,6 +9,8 @@ public partial class GameManager : Node
 	public delegate void PlayerReadyEventHandler();
 	[Signal]
 	public delegate void BiomeSwitchedEventHandler(BiomeType newBiome);
+	[Signal]
+	public delegate void MinimapImageReadyEventHandler();
 
 	public static GameManager Instance {private set; get;}
 	public FastNoiseLite BiomeNoise {set; get;}
@@ -18,6 +21,8 @@ public partial class GameManager : Node
 
 	private BiomeType currentPlayerBiome;
 	public  PlayerScript Player {set; get;}
+
+	public Image MinimapImage {private set; get;}
 
     public override void _Ready()
 	{
@@ -68,5 +73,13 @@ public partial class GameManager : Node
 		
 		Player = player;
 		EmitSignal(SignalName.PlayerReady);
+	}
+	public void SetMinimapImage(Image minimapImage)
+	{
+		if(this.MinimapImage != null)
+			throw new InvalidOperationException("Minimapa jest już ustawiona");
+
+		this.MinimapImage = minimapImage;
+		EmitSignal(SignalName.MinimapImageReady);
 	}
 }

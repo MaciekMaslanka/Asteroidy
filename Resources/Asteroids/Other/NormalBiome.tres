@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://dmxqhn01e3505" path="res://Scripts/Asteroids/OreRarity.cs" id="1_42ih3"]
 [ext_resource type="Script" uid="uid://ehe68fke3ons" path="res://Scripts/Asteroids/SizeSettings.cs" id="2_dinwu"]
-[ext_resource type="Texture2D" uid="uid://chep06nk1tccv" path="res://Sprites/Other/Asteroida.png" id="2_mxyrd"]
 [ext_resource type="Script" uid="uid://bpupky20bd08s" path="res://Scripts/Asteroids/AsteroidSettings.cs" id="3_mc2yn"]
 [ext_resource type="Resource" uid="uid://cmj5f7j64qcjs" path="res://Resources/Asteroids/Shapes/SmallSetting.tres" id="3_x733e"]
 [ext_resource type="Resource" uid="uid://s20f57vbv5s7" path="res://Resources/Asteroids/Shapes/MidSetting.tres" id="4_buh7g"]
@@ -78,7 +77,6 @@ metadata/_custom_type_script = "uid://ehe68fke3ons"
 
 [resource]
 script = ExtResource("3_mc2yn")
-Texture = ExtResource("2_mxyrd")
 MinDistanceBetweenOres = 80.0
 OresGenerationOffset = 5.0
 OreRarities = Array[ExtResource("1_42ih3")]([SubResource("Resource_uvnws"), SubResource("Resource_4oy5u"), SubResource("Resource_n7ki1"), SubResource("Resource_80k6m"), SubResource("Resource_yq55s"), SubResource("Resource_l2iqo"), SubResource("Resource_snh45")])

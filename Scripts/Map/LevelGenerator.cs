@@ -1,5 +1,7 @@
 using Godot;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Runtime.InteropServices.Marshalling;
 
 public enum BiomeType
 {
@@ -25,6 +27,7 @@ public partial class LevelGenerator : Node2D
     [Export] private int MinAsteroidCount = 100;
     [Export] private float MinDistanceBetweenAsteroids = 250f;
     [Export] private Node2D asteroidContainer;
+    private List<Vector2> spawnedPositions = new();
 
     [Export] private FastNoiseLite biomeNoise;
 
@@ -32,6 +35,10 @@ public partial class LevelGenerator : Node2D
     private float iceThreshold;
     private float radioactiveThreshold;
     private float smallThreshold;
+
+    [ExportCategory("Minimap")]
+    [Export] private Image minimapImage;
+    [Export] private int MinimapSize = 512;
     
     public override void _Ready()
     {
@@ -90,7 +97,6 @@ public partial class LevelGenerator : Node2D
 
         int asteroidsAmount = GD.RandRange(MinAsteroidCount, MaxAsteroidsCount);
         int attempts = asteroidsAmount * 12;
-        var spawnedPositions = new List<Vector2>();
 
         for(int i=0; i < asteroidsAmount; i++)
         {
@@ -121,6 +127,35 @@ public partial class LevelGenerator : Node2D
         }
         GD.Print(spawnedPositions.Count);
     }
+    private void GenerateMinimap()
+    {
+        minimapImage = Image.CreateEmpty(MinimapSize, MinimapSize, false, Image.Format.Rgba8);
+        minimapImage.Fill(Colors.Black);
+
+        foreach(var pos in spawnedPositions)
+        {
+            Vector2I pixel = WorldToMap(pos);
+            minimapImage.SetPixel(pixel.X, pixel.Y, Colors.White);
+        }
+        GameManager.Instance.SetMinimapImage(minimapImage);
+    }
+    private Vector2I WorldToMap(Vector2 worldPos)
+    {
+        float half = GenerationSize / 2;
+
+        int x = Mathf.Clamp(
+            (int) ((worldPos.X + half) / GenerationSize * MinimapSize),
+            0, MinimapSize - 1
+        );
+
+        int y = Mathf.Clamp(
+            (int) ((worldPos.Y + half) / GenerationSize * MinimapSize),
+            0, MinimapSize - 1
+        );
+
+        return new Vector2I(x, y);
+    }
+
     private BiomeType GetBiomeAt(Vector2 pos)
     {
         float noise = biomeNoise.GetNoise2Dv(pos);

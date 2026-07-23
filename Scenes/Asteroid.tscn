@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://bsnp0jrvf5bfc"]
 
-[ext_resource type="Texture2D" uid="uid://chep06nk1tccv" path="res://Sprites/Other/Asteroida.png" id="1_e0e3k"]
 [ext_resource type="Script" uid="uid://c8qn8up336aij" path="res://Scripts/Asteroids/Asteroid.cs" id="1_jnrf0"]
 [ext_resource type="Resource" uid="uid://87ljwtksh0xn" path="res://Resources/Asteroids/Other/NormalBiome.tres" id="2_3euil"]
 [ext_resource type="PackedScene" uid="uid://bn55pvpddkrvi" path="res://Scenes/Ore.tscn" id="2_8e40r"]
 [ext_resource type="Resource" uid="uid://dnuysfqwnfos7" path="res://Resources/Asteroids/Shapes/HugeSetting.tres" id="3_3euil"]
+[ext_resource type="Texture2D" uid="uid://baxx5op8qexxf" path="res://Sprites/Other/Rock.png" id="5_3euil"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_8e40r"]
 friction = 0.6
@@ -34,7 +34,8 @@ OreScene = ExtResource("2_8e40r")
 z_index = -2
 texture_filter = 1
 texture_repeat = 2
-texture = ExtResource("1_e0e3k")
+texture = ExtResource("5_3euil")
+texture_scale = Vector2(0.5, 0.5)
 polygon = PackedVector2Array(-20, -1, 1, -25, 45, 9, 9, 23)
 
 [node name="Polygon2DBackground" type="Polygon2D" parent="." unique_id=7991491]
@@ -42,7 +43,8 @@ z_index = -10
 texture_filter = 1
 texture_repeat = 2
 color = Color(0.4351923, 0.43519226, 0.43519226, 1)
-texture = ExtResource("1_e0e3k")
+texture = ExtResource("5_3euil")
+texture_scale = Vector2(0.5, 0.5)
 polygon = PackedVector2Array(-20, 3, 12, -21, 49, 22, -13, 13)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=1753429025]

@@ -116,7 +116,8 @@ public partial class DiggingHandler : Node
 		fragment.SetCustomShape(points);
 
 		parent.GetParent().AddChild(fragment);
-		fragment.GetNode<Polygon2D>("Polygon2D").TextureRotation = parent.body.TextureRotation;
+		fragment.body.Texture = parent.body.Texture;
+		fragment.body.TextureRotation = parent.body.TextureRotation;
 
 		return fragment;
 	}
