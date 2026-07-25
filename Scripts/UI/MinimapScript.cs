@@ -17,4 +17,3 @@ public partial class MinimapScript : TextureRect
 		Texture = texture;
 	}
 }
-
