@@ -9,8 +9,6 @@ public partial class GameManager : Node
 	public delegate void PlayerReadyEventHandler();
 	[Signal]
 	public delegate void BiomeSwitchedEventHandler(BiomeType newBiome);
-	[Signal]
-	public delegate void MinimapImageReadyEventHandler();
 
 	public static GameManager Instance {private set; get;}
 	public FastNoiseLite BiomeNoise {set; get;}
@@ -35,7 +33,6 @@ public partial class GameManager : Node
 			currentPlayerBiome = GetBiomeAt(Player.GlobalPosition);
 			EmitSignal(SignalName.BiomeSwitched, Variant.From((int) currentPlayerBiome));
 		}
-		GD.Print(BiomeNoise.GetNoise2Dv(Player.GlobalPosition));
 	}
 	private BiomeType GetBiomeAt(Vector2 pos)
 	{
@@ -73,13 +70,5 @@ public partial class GameManager : Node
 		
 		Player = player;
 		EmitSignal(SignalName.PlayerReady);
-	}
-	public void SetMinimapImage(Image minimapImage)
-	{
-		if(this.MinimapImage != null)
-			throw new InvalidOperationException("Minimapa jest już ustawiona");
-
-		this.MinimapImage = minimapImage;
-		EmitSignal(SignalName.MinimapImageReady);
 	}
 }

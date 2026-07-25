@@ -43,7 +43,6 @@ diggerSpeed = 10.0
 
 [node name="Parallax2D" type="Parallax2D" parent="." unique_id=512764058]
 z_index = -100
-scale = Vector2(2.575, 2.575)
 scroll_scale = Vector2(0.2, 0.2)
 repeat_size = Vector2(1000, 1000)
 repeat_times = 6
@@ -104,7 +103,7 @@ shape = SubResource("RectangleShape2D_a4ucx")
 position = Vector2(0, -16000)
 shape = SubResource("RectangleShape2D_a4ucx")
 
-[node name="UI" parent="." unique_id=1062009323 instance=ExtResource("4_pm3h0")]
-
 [node name="BiomeTint" parent="." unique_id=596781071 instance=ExtResource("12_f0i0x")]
 layer = 0
+
+[node name="UI" parent="." unique_id=1062009323 instance=ExtResource("4_pm3h0")]

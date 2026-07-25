@@ -2,7 +2,6 @@
 
 [ext_resource type="PackedScene" uid="uid://63b84g8fpp3u" path="res://Scenes/UI/Inv_ui.tscn" id="1_s86y4"]
 [ext_resource type="PackedScene" uid="uid://db6p8h8c3fqjs" path="res://Scenes/UI/HP_UI.tscn" id="2_636u5"]
-[ext_resource type="Script" uid="uid://ejifwyccjcqg" path="res://Scripts/UI/MinimapScript.cs" id="3_akgwn"]
 
 [node name="UI" type="CanvasLayer" unique_id=1062009323]
 
@@ -42,19 +41,30 @@ grow_horizontal = 1
 grow_vertical = 0
 scale = Vector2(1.415, 1.415)
 
-[node name="Minimap" type="TextureRect" parent="." unique_id=539766948]
-texture_filter = 1
+[node name="Panel" type="Panel" parent="." unique_id=1673044506]
+custom_minimum_size = Vector2(256, 256)
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -83.0
-offset_top = -82.0
-offset_right = -43.0
-offset_bottom = -42.0
+offset_left = -52.0
+offset_top = -98.0
+offset_right = -12.0
+offset_bottom = -58.0
 grow_horizontal = 0
 grow_vertical = 0
-scale = Vector2(6, 6)
-pivot_offset = Vector2(40, 40)
-script = ExtResource("3_akgwn")
+pivot_offset_ratio = Vector2(1, 1)
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="Panel" unique_id=281165591]
+custom_minimum_size = Vector2(256, 256)
+layout_mode = 0
+offset_right = 256.0
+offset_bottom = 256.0
+
+[node name="SubViewport" type="SubViewport" parent="Panel/SubViewportContainer" unique_id=1226946001]
+disable_3d = true
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="MinimapCamera" type="Camera2D" parent="Panel/SubViewportContainer/SubViewport" unique_id=1740339715]
