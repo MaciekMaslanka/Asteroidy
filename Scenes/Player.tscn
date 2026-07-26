@@ -25,6 +25,7 @@ mass = 100.0
 gravity_scale = 0.0
 can_sleep = false
 script = ExtResource("1_kyqiw")
+ShieldsRegenDelay = 5.0
 MaxAngularVelocity = 20.0
 AngularDamping = 1.0
 ThrustForce = 85000.0

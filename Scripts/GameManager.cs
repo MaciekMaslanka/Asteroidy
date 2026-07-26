@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Xml.Serialization;
 using Godot;
 
@@ -9,6 +8,10 @@ public partial class GameManager : Node
 	public delegate void PlayerReadyEventHandler();
 	[Signal]
 	public delegate void BiomeSwitchedEventHandler(BiomeType newBiome);
+	[Signal]
+	public delegate void PlayerEnteredRadioactiveBiomeEventHandler();
+	[Signal]
+	public delegate void PlayerExitedRadioactiveBiomeEventHandler();
 
 	public static GameManager Instance {private set; get;}
 	public FastNoiseLite BiomeNoise {set; get;}
@@ -28,9 +31,21 @@ public partial class GameManager : Node
 	}
     public override void _PhysicsProcess(double delta)
 	{
-		if(GetBiomeAt(Player.GlobalPosition) != currentPlayerBiome)
+		BiomeType newBiome = GetBiomeAt(Player.GlobalPosition);
+		if(newBiome == BiomeType.Radioactive)
 		{
-			currentPlayerBiome = GetBiomeAt(Player.GlobalPosition);
+			//wejscie do radioaktywnego biomu
+			EmitSignal(SignalName.PlayerEnteredRadioactiveBiome);
+		}
+		else if(newBiome != BiomeType.Radioactive && currentPlayerBiome == BiomeType.Radioactive)
+		{
+			//wyjscie z radioaktywnego biomu
+			EmitSignal(SignalName.PlayerExitedRadioactiveBiome);
+		}
+
+		if(newBiome != currentPlayerBiome)
+		{
+			currentPlayerBiome = newBiome;
 			EmitSignal(SignalName.BiomeSwitched, Variant.From((int) currentPlayerBiome));
 		}
 	}

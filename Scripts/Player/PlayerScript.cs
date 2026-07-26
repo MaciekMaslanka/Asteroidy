@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 public partial class PlayerScript : RigidBody2D, IDamagable
@@ -68,6 +69,9 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	[ExportCategory("EQ")]
 	[Export] public Invectory Invectory {get; private set;}
 
+	//inne
+	private bool isInRadioactiveBiome;
+
     public override void _Ready()
 	{
 		//ważne!!- nie zmieniać nazw nodeów, bo się spieprzy
@@ -104,6 +108,8 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 			Invectory = new Invectory();
 		}
 
+		GameManager.Instance.PlayerEnteredRadioactiveBiome += OnRadioactiveBiomeEnter;
+		GameManager.Instance.PlayerExitedRadioactiveBiome += OnRadioactiveBiomeExit;
 		GameManager.Instance.RegisterPlayer(this);
 	}
 
@@ -126,25 +132,32 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 			firingTimer -= (float) delta;
 		}
 	}
+
+	//-------------------------------------------------------------------------
+	//damage
 	public void TakeDamage(float amount)
 	{
 		timeSinceLastHit = 0f;
 		if(currentShields > 0f)
 		{
-			currentShields -= amount;
-			if(currentShields <= 0f)
-			{
-				float overflowDamage = -currentShields;
-				currentShields = 0f;
-
-				TakeHPDamage(overflowDamage);
-			}
-			EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
+			TakeShieldsDamage(amount);
 		}
 		else
 		{
 			TakeHPDamage(amount);
 		}
+	}
+	private void TakeShieldsDamage(float amount)
+	{
+		currentShields -= amount;
+		if(currentShields <= 0f)
+		{
+			float overflowDamage = -currentShields;
+			currentShields = 0f;
+
+			TakeHPDamage(overflowDamage);
+		}
+		EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
 	}
 	private void TakeHPDamage(float amount)
 	{
@@ -161,7 +174,8 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	}
 	private void HandleShieldsRegen(float dt)
 	{
-		timeSinceLastHit += dt;
+		if(!isInRadioactiveBiome)
+			timeSinceLastHit += dt;
 
 		if(timeSinceLastHit >= ShieldsRegenDelay && currentShields < MaxShields)
 		{
@@ -171,6 +185,9 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 			EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
 		}
 	}
+
+	//-------------------------------------------------------------------------
+	//ruch
 	private void HandleRotation(float dt)
 	{
 		float input = Input.GetAxis("rotateLeft", "rotateRight");
@@ -194,6 +211,9 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 			LinearVelocity = LinearVelocity.Normalized() * MaxLinearVelocity;
 		}
 	}
+
+	//-------------------------------------------------------------------------
+	//tool
 	private void RotateTool(float dt)
 	{
 		Vector2 direction = GetGlobalMousePosition() - toolsContainer.GlobalPosition;
@@ -307,5 +327,19 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	public void CollectItem(InvItem item)
 	{
 		Invectory.InsertItem(item);
+	}
+	//-------------------------------------------------------------------------
+	//biome specific 
+	private void OnRadioactiveBiomeEnter()
+	{
+		isInRadioactiveBiome = true;
+		currentShields = 0f;
+		timeSinceLastHit = 0f;
+		EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
+	}
+	private void OnRadioactiveBiomeExit()
+	{
+		isInRadioactiveBiome = false;
+		EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
 	}
 }
