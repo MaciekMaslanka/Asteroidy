@@ -93,7 +93,7 @@ public partial class LevelGenerator : Node2D
     }
     private void GenerateAsteroids()
     {
-        int half = GenerationSize / 2;
+        float half = GenerationSize / 2;
 
         int asteroidsAmount = GD.RandRange(MinAsteroidCount, MaxAsteroidsCount);
         int attempts = asteroidsAmount * 12;
