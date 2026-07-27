@@ -1,13 +1,12 @@
 using Godot;
-using System;
 
 public partial class InvUISlot : Panel
 {
 	[Export] private Sprite2D itemIcon;
 	[Export] private Label amountLabel;
-	public void UpdateSlot(InvSlot slot)
+	public void UpdateSlot(InventorySlot slot)
 	{
-		if(slot.item == null)
+		if(slot.Item == null)
 		{
 			itemIcon.Visible = false;
 			amountLabel.Visible = false;
@@ -16,8 +15,8 @@ public partial class InvUISlot : Panel
 		{
 			itemIcon.Visible = true;
 			amountLabel.Visible = true;
-			itemIcon.Texture = slot.item.Icon;
-			amountLabel.Text = slot.amount.ToString();
+			itemIcon.Texture = slot.Item.Icon;
+			amountLabel.Text = slot.Amount.ToString();
 		}
 	}
 }

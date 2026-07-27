@@ -7,6 +7,8 @@ public partial class GameManager : Node
 	[Signal]
 	public delegate void PlayerReadyEventHandler();
 	[Signal]
+	public delegate void InventoryReadyEventHandler();
+	[Signal]
 	public delegate void BiomeSwitchedEventHandler(BiomeType newBiome);
 	[Signal]
 	public delegate void PlayerEnteredRadioactiveBiomeEventHandler();
@@ -21,7 +23,8 @@ public partial class GameManager : Node
 	private float smallThreshold;
 
 	private BiomeType currentPlayerBiome;
-	public  PlayerScript Player {set; get;}
+	public PlayerScript Player {private set; get;}
+	public Inventory Inventory {private set; get;}
 
 	public Image MinimapImage {private set; get;}
 
@@ -79,11 +82,17 @@ public partial class GameManager : Node
 	public void RegisterPlayer(PlayerScript player)
 	{
 		if(Player != null)
-		{
 			throw new InvalidOperationException("Player jest juz ustawiony");
-		}
 		
 		Player = player;
 		EmitSignal(SignalName.PlayerReady);
+	}
+	public void RegisterInventory(Inventory inv)
+	{
+		if(Inventory != null)
+			throw new InvalidOperationException("Inventory jest już ustawione");
+
+		Inventory = inv;
+		EmitSignal(SignalName.InventoryReady);
 	}
 }

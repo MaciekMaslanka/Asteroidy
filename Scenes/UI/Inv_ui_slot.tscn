@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://81a10bvjlw5r"]
 
-[ext_resource type="Script" uid="uid://cby06vvwjgua6" path="res://Scripts/UI/InvUISlot.cs" id="1_hxnu7"]
+[ext_resource type="Script" uid="uid://blnacobo80nl7" path="res://Scripts/UI/InvUISlot.cs" id="1_hxnu7"]
 [ext_resource type="Texture2D" uid="uid://0ohm32ffkekx" path="res://Sprites/UI/Inv_slot.png" id="1_ua617"]
 
 [node name="Inv_ui_slot" type="Panel" unique_id=1024225904 node_paths=PackedStringArray("itemIcon", "amountLabel")]

@@ -1,10 +1,11 @@
-[gd_resource type="Resource" script_class="InvItem" format=3 uid="uid://c0ma0gskik048"]
+[gd_resource type="Resource" script_class="OreItem" format=3 uid="uid://c0ma0gskik048"]
 
 [ext_resource type="Texture2D" uid="uid://bx8m57hxjub4c" path="res://Sprites/Items/IronIcon.png" id="1_hgl5s"]
-[ext_resource type="Script" uid="uid://bm3hmph7l8y4o" path="res://Scripts/Invectory/InvItem.cs" id="2_uufeh"]
+[ext_resource type="Script" uid="uid://nbarmfmf5ki" path="res://Scripts/Invectory/OreItem.cs" id="1_jetyl"]
 
 [resource]
-script = ExtResource("2_uufeh")
+script = ExtResource("1_jetyl")
 ItemName = "Iron"
 Icon = ExtResource("1_hgl5s")
-metadata/_custom_type_script = "uid://bm3hmph7l8y4o"
+Actions = Array[int]([1])
+metadata/_custom_type_script = "uid://nbarmfmf5ki"

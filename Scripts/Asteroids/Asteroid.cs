@@ -162,7 +162,7 @@ public partial class Asteroid : RigidBody2D
 		DiggingHandler digHandler = new DiggingHandler(this, ore);
 		digHandler.OnOreDestroyed();
 
-		GameManager.Instance.Player.CollectItem(ore.item);
+		GameManager.Instance.Player.CollectItem(ore.item, 1);
 
 		ores.Remove(ore);
 		ore.QueueFree();

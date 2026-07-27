@@ -67,7 +67,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 
 	//eq
 	[ExportCategory("EQ")]
-	[Export] public Invectory Invectory {get; private set;}
+	[Export] public Inventory Inventory {get; private set;}
 
 	//inne
 	private bool isInRadioactiveBiome;
@@ -103,14 +103,15 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		AngularDamp = AngularDamping;
 		LinearDamp = LinearDamping;
 
-		if(Invectory == null)
+		if(Inventory == null)
 		{
-			Invectory = new Invectory();
+			Inventory = new Inventory();
 		}
 
 		GameManager.Instance.PlayerEnteredRadioactiveBiome += OnRadioactiveBiomeEnter;
 		GameManager.Instance.PlayerExitedRadioactiveBiome += OnRadioactiveBiomeExit;
 		GameManager.Instance.RegisterPlayer(this);
+		GameManager.Instance.RegisterInventory(Inventory);
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -324,9 +325,9 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 			GetTree().CurrentScene.AddChild(bullet);
 		}
 	}
-	public void CollectItem(InvItem item)
+	public void CollectItem(InvItem item, int amount)
 	{
-		Invectory.InsertItem(item);
+		Inventory.AddItem(item, amount);
 	}
 	//-------------------------------------------------------------------------
 	//biome specific 

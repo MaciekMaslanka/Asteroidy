@@ -1,10 +1,11 @@
-[gd_resource type="Resource" script_class="InvItem" format=3 uid="uid://b2ia3ss6infei"]
+[gd_resource type="Resource" script_class="OreItem" format=3 uid="uid://dvtgic0fgkx1x"]
 
+[ext_resource type="Script" uid="uid://nbarmfmf5ki" path="res://Scripts/Invectory/OreItem.cs" id="1_buche"]
 [ext_resource type="Texture2D" uid="uid://ctw32i1ddnfy5" path="res://Sprites/Items/GoldIcon.png" id="1_u7gr6"]
-[ext_resource type="Script" uid="uid://bm3hmph7l8y4o" path="res://Scripts/Invectory/InvItem.cs" id="2_clup5"]
 
 [resource]
-script = ExtResource("2_clup5")
+script = ExtResource("1_buche")
 ItemName = "Gold"
 Icon = ExtResource("1_u7gr6")
-metadata/_custom_type_script = "uid://bm3hmph7l8y4o"
+Actions = Array[int]([1])
+metadata/_custom_type_script = "uid://nbarmfmf5ki"
