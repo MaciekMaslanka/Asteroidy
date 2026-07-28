@@ -1,10 +1,10 @@
 using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
-using System.Reflection.Metadata;
 
 public partial class InventoryUI : Control
 {
+    [Export] private ItemContextMenu itemContextMenu;
     private List<InvUISlot> uiSlots = new();
     private bool isInventoryOpen = false;
     public override void _Ready()
@@ -36,6 +36,11 @@ public partial class InventoryUI : Control
 
         inventory.InventoryChanged += HandleInventoryChange;
         HandleInventoryChange(inventory.Slots);
+
+        foreach (var slot in uiSlots)
+        {
+            slot.SlotPressed += OpenContextMenu;
+        }
     }
     public override void _Process(double delta)
     {
@@ -55,11 +60,16 @@ public partial class InventoryUI : Control
     {
         Visible = false;
         isInventoryOpen = false;
+        itemContextMenu.Close();
     }
     private void OpenInventory()
     {
         Visible = true;
         isInventoryOpen = true;
+    }
+    private void OpenContextMenu(InventorySlot slot)
+    {
+        itemContextMenu.Open(slot, GetGlobalMousePosition());
     }
     private void HandleInventoryChange(Array<InventorySlot> slots)
     {

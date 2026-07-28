@@ -8,4 +8,8 @@ public partial class OreItem : InvItem
     {
         return;
     }
+    public override void Drop()
+    {
+        return;
+    }
 }
