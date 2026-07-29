@@ -19,6 +19,7 @@ public partial class OreScript : StaticBody2D
     [Export] private Godot.Collections.Array<OreData> OreInfo;
     private Dictionary<OreType, OreData> oreLookup;
     [Export] public InvItem item {private set; get;}
+    [Export] private PackedScene itemDropScene;
     public float CurrentHealth { get; private set; }
 
     public Polygon2D shape {get; private set;}
@@ -46,6 +47,11 @@ public partial class OreScript : StaticBody2D
 
         if (CurrentHealth <= 0)
         {
+            var itemDrop = itemDropScene.Instantiate<ItemDrop>();
+            itemDrop.GlobalPosition = this.GlobalPosition;
+            itemDrop.SetItem(item, 1);
+            GetTree().CurrentScene.GetNode("ItemDrops").AddChild(itemDrop);
+            
             GetParent<Asteroid>().OnOreDestroyed(this);
         }
     }

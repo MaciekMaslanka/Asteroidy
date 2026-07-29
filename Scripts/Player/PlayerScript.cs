@@ -1,8 +1,6 @@
 using Godot;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
+using Microsoft.VisualBasic;
+using System.Collections.Generic;
 
 public partial class PlayerScript : RigidBody2D, IDamagable
 {
@@ -69,6 +67,11 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	[ExportCategory("EQ")]
 	[Export] public Inventory Inventory {get; private set;}
 
+	//pickupowanie itemów
+	[ExportCategory("Pickups")]
+	[Export] private Area2D pickupDetector;
+	private List<ItemDrop> pickableDrops = new();
+	private ItemDrop selectedItemDrop;
 	//inne
 	private bool isInRadioactiveBiome;
 
@@ -112,6 +115,9 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		GameManager.Instance.PlayerExitedRadioactiveBiome += OnRadioactiveBiomeExit;
 		GameManager.Instance.RegisterPlayer(this);
 		GameManager.Instance.RegisterInventory(Inventory);
+
+		pickupDetector.BodyEntered += OnPickupEnteredArea;
+		pickupDetector.BodyExited += OnPickupExitedArea;
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -124,14 +130,14 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		HandleMouseInput(dt);
 		HandleShieldsRegen(dt);
 
+		if(pickableDrops.Count > 0)
+			HandlePickupIndicator();
+
 		if(diggingTimer > 0)
-		{
 			diggingTimer -= (float) delta;
-		}
+		
 		if(firingTimer > 0)
-		{
 			firingTimer -= (float) delta;
-		}
 	}
 
 	//-------------------------------------------------------------------------
@@ -328,6 +334,68 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	public void CollectItem(InvItem item, int amount)
 	{
 		Inventory.AddItem(item, amount);
+	}
+	//-------------------------------------------------------------------------
+	//pickups
+	private void OnPickupEnteredArea(Node2D pickup)
+	{
+		ItemDrop itemDrop = pickup as ItemDrop;
+		pickableDrops.Add(itemDrop);
+	}
+	private void OnPickupExitedArea(Node2D pickup)
+	{
+		ItemDrop itemDrop = pickup as ItemDrop;
+		itemDrop.DisablePickupIndicator();
+		pickableDrops.Remove(itemDrop);
+	}
+	private ItemDrop GetItemUnderMouse()
+	{
+		foreach(var item in pickableDrops)
+		{
+			if(item.IsMouseOver)
+			{
+				return item;
+			}
+		}
+		return null;
+	}
+	private ItemDrop GetClosestItem()
+	{
+		ItemDrop closest = null;
+		float closestDist = float.MaxValue;
+
+		foreach(var pickup in pickableDrops)
+		{
+			if(closest == null)
+			{
+				closest = pickup;
+				closestDist = GlobalPosition.DistanceTo(closest.GlobalPosition);
+				continue;
+			}
+
+			float distanceToPlayer = GlobalPosition.DistanceTo(pickup.GlobalPosition);
+			if(distanceToPlayer < closestDist)
+			{
+				closest = pickup;
+				closestDist = distanceToPlayer;
+				continue;
+			}
+		}
+
+		return closest;
+	}
+	private void HandlePickupIndicator()
+	{
+		ItemDrop newClosest = GetItemUnderMouse();
+		if(newClosest == null)
+			newClosest = GetClosestItem();
+
+		if(newClosest != selectedItemDrop)
+		{
+			selectedItemDrop?.DisablePickupIndicator();
+			selectedItemDrop = newClosest;
+			newClosest?.EnablePickupIndicator();
+		}
 	}
 	//-------------------------------------------------------------------------
 	//biome specific 

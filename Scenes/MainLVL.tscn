@@ -73,6 +73,8 @@ MinAsteroidCount = 300
 asteroidContainer = NodePath("../AsteroidContainer")
 biomeNoise = SubResource("FastNoiseLite_f0i0x")
 
+[node name="ItemDrops" type="Node2D" parent="." unique_id=1031677191]
+
 [node name="Border" type="StaticBody2D" parent="." unique_id=975424245]
 z_index = -10
 collision_layer = 32

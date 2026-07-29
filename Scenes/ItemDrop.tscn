@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://5o3wihxk8csq"]
+
+[ext_resource type="Texture2D" uid="uid://pqp5qlnew4rf" path="res://Sprites/Items/CoalIcon.png" id="1_gap0k"]
+[ext_resource type="Script" uid="uid://dkmguctcq33yr" path="res://Scripts/Invectory/ItemDrop.cs" id="1_ybiva"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ybiva"]
+radius = 16.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ybiva"]
+bg_color = Color(1, 0, 0, 1)
+
+[node name="ItemDrop" type="RigidBody2D" unique_id=1743062474 node_paths=PackedStringArray("itemIcon", "pickupIndicator")]
+z_index = -1
+collision_layer = 64
+collision_mask = 111
+input_pickable = true
+mass = 30.0
+gravity_scale = 0.0
+continuous_cd = 1
+linear_damp = 1.0
+angular_damp = 1.0
+script = ExtResource("1_ybiva")
+itemIcon = NodePath("Sprite2D")
+pickupIndicator = NodePath("PickupIndicator")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=241501226]
+texture_filter = 1
+texture = ExtResource("1_gap0k")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1405997426]
+shape = SubResource("CircleShape2D_ybiva")
+
+[node name="PickupIndicator" type="PanelContainer" parent="." unique_id=1693380595]
+offset_left = -24.0
+offset_top = -33.0
+offset_right = 24.0
+offset_bottom = -17.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_ybiva")

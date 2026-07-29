@@ -94,6 +94,7 @@ gunToolSelect={
 2d_physics/layer_4="Ores"
 2d_physics/layer_5="Bullets"
 2d_physics/layer_6="Border"
+2d_physics/layer_7="ItemDrops"
 
 [physics]
 

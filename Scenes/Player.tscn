@@ -19,7 +19,10 @@ height = 80.0
 radius = 7.0
 height = 40.0
 
-[node name="CharacterBody2D" type="RigidBody2D" unique_id=43622812]
+[sub_resource type="CircleShape2D" id="CircleShape2D_nn08x"]
+radius = 200.0
+
+[node name="CharacterBody2D" type="RigidBody2D" unique_id=43622812 node_paths=PackedStringArray("pickupDetector")]
 collision_mask = 62
 mass = 100.0
 gravity_scale = 0.0
@@ -33,6 +36,7 @@ toolRotationLimit = 100.0
 diggerRange = 40.0
 BulletScene = ExtResource("2_nn08x")
 Inventory = ExtResource("3_nn08x")
+pickupDetector = NodePath("PickupDetector")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=760477680]
 texture_filter = 1
@@ -88,3 +92,10 @@ texture = ExtResource("5_nn08x")
 
 [node name="BulletsSpawn" type="Node2D" parent="ToolContainer/GunTool" unique_id=705286700]
 position = Vector2(0, -24)
+
+[node name="PickupDetector" type="Area2D" parent="." unique_id=1622104866]
+collision_layer = 0
+collision_mask = 64
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PickupDetector" unique_id=151575718]
+shape = SubResource("CircleShape2D_nn08x")
