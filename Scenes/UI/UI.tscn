@@ -12,9 +12,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="HPbar" parent="UI" unique_id=200908839 instance=ExtResource("2_636u5")]
-custom_minimum_size = Vector2(640, 360)
 layout_mode = 1
 pivot_offset_ratio = Vector2(0, 1)
 

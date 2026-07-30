@@ -1,25 +1,24 @@
 using System.Dynamic;
+using System.Net.NetworkInformation;
 using Godot;
 
 public partial class ItemDrop : RigidBody2D
 {
 	[Export] private Sprite2D itemIcon;
 	[Export] private PanelContainer pickupIndicator;
+	[Export] private Label pickupIndicatorLabel;
+	private Vector2 pickupIndicatorOffset;
 	private InvItem item;
 	private int quantity;
 	public bool IsMouseOver {private set; get;} = false;
 
     public override void _Ready()
 	{
-		MouseEntered += () => {
-			IsMouseOver = true;
-			GD.Print("mouse over");
-		};
-		MouseExited += () =>
-		{
-			IsMouseOver = false;
-			GD.Print("mouse nicht over");
-		};
+		DisablePickupIndicator();
+		pickupIndicatorOffset = pickupIndicator.Position;
+
+		MouseEntered += () => IsMouseOver = true;
+		MouseExited += () => IsMouseOver = false;
 
 		Rotation = (float) GD.RandRange(0, Mathf.Tau);
 
@@ -29,6 +28,11 @@ public partial class ItemDrop : RigidBody2D
 		randomDirection *= (float) GD.RandRange(1f, 10f);
 		ApplyImpulse(randomDirection);
 	}
+    public override void _PhysicsProcess(double delta)
+    {
+        pickupIndicator.Position = pickupIndicatorOffset.Rotated(-Rotation);
+		pickupIndicator.Rotation = -Rotation;
+    }
 	public void SetItem(InvItem item, int quantity)
 	{
 		this.item = item;
@@ -38,9 +42,24 @@ public partial class ItemDrop : RigidBody2D
 	public void EnablePickupIndicator()
 	{
 		pickupIndicator.Visible = true;
+		pickupIndicatorLabel.Text = $"{item.ItemName} ({quantity})";
 	}
 	public void DisablePickupIndicator()
 	{
 		pickupIndicator.Visible = false;
+	}
+	public bool Pickup()
+	{
+		int remainingAmount = GameManager.Instance.Player.CollectItem(item, quantity);
+		if(remainingAmount <= 0)
+		{
+			QueueFree();
+			return true;
+		}
+		else
+		{
+			quantity = remainingAmount;
+			return false;
+		}
 	}
 }

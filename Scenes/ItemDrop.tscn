@@ -7,9 +7,17 @@
 radius = 16.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ybiva"]
-bg_color = Color(1, 0, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
 
-[node name="ItemDrop" type="RigidBody2D" unique_id=1743062474 node_paths=PackedStringArray("itemIcon", "pickupIndicator")]
+[node name="ItemDrop" type="RigidBody2D" unique_id=1743062474 node_paths=PackedStringArray("itemIcon", "pickupIndicator", "pickupIndicatorLabel")]
 z_index = -1
 collision_layer = 64
 collision_mask = 111
@@ -22,6 +30,7 @@ angular_damp = 1.0
 script = ExtResource("1_ybiva")
 itemIcon = NodePath("Sprite2D")
 pickupIndicator = NodePath("PickupIndicator")
+pickupIndicatorLabel = NodePath("PickupIndicator/Label")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=241501226]
 texture_filter = 1
@@ -31,8 +40,25 @@ texture = ExtResource("1_gap0k")
 shape = SubResource("CircleShape2D_ybiva")
 
 [node name="PickupIndicator" type="PanelContainer" parent="." unique_id=1693380595]
-offset_left = -24.0
-offset_top = -33.0
-offset_right = 24.0
-offset_bottom = -17.0
+custom_minimum_size = Vector2(14, 14)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -43.0
+offset_top = -34.0
+offset_right = 43.0
+offset_bottom = -20.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_styles/panel = SubResource("StyleBoxFlat_ybiva")
+
+[node name="Label" type="Label" parent="PickupIndicator" unique_id=892917046]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 8
+text = "Placeholder (amount)"
+horizontal_alignment = 1

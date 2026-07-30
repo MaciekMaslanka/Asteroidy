@@ -129,6 +129,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		HandleToolChanges();
 		HandleMouseInput(dt);
 		HandleShieldsRegen(dt);
+		HandleOtherInputs(dt);
 
 		if(pickableDrops.Count > 0)
 			HandlePickupIndicator();
@@ -331,27 +332,37 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 			GetTree().CurrentScene.AddChild(bullet);
 		}
 	}
-	public void CollectItem(InvItem item, int amount)
+	public int CollectItem(InvItem item, int amount)
 	{
-		Inventory.AddItem(item, amount);
+		return Inventory.AddItem(item, amount);
 	}
 	//-------------------------------------------------------------------------
 	//pickups
 	private void OnPickupEnteredArea(Node2D pickup)
 	{
-		ItemDrop itemDrop = pickup as ItemDrop;
-		pickableDrops.Add(itemDrop);
+		if(pickup is ItemDrop itemdrop)
+		{
+			if(!pickableDrops.Contains(itemdrop))
+			{
+				pickableDrops.Add(itemdrop);
+			}
+		}
 	}
 	private void OnPickupExitedArea(Node2D pickup)
 	{
-		ItemDrop itemDrop = pickup as ItemDrop;
-		itemDrop.DisablePickupIndicator();
-		pickableDrops.Remove(itemDrop);
+		if(pickup is ItemDrop itemDrop)
+		{
+			itemDrop?.DisablePickupIndicator();
+			pickableDrops.Remove(itemDrop);
+		}
 	}
 	private ItemDrop GetItemUnderMouse()
 	{
 		foreach(var item in pickableDrops)
 		{
+			if(!IsInstanceValid(item)) 
+				continue;
+
 			if(item.IsMouseOver)
 			{
 				return item;
@@ -366,6 +377,9 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 
 		foreach(var pickup in pickableDrops)
 		{
+			if(!IsInstanceValid(pickup))
+				continue;
+
 			if(closest == null)
 			{
 				closest = pickup;
@@ -386,7 +400,17 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	}
 	private void HandlePickupIndicator()
 	{
+		pickableDrops.RemoveAll(drop => !IsInstanceValid(drop));
+		
+		if(pickableDrops.Count == 0)
+		{
+			selectedItemDrop?.DisablePickupIndicator();
+			selectedItemDrop = null;
+			return;
+		}
+
 		ItemDrop newClosest = GetItemUnderMouse();
+
 		if(newClosest == null)
 			newClosest = GetClosestItem();
 
@@ -395,6 +419,17 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 			selectedItemDrop?.DisablePickupIndicator();
 			selectedItemDrop = newClosest;
 			newClosest?.EnablePickupIndicator();
+		}
+	}
+	private void HandleOtherInputs(float dt)
+	{
+		if(Input.IsActionJustPressed("pickupItem") && IsInstanceValid(selectedItemDrop))
+		{
+			if(selectedItemDrop.Pickup()) //jeśli itemek się usunie
+			{
+				pickableDrops.Remove(selectedItemDrop);
+				selectedItemDrop = null;
+			}
 		}
 	}
 	//-------------------------------------------------------------------------

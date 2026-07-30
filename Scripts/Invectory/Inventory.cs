@@ -52,7 +52,6 @@ public partial class Inventory : Resource
             }
         }
 
-        //TODO: obsługa gdy nie udało się zebrać wszystkiego
         return amount;
     }
 }
