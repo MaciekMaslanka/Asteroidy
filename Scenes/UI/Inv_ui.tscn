@@ -4,6 +4,9 @@
 [ext_resource type="Texture2D" uid="uid://xkidt4jmesjy" path="res://Sprites/UI/Background1.png" id="2_0gfek"]
 [ext_resource type="PackedScene" uid="uid://81a10bvjlw5r" path="res://Scenes/UI/Inv_ui_slot.tscn" id="3_6ua3l"]
 [ext_resource type="Script" uid="uid://cyd12anqy8iwq" path="res://Scripts/UI/ItemContextMenu.cs" id="4_6ua3l"]
+[ext_resource type="Texture2D" uid="uid://bdh8v4ruccdlm" path="res://Sprites/UI/Slider/SliderGrabber.png" id="5_5vqdy"]
+[ext_resource type="Texture2D" uid="uid://l48phen3nfm1" path="res://Sprites/UI/Slider/SliderGrabberHover.png" id="6_xhm5s"]
+[ext_resource type="Texture2D" uid="uid://b8wksj1oc1xv5" path="res://Sprites/UI/Slider/SliderBackground.png" id="7_i243t"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0gfek"]
 content_margin_left = 3.0
@@ -19,9 +22,29 @@ corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
+expand_margin_left = 3.0
+expand_margin_right = 3.0
+expand_margin_bottom = 3.0
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_6ua3l"]
+grow_begin = 5.0
+grow_end = 5.0
 thickness = 5
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hqmgo"]
+texture = ExtResource("7_i243t")
+texture_margin_left = 4.0
+texture_margin_top = 12.0
+texture_margin_right = 4.0
+texture_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_56f8l"]
+texture = ExtResource("7_i243t")
+texture_margin_left = 4.0
+texture_margin_top = 16.0
+texture_margin_right = 4.0
+texture_margin_bottom = 16.0
+modulate_color = Color(0.46229059, 0.46229064, 0.4622904, 1)
 
 [node name="Inv_UI" type="Control" unique_id=2128682179 node_paths=PackedStringArray("itemContextMenu")]
 custom_minimum_size = Vector2(240, 160)
@@ -136,22 +159,27 @@ layout_mode = 2
 [node name="Inv_ui_slot24" parent="NinePatchRect/GridContainer" unique_id=455042797 instance=ExtResource("3_6ua3l")]
 layout_mode = 2
 
-[node name="ItemContextMenu" type="PanelContainer" parent="." unique_id=699340133 node_paths=PackedStringArray("itemName", "useButton", "dropButton")]
+[node name="ItemContextMenu" type="PanelContainer" parent="." unique_id=699340133 node_paths=PackedStringArray("itemName", "ButtonsContainer", "DropContainer", "useButton", "dropButton", "dropAmount", "dropSlider", "confirmDropButton")]
 texture_filter = 1
+custom_minimum_size = Vector2(200, 96)
 layout_mode = 0
 offset_right = 200.0
-offset_bottom = 132.0
+offset_bottom = 96.0
 scale = Vector2(0.5, 0.5)
-pivot_offset_ratio = Vector2(0.5, 0.5)
+pivot_offset_ratio = Vector2(0.5, 0)
 theme_override_styles/panel = SubResource("StyleBoxFlat_0gfek")
 script = ExtResource("4_6ua3l")
 itemName = NodePath("VBoxContainer/Label")
-useButton = NodePath("VBoxContainer/UseButton")
-dropButton = NodePath("VBoxContainer/DropButton")
+ButtonsContainer = NodePath("VBoxContainer/Buttons")
+DropContainer = NodePath("VBoxContainer/DropSlider")
+useButton = NodePath("VBoxContainer/Buttons/UseButton")
+dropButton = NodePath("VBoxContainer/Buttons/DropButton")
+dropAmount = NodePath("VBoxContainer/DropSlider/Label")
+dropSlider = NodePath("VBoxContainer/DropSlider/HSlider")
+confirmDropButton = NodePath("VBoxContainer/DropSlider/ConfirmDropButton")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ItemContextMenu" unique_id=826023861]
 layout_mode = 2
-size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_constants/separation = 2
 alignment = 1
@@ -169,12 +197,40 @@ layout_mode = 2
 theme_override_constants/separation = 5
 theme_override_styles/separator = SubResource("StyleBoxLine_6ua3l")
 
-[node name="UseButton" type="Button" parent="ItemContextMenu/VBoxContainer" unique_id=897411864]
+[node name="Buttons" type="VBoxContainer" parent="ItemContextMenu/VBoxContainer" unique_id=1542689217]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="UseButton" type="Button" parent="ItemContextMenu/VBoxContainer/Buttons" unique_id=897411864]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "Use"
 
-[node name="DropButton" type="Button" parent="ItemContextMenu/VBoxContainer" unique_id=1842828842]
+[node name="DropButton" type="Button" parent="ItemContextMenu/VBoxContainer/Buttons" unique_id=1842828842]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
 text = "Drop"
+
+[node name="DropSlider" type="VBoxContainer" parent="ItemContextMenu/VBoxContainer" unique_id=1630696651]
+visible = false
+custom_minimum_size = Vector2(0, 55.18)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="ItemContextMenu/VBoxContainer/DropSlider" unique_id=370379942]
+layout_mode = 2
+text = "2137"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="ItemContextMenu/VBoxContainer/DropSlider" unique_id=1545243185]
+layout_mode = 2
+theme_override_icons/grabber = ExtResource("5_5vqdy")
+theme_override_icons/grabber_highlight = ExtResource("6_xhm5s")
+theme_override_styles/slider = SubResource("StyleBoxTexture_hqmgo")
+theme_override_styles/grabber_area = SubResource("StyleBoxTexture_56f8l")
+value = 50.0
+
+[node name="ConfirmDropButton" type="Button" parent="ItemContextMenu/VBoxContainer/DropSlider" unique_id=939621727]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "Confirm"

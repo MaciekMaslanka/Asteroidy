@@ -12,6 +12,7 @@ public abstract partial class InvItem : Resource
     [Export] public string ItemName;
     [Export] public Texture2D Icon;
     [Export] public Array<ItemAction> Actions;
+
     public abstract void Use();
     public abstract void Drop();
     public bool CanUse()

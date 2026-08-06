@@ -54,4 +54,20 @@ public partial class Inventory : Resource
 
         return amount;
     }
+
+    public bool RemoveItem(InventorySlot slot, int amount)
+    {
+        if(slot.Item == null) return false;
+
+        if(slot.Amount < amount) return false;
+
+        slot.Amount -= amount;
+
+        if(slot.Amount == 0)
+            slot.Item = null;
+
+        EmitSignal(SignalName.InventoryChanged, Slots);
+
+        return true;
+    }
 }

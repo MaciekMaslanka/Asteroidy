@@ -72,6 +72,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	[Export] private Area2D pickupDetector;
 	private List<ItemDrop> pickableDrops = new();
 	private ItemDrop selectedItemDrop;
+	[Export] public ItemDropSpawner DropSpawner {private set; get;}
 	//inne
 	private bool isInRadioactiveBiome;
 

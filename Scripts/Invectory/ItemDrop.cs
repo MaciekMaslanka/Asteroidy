@@ -1,5 +1,3 @@
-using System.Dynamic;
-using System.Net.NetworkInformation;
 using Godot;
 
 public partial class ItemDrop : RigidBody2D

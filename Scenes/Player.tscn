@@ -6,6 +6,8 @@
 [ext_resource type="Texture2D" uid="uid://bduxlxoulsvy2" path="res://Sprites/Player/diggingToolPlaceholder.png" id="4_5ixxa"]
 [ext_resource type="Texture2D" uid="uid://ckqf1y1wka2yj" path="res://Sprites/Player/playerSprite.png" id="4_nn08x"]
 [ext_resource type="Texture2D" uid="uid://bv2ospmuu8bmc" path="res://Sprites/Player/weaponPlaceholder.png" id="5_nn08x"]
+[ext_resource type="Script" uid="uid://bxki15tkodku1" path="res://Scripts/Player/ItemDropSpawner.cs" id="7_52ee3"]
+[ext_resource type="PackedScene" uid="uid://5o3wihxk8csq" path="res://Scenes/ItemDrop.tscn" id="8_bhhdu"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nn08x"]
 radius = 12.0
@@ -22,7 +24,7 @@ height = 40.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_nn08x"]
 radius = 200.0
 
-[node name="CharacterBody2D" type="RigidBody2D" unique_id=43622812 node_paths=PackedStringArray("pickupDetector")]
+[node name="CharacterBody2D" type="RigidBody2D" unique_id=43622812 node_paths=PackedStringArray("pickupDetector", "DropSpawner")]
 collision_mask = 62
 mass = 100.0
 gravity_scale = 0.0
@@ -37,6 +39,7 @@ diggerRange = 40.0
 BulletScene = ExtResource("2_nn08x")
 Inventory = ExtResource("3_nn08x")
 pickupDetector = NodePath("PickupDetector")
+DropSpawner = NodePath("ItemDropSpawner")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=760477680]
 texture_filter = 1
@@ -99,3 +102,8 @@ collision_mask = 64
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="PickupDetector" unique_id=151575718]
 shape = SubResource("CircleShape2D_nn08x")
+
+[node name="ItemDropSpawner" type="Node2D" parent="." unique_id=1863083338]
+script = ExtResource("7_52ee3")
+itemDropScene = ExtResource("8_bhhdu")
+offsetFromPlayer = 50.0
