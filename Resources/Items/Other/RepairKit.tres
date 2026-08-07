@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="RepairKitItem" format=3 uid="uid://ddyxoqc6d868"]
+
+[ext_resource type="Texture2D" uid="uid://5hlfn6enfkol" path="res://Sprites/Items/RepairKitIcon.png" id="1_csdah"]
+[ext_resource type="Script" uid="uid://d06ifik6khh0d" path="res://Scripts/Invectory/RepairKitItem.cs" id="1_u4l4b"]
+
+[resource]
+script = ExtResource("1_u4l4b")
+fixAmount = 125.0
+ItemName = "Repair Kit"
+Icon = ExtResource("1_csdah")
+Actions = Array[int]([0, 1])
+metadata/_custom_type_script = "uid://d06ifik6khh0d"

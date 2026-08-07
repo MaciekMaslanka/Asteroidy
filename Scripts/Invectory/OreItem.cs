@@ -4,9 +4,9 @@ using System;
 [GlobalClass]
 public partial class OreItem : InvItem
 {
-    public override void Use()
+    public override bool Use()
     {
-        return;
+        return false;
     }
     public override void Drop()
     {

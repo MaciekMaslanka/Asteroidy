@@ -16,7 +16,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	[Export] float MaxShields = 500f;
 	[Export] float ShieldsRegenDelay = 20f;
 	[Export] float ShieldsRegenRate = 20f;
-	private float currentHP;
+	private float currentHp;
 	private float currentShields;
 	private float timeSinceLastHit = 0f;
 
@@ -80,9 +80,9 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	{
 		//ważne!!- nie zmieniać nazw nodeów, bo się spieprzy
 		//hp
-		currentHP = MaxHP;
+		currentHp = MaxHP;
 		currentShields = MaxShields;
-		EmitSignal(SignalName.HealthChanged, currentHP, MaxHP);
+		EmitSignal(SignalName.HealthChanged, currentHp, MaxHP);
 		EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
 
 		//narzedzia
@@ -143,6 +143,15 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 
 	//-------------------------------------------------------------------------
 	//damage
+	public bool Heal(float amount)
+	{
+		if(currentHp == MaxHP) 
+			return false;
+
+		currentHp = Mathf.Min(currentHp + amount, MaxHP);
+		EmitSignal(SignalName.HealthChanged, currentHp, MaxHP);
+		return true;
+	}
 	public void TakeDamage(float amount)
 	{
 		timeSinceLastHit = 0f;
@@ -169,9 +178,9 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	}
 	private void TakeHPDamage(float amount)
 	{
-		currentHP -= amount;
-		EmitSignal(SignalName.HealthChanged, currentHP, MaxHP);
-		if(currentHP <= 0f)
+		currentHp -= amount;
+		EmitSignal(SignalName.HealthChanged, currentHp, MaxHP);
+		if(currentHp <= 0f)
 		{
 			Die();
 		}

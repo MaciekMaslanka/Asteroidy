@@ -1,10 +1,13 @@
 [gd_resource type="Resource" script_class="Inventory" format=3 uid="uid://dr4sjuvevyri8"]
 
+[ext_resource type="Resource" uid="uid://ddyxoqc6d868" path="res://Resources/Items/Other/RepairKit.tres" id="1_bxkpk"]
 [ext_resource type="Script" uid="uid://c56fabgpxcee6" path="res://Scripts/Invectory/Inventory.cs" id="1_gc3pm"]
 [ext_resource type="Script" uid="uid://cevyy5bqm4h8y" path="res://Scripts/Invectory/InventorySlot.cs" id="1_happc"]
 
 [sub_resource type="Resource" id="Resource_happc"]
 script = ExtResource("1_happc")
+Item = ExtResource("1_bxkpk")
+Amount = 4
 metadata/_custom_type_script = "uid://cevyy5bqm4h8y"
 
 [sub_resource type="Resource" id="Resource_bxkpk"]

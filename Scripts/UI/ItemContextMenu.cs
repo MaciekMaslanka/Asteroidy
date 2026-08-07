@@ -48,16 +48,23 @@ public partial class ItemContextMenu : PanelContainer
 
 	private void UseItem()
 	{
-		currentSlot.Item.Use();
+		if(currentSlot.Item.CanUse())
+		{
+			if(currentSlot.Item.Use())
+				GameManager.Instance.Inventory.RemoveItem(currentSlot, 1);
+		}
 		Close();
 	}
 	private void DropItem()
 	{
-		dropSlider.MaxValue = currentSlot.Amount;
-		dropSlider.Value = currentSlot.Amount;
-		dropAmount.Text = currentSlot.Amount.ToString();
-		ButtonsContainer.Visible = false;
-		DropContainer.Visible = true;
+		if(currentSlot.Item.CanDrop())
+		{
+			dropSlider.MaxValue = currentSlot.Amount;
+			dropSlider.Value = currentSlot.Amount;
+			dropAmount.Text = currentSlot.Amount.ToString();
+			ButtonsContainer.Visible = false;
+			DropContainer.Visible = true;
+		}
 	}
 	private void OnDropConfirm()
 	{
