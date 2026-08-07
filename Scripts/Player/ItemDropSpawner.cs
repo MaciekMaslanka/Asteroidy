@@ -7,6 +7,8 @@ public partial class ItemDropSpawner : Node2D
 
 	public void SpawnItemDrop(InvItem item, int amount)
 	{
+		if(amount == 0) return;
+		
 		ItemDrop drop = itemDropScene.Instantiate<ItemDrop>();
 		drop.SetItem(item, amount);
 		drop.GlobalPosition = GlobalPosition + (Vector2.Up * offsetFromPlayer).Rotated((float) GD.RandRange(0, Mathf.Tau));

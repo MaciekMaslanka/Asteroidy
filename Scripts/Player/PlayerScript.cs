@@ -132,8 +132,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		HandleShieldsRegen(dt);
 		HandleOtherInputs(dt);
 
-		if(pickableDrops.Count > 0)
-			HandlePickupIndicator();
+		HandlePickupIndicator();
 
 		if(diggingTimer > 0)
 			diggingTimer -= (float) delta;
@@ -355,6 +354,11 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		{
 			itemDrop?.DisablePickupIndicator();
 			pickableDrops.Remove(itemDrop);
+
+			if(selectedItemDrop == itemDrop)
+			{
+				selectedItemDrop = null;
+			}
 		}
 	}
 	private ItemDrop GetItemUnderMouse()
