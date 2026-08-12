@@ -41,6 +41,8 @@ public partial class InventoryUI : Control
         {
             slot.SlotPressed += OpenContextMenu;
         }
+
+        GameManager.Instance.GamePaused += CloseInventory;
     }
     public override void _Process(double delta)
     {
@@ -49,10 +51,12 @@ public partial class InventoryUI : Control
             if(isInventoryOpen)
             {
                 CloseInventory();
+                GameManager.Instance.TurnOffPauseTint();
             }
             else
             {
                 OpenInventory();
+                GameManager.Instance.TurnOnPauseTint();
             }
         }
     }
@@ -61,11 +65,13 @@ public partial class InventoryUI : Control
         Visible = false;
         isInventoryOpen = false;
         itemContextMenu.Close();
+        Engine.TimeScale = 1;
     }
     private void OpenInventory()
     {
         Visible = true;
         isInventoryOpen = true;
+        Engine.TimeScale = 0.25;
     }
     private void OpenContextMenu(InventorySlot slot)
     {

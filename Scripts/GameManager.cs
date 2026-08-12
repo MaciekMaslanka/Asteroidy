@@ -13,6 +13,14 @@ public partial class GameManager : Node
 	public delegate void PlayerEnteredRadioactiveBiomeEventHandler();
 	[Signal]
 	public delegate void PlayerExitedRadioactiveBiomeEventHandler();
+	[Signal]
+	public delegate void GamePausedEventHandler();
+	[Signal]
+	public delegate void GameUnpausedEventHandler();
+	[Signal]
+	public delegate void TurnOnPauseTintSEventHandler();
+	[Signal]
+	public delegate void TurnOffPauseTintSEventHandler();
 
 	public static GameManager Instance {private set; get;}
 	public FastNoiseLite BiomeNoise {set; get;}
@@ -30,6 +38,7 @@ public partial class GameManager : Node
     public override void _Ready()
 	{
 		Instance = this;
+		ProcessMode = ProcessModeEnum.Always;
 	}
     public override void _PhysicsProcess(double delta)
 	{
@@ -49,6 +58,15 @@ public partial class GameManager : Node
 		{
 			currentPlayerBiome = newBiome;
 			EmitSignal(SignalName.BiomeSwitched, Variant.From((int) currentPlayerBiome));
+		}
+
+		if(Input.IsActionJustPressed("pause"))
+		{
+			GD.Print("costam");
+			if(GetTree().Paused)
+				UnpauseGame();
+			else
+				PauseGame();
 		}
 	}
 	private BiomeType GetBiomeAt(Vector2 pos)
@@ -93,5 +111,25 @@ public partial class GameManager : Node
 
 		Inventory = inv;
 		EmitSignal(SignalName.InventoryReady);
+	}
+	public void PauseGame()
+	{
+		GetTree().Paused = true;
+		TurnOnPauseTint();
+		EmitSignal(SignalName.GamePaused);
+	}
+	public void UnpauseGame()
+	{
+		GetTree().Paused = false;
+		TurnOffPauseTint();
+		EmitSignal(SignalName.GameUnpaused);
+	}
+	public void TurnOnPauseTint()
+	{
+		EmitSignal(SignalName.TurnOnPauseTintS);
+	}
+	public void TurnOffPauseTint()
+	{
+		EmitSignal(SignalName.TurnOffPauseTintS);
 	}
 }
