@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="OreData" format=3 uid="uid://d0fbjanbmj6xe"]
+
+[ext_resource type="Resource" uid="uid://c0ma0gskik048" path="res://Resources/Items/IronItem.tres" id="1_cecku"]
+[ext_resource type="Script" uid="uid://p3og1x53jgqk" path="res://Scripts/Ores/OreData.cs" id="1_qalec"]
+[ext_resource type="Texture2D" uid="uid://b8n4mswuf3jxx" path="res://Sprites/Ores/Iron.png" id="2_7iwiv"]
+
+[resource]
+script = ExtResource("1_qalec")
+Type = 4
+Texture = ExtResource("2_7iwiv")
+Item = ExtResource("1_cecku")
+metadata/_custom_type_script = "uid://p3og1x53jgqk"

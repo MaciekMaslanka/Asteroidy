@@ -5,7 +5,8 @@ using System.Collections.Generic;
 
 public partial class Asteroid : RigidBody2D
 {
-	[Export] public AsteroidSettings Settings {private set; get;}
+	[Export] private AsteroidSettings Settings;
+	[Export] private AsteroidShapeSettings ShapeSettings;
 	[Export] float BaseRadius = 200f;
 	[Export] int PointsAmount = 60;
 	[Export] float Amplitude = 0.4f;
@@ -29,12 +30,11 @@ public partial class Asteroid : RigidBody2D
 
 	//shape
 	public Polygon2D body {private set; get;}
-	Polygon2D background;
-	CollisionPolygon2D collider;
+	private Polygon2D background;
+	private CollisionPolygon2D collider;
 	public Vector2[] currentShape {private set; get;}
 	private bool hasCustomShape = false;
 	
-
 	public override void _Ready()
 	{
 		body = GetNode<Polygon2D>("Polygon2D");
@@ -50,11 +50,7 @@ public partial class Asteroid : RigidBody2D
 		if(!hasCustomShape)
 		{
 			GenerateShape();
-
-			if(Settings != null)
-				GenerateOres(OresMinAmount, OresMaxAmount, MinDistanceBetweenOres, OresGenerationOffset, OreRarities);
-			else
-				GenerateOres();
+			GenerateOres(OresMinAmount, OresMaxAmount, MinDistanceBetweenOres, OresGenerationOffset, OreRarities);
 		}
 		else
 		{
@@ -63,20 +59,30 @@ public partial class Asteroid : RigidBody2D
 		}
 		UpdateMass();
 	}
+	public void SetSettings(AsteroidSettings settings, AsteroidShapeSettings shapeSettings)
+	{
+		Settings = settings;
+		ShapeSettings = shapeSettings;
+	}
 	private void ApplySettings()
 	{
+		//visuals
+		if(Settings.Texture != null)
+			body.Texture = Settings.Texture;
+			background.Texture = Settings.Texture;
+			
 		//asteroida
-		BaseRadius = Settings.BaseRadius;
-		PointsAmount = Settings.PointsAmount;
-		Amplitude = Settings.Amplitude;
-		NoiseScale = Settings.NoiseScale;
-		Frequency = Settings.Frequency;
-		Octaves = Settings.Octaves;
-		MassDensity = Settings.MassDensity;
+		BaseRadius = ShapeSettings.BaseRadius;
+		PointsAmount = ShapeSettings.PointsAmount;
+		Amplitude = ShapeSettings.Amplitude;
+		NoiseScale = ShapeSettings.NoiseScale;
+		Frequency = ShapeSettings.Frequency;
+		Octaves = ShapeSettings.Octaves;
+		MassDensity = ShapeSettings.MassDensity;
 
 		//ore
-		OresMinAmount = Settings.MinAmount;
-		OresMaxAmount = Settings.MaxAmount;
+		OresMinAmount = ShapeSettings.MinOreAmount;
+		OresMaxAmount = ShapeSettings.MaxOreAmount;
 		MinDistanceBetweenOres = Settings.MinDistanceBetweenOres;
 		OreRarities = Settings.OreRarities;
 	}
@@ -140,7 +146,7 @@ public partial class Asteroid : RigidBody2D
 
 			smoothed.Add(current);
 		}
-		smoothed.Add(currentShape[^1]); // ^ zwraca od konca tablicy
+		smoothed.Add(currentShape[^1]); // ^ zwraca od konca tablicy (nie wiedziałem że takie coś istnieje)
 
 		UpdateShape(smoothed.ToArray());
 	}
@@ -155,11 +161,6 @@ public partial class Asteroid : RigidBody2D
 	{
 		DiggingHandler digHandler = new DiggingHandler(this, ore);
 		digHandler.OnOreDestroyed();
-
-		if(GetTree().GetFirstNodeInGroup("Player") is PlayerScript player)
-		{
-			player.CollectItem(ore.item);
-		}
 
 		ores.Remove(ore);
 		ore.QueueFree();

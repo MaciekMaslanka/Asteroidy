@@ -1,43 +1,70 @@
 [gd_scene format=3 uid="uid://bpuh5mv7mmqcy"]
 
 [ext_resource type="Script" uid="uid://duly8slb8dtiq" path="res://Scripts/Player/PlayerScript.cs" id="1_kyqiw"]
-[ext_resource type="Resource" uid="uid://dvnwyjbperl7p" path="res://Resources/Invectory/PlayerInv.tres" id="2_dewec"]
 [ext_resource type="PackedScene" uid="uid://diy7v3bb12uso" path="res://Scenes/Bullet.tscn" id="2_nn08x"]
-[ext_resource type="Texture2D" uid="uid://b0vsacokc7ir0" path="res://Sprites/Player/Gówienko.png" id="3_5ixxa"]
+[ext_resource type="Resource" uid="uid://dr4sjuvevyri8" path="res://Resources/Invectory/PlayerInventory.tres" id="3_nn08x"]
 [ext_resource type="Texture2D" uid="uid://bduxlxoulsvy2" path="res://Sprites/Player/diggingToolPlaceholder.png" id="4_5ixxa"]
+[ext_resource type="Texture2D" uid="uid://ckqf1y1wka2yj" path="res://Sprites/Player/playerSprite.png" id="4_nn08x"]
 [ext_resource type="Texture2D" uid="uid://bv2ospmuu8bmc" path="res://Sprites/Player/weaponPlaceholder.png" id="5_nn08x"]
+[ext_resource type="Script" uid="uid://bxki15tkodku1" path="res://Scripts/Player/ItemDropSpawner.cs" id="7_52ee3"]
+[ext_resource type="PackedScene" uid="uid://5o3wihxk8csq" path="res://Scenes/ItemDrop.tscn" id="8_bhhdu"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_dewec"]
-radius = 30.0
-height = 62.0
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nn08x"]
+radius = 12.0
+height = 36.0
 
-[node name="CharacterBody2D" type="RigidBody2D" unique_id=43622812]
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_52ee3"]
+radius = 13.0
+height = 80.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bhhdu"]
+radius = 7.0
+height = 40.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_nn08x"]
+radius = 200.0
+
+[node name="CharacterBody2D" type="RigidBody2D" unique_id=43622812 node_paths=PackedStringArray("pickupDetector", "DropSpawner")]
 collision_mask = 62
 mass = 100.0
 gravity_scale = 0.0
 can_sleep = false
 script = ExtResource("1_kyqiw")
+ShieldsRegenDelay = 5.0
 MaxAngularVelocity = 20.0
 AngularDamping = 1.0
 ThrustForce = 85000.0
 toolRotationLimit = 100.0
 diggerRange = 40.0
 BulletScene = ExtResource("2_nn08x")
-Invectory = ExtResource("2_dewec")
+Inventory = ExtResource("3_nn08x")
+pickupDetector = NodePath("PickupDetector")
+DropSpawner = NodePath("ItemDropSpawner")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=760477680]
 texture_filter = 1
-texture = ExtResource("3_5ixxa")
+scale = Vector2(2.355, 2.355)
+texture = ExtResource("4_nn08x")
 
-[node name="Hitbox" type="CollisionShape2D" parent="." unique_id=1798614063]
-shape = SubResource("CapsuleShape2D_dewec")
+[node name="collider 1" type="CollisionShape2D" parent="." unique_id=1753841450]
+position = Vector2(0, -6)
+shape = SubResource("CapsuleShape2D_nn08x")
+
+[node name="collider 2" type="CollisionShape2D" parent="." unique_id=2043126105]
+position = Vector2(0, 11)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_52ee3")
+
+[node name="collider 3" type="CollisionShape2D" parent="." unique_id=699070514]
+position = Vector2(0, -31)
+shape = SubResource("CapsuleShape2D_bhhdu")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=795321236]
-zoom = Vector2(1.725, 1.725)
+zoom = Vector2(0.7, 0.7)
 
 [node name="ToolContainer" type="Node2D" parent="." unique_id=747940764]
 z_index = -1
-position = Vector2(0, -26)
+position = Vector2(0, -46)
 
 [node name="DiggingTool" type="Node2D" parent="ToolContainer" unique_id=2030342872]
 position = Vector2(-5.9604645e-08, -13.250008)
@@ -68,3 +95,15 @@ texture = ExtResource("5_nn08x")
 
 [node name="BulletsSpawn" type="Node2D" parent="ToolContainer/GunTool" unique_id=705286700]
 position = Vector2(0, -24)
+
+[node name="PickupDetector" type="Area2D" parent="." unique_id=1622104866]
+collision_layer = 0
+collision_mask = 64
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PickupDetector" unique_id=151575718]
+shape = SubResource("CircleShape2D_nn08x")
+
+[node name="ItemDropSpawner" type="Node2D" parent="." unique_id=1863083338]
+script = ExtResource("7_52ee3")
+itemDropScene = ExtResource("8_bhhdu")
+offsetFromPlayer = 50.0

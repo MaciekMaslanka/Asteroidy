@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="AsteroidSettings" format=3 uid="uid://booki2iangcms"]
+
+[ext_resource type="Script" uid="uid://dmxqhn01e3505" path="res://Scripts/Asteroids/OreRarity.cs" id="1_u4bfr"]
+[ext_resource type="Script" uid="uid://ehe68fke3ons" path="res://Scripts/Asteroids/SizeSettings.cs" id="2_b3b3v"]
+[ext_resource type="Resource" uid="uid://cmj5f7j64qcjs" path="res://Resources/Asteroids/Shapes/SmallSetting.tres" id="3_j68ad"]
+[ext_resource type="Script" uid="uid://bpupky20bd08s" path="res://Scripts/Asteroids/AsteroidSettings.cs" id="3_sd2xj"]
+[ext_resource type="Resource" uid="uid://s20f57vbv5s7" path="res://Resources/Asteroids/Shapes/MidSetting.tres" id="4_n1s7d"]
+
+[sub_resource type="Resource" id="Resource_jeido"]
+script = ExtResource("1_u4bfr")
+Weight = 35.0
+metadata/_custom_type_script = "uid://dmxqhn01e3505"
+
+[sub_resource type="Resource" id="Resource_dowxa"]
+script = ExtResource("1_u4bfr")
+Type = 1
+Weight = 18.3
+metadata/_custom_type_script = "uid://dmxqhn01e3505"
+
+[sub_resource type="Resource" id="Resource_8inj5"]
+script = ExtResource("1_u4bfr")
+Type = 2
+Weight = 4.5
+metadata/_custom_type_script = "uid://dmxqhn01e3505"
+
+[sub_resource type="Resource" id="Resource_ia2m6"]
+script = ExtResource("1_u4bfr")
+Type = 3
+Weight = 4.5
+metadata/_custom_type_script = "uid://dmxqhn01e3505"
+
+[sub_resource type="Resource" id="Resource_2d02w"]
+script = ExtResource("1_u4bfr")
+Type = 4
+Weight = 18.3
+metadata/_custom_type_script = "uid://dmxqhn01e3505"
+
+[sub_resource type="Resource" id="Resource_v02om"]
+script = ExtResource("1_u4bfr")
+Type = 5
+Weight = 18.3
+metadata/_custom_type_script = "uid://dmxqhn01e3505"
+
+[sub_resource type="Resource" id="Resource_27sov"]
+script = ExtResource("1_u4bfr")
+Type = 6
+Weight = 1.1
+metadata/_custom_type_script = "uid://dmxqhn01e3505"
+
+[sub_resource type="Resource" id="Resource_wwwgb"]
+script = ExtResource("2_b3b3v")
+ShapeSetting = ExtResource("3_j68ad")
+Weight = 70.0
+metadata/_custom_type_script = "uid://ehe68fke3ons"
+
+[sub_resource type="Resource" id="Resource_tq038"]
+script = ExtResource("2_b3b3v")
+Size = 1
+ShapeSetting = ExtResource("4_n1s7d")
+Weight = 30.0
+metadata/_custom_type_script = "uid://ehe68fke3ons"
+
+[resource]
+script = ExtResource("3_sd2xj")
+MinDistanceBetweenOres = 80.0
+OresGenerationOffset = 5.0
+OreRarities = Array[ExtResource("1_u4bfr")]([SubResource("Resource_jeido"), SubResource("Resource_dowxa"), SubResource("Resource_8inj5"), SubResource("Resource_ia2m6"), SubResource("Resource_2d02w"), SubResource("Resource_v02om"), SubResource("Resource_27sov")])
+Biome = 3
+SizeSettings = Array[ExtResource("2_b3b3v")]([SubResource("Resource_wwwgb"), SubResource("Resource_tq038")])
+metadata/_custom_type_script = "uid://bpupky20bd08s"

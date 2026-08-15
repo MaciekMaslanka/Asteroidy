@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="OreItem" format=3 uid="uid://c7vuk7dwda00a"]
+
+[ext_resource type="Script" uid="uid://nbarmfmf5ki" path="res://Scripts/Invectory/OreItem.cs" id="1_fpgpu"]
+[ext_resource type="Texture2D" uid="uid://dyxeomcd2dvid" path="res://Sprites/Items/UraniumIcon.png" id="1_ojtwd"]
+
+[resource]
+script = ExtResource("1_fpgpu")
+ItemName = "Uranium"
+Icon = ExtResource("1_ojtwd")
+Actions = Array[int]([1])
+metadata/_custom_type_script = "uid://nbarmfmf5ki"

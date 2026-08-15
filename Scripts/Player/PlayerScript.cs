@@ -1,7 +1,6 @@
 using Godot;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Threading.Tasks;
+using Microsoft.VisualBasic;
+using System.Collections.Generic;
 
 public partial class PlayerScript : RigidBody2D, IDamagable
 {
@@ -11,13 +10,13 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	[Signal]
 	public delegate void HealthChangedEventHandler(float currentHealth, float maxHealth);
 
-	//hp i inny shit
+	//hp
 	[ExportCategory("HP")]
 	[Export] float MaxHP = 500f;
 	[Export] float MaxShields = 500f;
 	[Export] float ShieldsRegenDelay = 20f;
 	[Export] float ShieldsRegenRate = 20f;
-	private float currentHP;
+	private float currentHp;
 	private float currentShields;
 	private float timeSinceLastHit = 0f;
 
@@ -66,15 +65,24 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 
 	//eq
 	[ExportCategory("EQ")]
-	[Export] public Invectory Invectory {get; private set;}
+	[Export] public Inventory Inventory {get; private set;}
+
+	//pickupowanie itemów
+	[ExportCategory("Pickups")]
+	[Export] private Area2D pickupDetector;
+	private List<ItemDrop> pickableDrops = new();
+	private ItemDrop selectedItemDrop;
+	[Export] public ItemDropSpawner DropSpawner {private set; get;}
+	//inne
+	private bool isInRadioactiveBiome;
 
     public override void _Ready()
 	{
 		//ważne!!- nie zmieniać nazw nodeów, bo się spieprzy
 		//hp
-		currentHP = MaxHP;
+		currentHp = MaxHP;
 		currentShields = MaxShields;
-		EmitSignal(SignalName.HealthChanged, currentHP, MaxHP);
+		EmitSignal(SignalName.HealthChanged, currentHp, MaxHP);
 		EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
 
 		//narzedzia
@@ -99,11 +107,18 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		AngularDamp = AngularDamping;
 		LinearDamp = LinearDamping;
 
-		if(Invectory == null)
+		if(Inventory == null)
 		{
-			Invectory = new Invectory();
+			Inventory = new Inventory();
 		}
-		AddToGroup("Player", true);
+
+		GameManager.Instance.PlayerEnteredRadioactiveBiome += OnRadioactiveBiomeEnter;
+		GameManager.Instance.PlayerExitedRadioactiveBiome += OnRadioactiveBiomeExit;
+		GameManager.Instance.RegisterPlayer(this);
+		GameManager.Instance.RegisterInventory(Inventory);
+
+		pickupDetector.BodyEntered += OnPickupEnteredArea;
+		pickupDetector.BodyExited += OnPickupExitedArea;
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -115,41 +130,57 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		HandleToolChanges();
 		HandleMouseInput(dt);
 		HandleShieldsRegen(dt);
+		HandleOtherInputs(dt);
+
+		HandlePickupIndicator();
 
 		if(diggingTimer > 0)
-		{
 			diggingTimer -= (float) delta;
-		}
+		
 		if(firingTimer > 0)
-		{
 			firingTimer -= (float) delta;
-		}
+	}
+
+	//-------------------------------------------------------------------------
+	//damage
+	public bool Heal(float amount)
+	{
+		if(currentHp == MaxHP) 
+			return false;
+
+		currentHp = Mathf.Min(currentHp + amount, MaxHP);
+		EmitSignal(SignalName.HealthChanged, currentHp, MaxHP);
+		return true;
 	}
 	public void TakeDamage(float amount)
 	{
 		timeSinceLastHit = 0f;
 		if(currentShields > 0f)
 		{
-			currentShields -= amount;
-			if(currentShields <= 0f)
-			{
-				float overflowDamage = -currentShields;
-				currentShields = 0f;
-
-				TakeHPDamage(overflowDamage);
-			}
-			EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
+			TakeShieldsDamage(amount);
 		}
 		else
 		{
 			TakeHPDamage(amount);
 		}
 	}
+	private void TakeShieldsDamage(float amount)
+	{
+		currentShields -= amount;
+		if(currentShields <= 0f)
+		{
+			float overflowDamage = -currentShields;
+			currentShields = 0f;
+
+			TakeHPDamage(overflowDamage);
+		}
+		EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
+	}
 	private void TakeHPDamage(float amount)
 	{
-		currentHP -= amount;
-		EmitSignal(SignalName.HealthChanged, currentHP, MaxHP);
-		if(currentHP <= 0f)
+		currentHp -= amount;
+		EmitSignal(SignalName.HealthChanged, currentHp, MaxHP);
+		if(currentHp <= 0f)
 		{
 			Die();
 		}
@@ -160,7 +191,8 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	}
 	private void HandleShieldsRegen(float dt)
 	{
-		timeSinceLastHit += dt;
+		if(!isInRadioactiveBiome)
+			timeSinceLastHit += dt;
 
 		if(timeSinceLastHit >= ShieldsRegenDelay && currentShields < MaxShields)
 		{
@@ -170,6 +202,9 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 			EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
 		}
 	}
+
+	//-------------------------------------------------------------------------
+	//ruch
 	private void HandleRotation(float dt)
 	{
 		float input = Input.GetAxis("rotateLeft", "rotateRight");
@@ -193,6 +228,9 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 			LinearVelocity = LinearVelocity.Normalized() * MaxLinearVelocity;
 		}
 	}
+
+	//-------------------------------------------------------------------------
+	//tool
 	private void RotateTool(float dt)
 	{
 		Vector2 direction = GetGlobalMousePosition() - toolsContainer.GlobalPosition;
@@ -303,8 +341,123 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 			GetTree().CurrentScene.AddChild(bullet);
 		}
 	}
-	public void CollectItem(InvItem item)
+	public int CollectItem(InvItem item, int amount)
 	{
-		Invectory.InsertItem(item);
+		return Inventory.AddItem(item, amount);
+	}
+	//-------------------------------------------------------------------------
+	//pickups
+	private void OnPickupEnteredArea(Node2D pickup)
+	{
+		if(pickup is ItemDrop itemdrop)
+		{
+			if(!pickableDrops.Contains(itemdrop))
+			{
+				pickableDrops.Add(itemdrop);
+			}
+		}
+	}
+	private void OnPickupExitedArea(Node2D pickup)
+	{
+		if(pickup is ItemDrop itemDrop)
+		{
+			itemDrop?.DisablePickupIndicator();
+			pickableDrops.Remove(itemDrop);
+
+			if(selectedItemDrop == itemDrop)
+			{
+				selectedItemDrop = null;
+			}
+		}
+	}
+	private ItemDrop GetItemUnderMouse()
+	{
+		foreach(var item in pickableDrops)
+		{
+			if(!IsInstanceValid(item)) 
+				continue;
+
+			if(item.IsMouseOver)
+			{
+				return item;
+			}
+		}
+		return null;
+	}
+	private ItemDrop GetClosestItem()
+	{
+		ItemDrop closest = null;
+		float closestDist = float.MaxValue;
+
+		foreach(var pickup in pickableDrops)
+		{
+			if(!IsInstanceValid(pickup))
+				continue;
+
+			if(closest == null)
+			{
+				closest = pickup;
+				closestDist = GlobalPosition.DistanceTo(closest.GlobalPosition);
+				continue;
+			}
+
+			float distanceToPlayer = GlobalPosition.DistanceTo(pickup.GlobalPosition);
+			if(distanceToPlayer < closestDist)
+			{
+				closest = pickup;
+				closestDist = distanceToPlayer;
+				continue;
+			}
+		}
+
+		return closest;
+	}
+	private void HandlePickupIndicator()
+	{
+		pickableDrops.RemoveAll(drop => !IsInstanceValid(drop));
+		
+		if(pickableDrops.Count == 0)
+		{
+			selectedItemDrop?.DisablePickupIndicator();
+			selectedItemDrop = null;
+			return;
+		}
+
+		ItemDrop newClosest = GetItemUnderMouse();
+
+		if(newClosest == null)
+			newClosest = GetClosestItem();
+
+		if(newClosest != selectedItemDrop)
+		{
+			selectedItemDrop?.DisablePickupIndicator();
+			selectedItemDrop = newClosest;
+			newClosest?.EnablePickupIndicator();
+		}
+	}
+	private void HandleOtherInputs(float dt)
+	{
+		if(Input.IsActionJustPressed("pickupItem") && IsInstanceValid(selectedItemDrop))
+		{
+			if(selectedItemDrop.Pickup()) //jeśli itemek się usunie
+			{
+				pickableDrops.Remove(selectedItemDrop);
+				selectedItemDrop = null;
+			}
+		}
+	}
+	//-------------------------------------------------------------------------
+	//biome specific 
+	private void OnRadioactiveBiomeEnter()
+	{
+		isInRadioactiveBiome = true;
+		currentShields = 0f;
+		timeSinceLastHit = 0f;
+		EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
+	}
+	private void OnRadioactiveBiomeExit()
+	{
+		isInRadioactiveBiome = false;
+		EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
 	}
 }

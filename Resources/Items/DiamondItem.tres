@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="OreItem" format=3 uid="uid://dwtgkcp2iaxk5"]
+
+[ext_resource type="Script" uid="uid://nbarmfmf5ki" path="res://Scripts/Invectory/OreItem.cs" id="1_1c8xf"]
+[ext_resource type="Texture2D" uid="uid://be2ew6t6k1ex6" path="res://Sprites/Items/DiamondIcon.png" id="1_cftrs"]
+
+[resource]
+script = ExtResource("1_1c8xf")
+ItemName = "Diamond"
+Icon = ExtResource("1_cftrs")
+Actions = Array[int]([1])
+metadata/_custom_type_script = "uid://nbarmfmf5ki"

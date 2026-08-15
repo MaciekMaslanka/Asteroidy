@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="OreItem" format=3 uid="uid://c02ashvkkq8kv"]
+
+[ext_resource type="Texture2D" uid="uid://btpt1q1x43cfp" path="res://Sprites/Items/CopperIcon.png" id="1_7ijgk"]
+[ext_resource type="Script" uid="uid://nbarmfmf5ki" path="res://Scripts/Invectory/OreItem.cs" id="1_46wnn"]
+
+[resource]
+script = ExtResource("1_46wnn")
+ItemName = "Copper"
+Icon = ExtResource("1_7ijgk")
+Actions = Array[int]([1])
+metadata/_custom_type_script = "uid://nbarmfmf5ki"

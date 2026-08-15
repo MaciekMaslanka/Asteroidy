@@ -1,13 +1,17 @@
 using Godot;
-using System;
 
 public partial class InvUISlot : Panel
 {
+	[Signal]
+	public delegate void SlotPressedEventHandler(InventorySlot slot);
+
 	[Export] private Sprite2D itemIcon;
 	[Export] private Label amountLabel;
-	public void UpdateSlot(InvSlot slot)
+	private InventorySlot currentSlot;
+	public void UpdateSlot(InventorySlot slot)
 	{
-		if(slot.item == null)
+		currentSlot = slot;
+		if(slot.Item == null)
 		{
 			itemIcon.Visible = false;
 			amountLabel.Visible = false;
@@ -16,8 +20,19 @@ public partial class InvUISlot : Panel
 		{
 			itemIcon.Visible = true;
 			amountLabel.Visible = true;
-			itemIcon.Texture = slot.item.Icon;
-			amountLabel.Text = slot.amount.ToString();
+			itemIcon.Texture = slot.Item.Icon;
+			amountLabel.Text = slot.Amount.ToString();
+		}
+	}
+
+    public override void _GuiInput(InputEvent @event)
+	{
+		if(@event is InputEventMouseButton mouse &&
+		mouse.ButtonIndex == MouseButton.Left &&
+		mouse.Pressed)
+		{
+			if(currentSlot != null)
+				EmitSignal(SignalName.SlotPressed, currentSlot);
 		}
 	}
 }

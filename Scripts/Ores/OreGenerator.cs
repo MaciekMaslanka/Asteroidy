@@ -35,7 +35,6 @@ public partial class OreGenerator
 		for(int i=0; i<amount; i++)
 		{
 			OreScript ore = oreScene.Instantiate<OreScript>();
-			ore.SetOreType(GetRandomType());
 
 			Vector2 pos = GetRandomPointInAsteroid();
 			ore.Position = pos;
@@ -46,7 +45,12 @@ public partial class OreGenerator
 			parent.ores.Add(ore);
 			parent.AddChild(ore);
 
+			ore.SetOreType(GetRandomType());
 			ore.shape.TextureRotation = parent.body.TextureRotation;
+			ore.shape.TextureOffset = new Vector2(
+				GD.RandRange(-128, 128),
+				GD.RandRange(-128, 128)
+			);
 		}
 	}
 	private OreType GetRandomType()
@@ -64,7 +68,7 @@ public partial class OreGenerator
 			return OreType.Gold;
 		}
 
-		float random = (float) GD.RandRange(0, totalWeight);
+		float random = (float) GD.Randf() * totalWeight;
 		float current = 0;
 
 		foreach(var r in rarities)

@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" uid="uid://das1pnl3h3d4g" path="res://Scripts/Enemies/Enemy.cs" id="1_wovta"]
 [ext_resource type="PackedScene" uid="uid://diy7v3bb12uso" path="res://Scenes/Bullet.tscn" id="2_kpr8r"]
-[ext_resource type="Texture2D" uid="uid://b0vsacokc7ir0" path="res://Sprites/Player/Gówienko.png" id="3_xeo28"]
+[ext_resource type="Texture2D" uid="uid://b4ego6utl6yy6" path="res://Sprites/Player/enemy.png" id="3_xeo28"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kpr8r"]
-radius = 30.0
-height = 62.0
+radius = 14.0
+height = 64.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xeo28"]
 bg_color = Color(0.44291073, 0.4429108, 0.4429106, 1)
@@ -29,17 +29,22 @@ mass = 100.0
 gravity_scale = 0.0
 linear_damp = 1.2
 script = ExtResource("1_wovta")
+DetectionRange = 500.0
 BulletScene = ExtResource("2_kpr8r")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=748898151]
-modulate = Color(1, 0, 0, 1)
 texture_filter = 1
 rotation = 1.5707964
+scale = Vector2(2.09, 2.09)
 texture = ExtResource("3_xeo28")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1896214907]
+[node name="collider1" type="CollisionShape2D" parent="." unique_id=1896214907]
+position = Vector2(15, 0)
 rotation = 1.5707964
 shape = SubResource("CapsuleShape2D_kpr8r")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=1554380372]
+polygon = PackedVector2Array(-27, -36, -7, -36, 19, -15, 19, 15, -7, 36, -27, 36, -27, 31, -15, 16, -15, -16, -27, -31)
 
 [node name="Sensors" type="Node2D" parent="." unique_id=113185535]
 

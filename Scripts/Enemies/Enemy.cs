@@ -60,7 +60,6 @@ public partial class Enemy : RigidBody2D, IDamagable
 
 		contextMap = new(ContextMapResolution);
 
-		player = (PlayerScript) GetTree().GetFirstNodeInGroup("Player");
 		currentThrust = IdleThrust;
 
 		SelectRandomTarget();
@@ -72,6 +71,19 @@ public partial class Enemy : RigidBody2D, IDamagable
 		hpBar.Value = hpBar.MaxValue;
 		hpBarOffset = hpBar.Position;
 		hpBar.Visible = false;
+
+		if(GameManager.Instance.Player != null)
+		{
+			Init();
+		}
+		else
+		{
+			GameManager.Instance.PlayerReady += Init;
+		}
+	}
+	private void Init()
+	{
+		player = GameManager.Instance.Player;
 	}
     public override void _PhysicsProcess(double delta)
 	{
@@ -289,13 +301,6 @@ public partial class Enemy : RigidBody2D, IDamagable
 			return;
 		}
 		hpBar.Value = currentHealth / MaxHealth * hpBar.MaxValue;
+		currentState = State.Aggro;
 	}
 }
-
-/*
-TODO:
--gówno
--upadek izraela
--poprawić unikanie i pozbyć się navagenta
-*/
-//this code is actual cancer

@@ -1,15 +1,23 @@
 [gd_scene format=3 uid="uid://bn55pvpddkrvi"]
 
 [ext_resource type="Script" uid="uid://ca3i5xtt3155f" path="res://Scripts/Ores/OreScript.cs" id="1_i8ymc"]
+[ext_resource type="Resource" uid="uid://dle5kdmawymgj" path="res://Resources/Ores/CoalData.tres" id="2_22qmi"]
 [ext_resource type="Texture2D" uid="uid://q7nili8xfdcx" path="res://Sprites/Ores/Gold.png" id="2_bb785"]
-[ext_resource type="Texture2D" uid="uid://voidkygj3e4b" path="res://Sprites/Ores/Silver.png" id="3_4i16t"]
+[ext_resource type="Resource" uid="uid://cmv3rxbkxktp0" path="res://Resources/Ores/CopperData.tres" id="3_uk0nu"]
+[ext_resource type="Resource" uid="uid://cd6p1mgjsj1ip" path="res://Resources/Ores/DiamondData.tres" id="4_stkfj"]
+[ext_resource type="Resource" uid="uid://co4d0wf4wswf2" path="res://Resources/Ores/GoldData.tres" id="5_40qk6"]
+[ext_resource type="Resource" uid="uid://d0fbjanbmj6xe" path="res://Resources/Ores/IronData.tres" id="6_uh8ch"]
+[ext_resource type="Resource" uid="uid://b2fcd3cw2ao5f" path="res://Resources/Ores/SilverData.tres" id="7_1b8vd"]
+[ext_resource type="Resource" uid="uid://ccip67j7tfuue" path="res://Resources/Ores/UraniumData.tres" id="8_unakf"]
+[ext_resource type="PackedScene" uid="uid://5o3wihxk8csq" path="res://Scenes/ItemDrop.tscn" id="9_uk0nu"]
 
 [node name="RigidBody2D" type="StaticBody2D" unique_id=574043206]
 z_index = 1
 collision_layer = 8
 collision_mask = 11
 script = ExtResource("1_i8ymc")
-oreTextures = Array[Texture2D]([ExtResource("2_bb785"), ExtResource("3_4i16t")])
+OreInfo = Array[Object]([ExtResource("2_22qmi"), ExtResource("3_uk0nu"), ExtResource("4_stkfj"), ExtResource("5_40qk6"), ExtResource("6_uh8ch"), ExtResource("7_1b8vd"), ExtResource("8_unakf")])
+itemDropScene = ExtResource("9_uk0nu")
 
 [node name="Polygon2D" type="Polygon2D" parent="." unique_id=802372938]
 texture_filter = 1
@@ -19,5 +27,3 @@ polygon = PackedVector2Array(0, -16, 4, 0, 0, 12, -4, 0)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=1152881620]
 polygon = PackedVector2Array(0, -16, 4, 0, 0, 12, -4, 0)
-
-[node name="Camera2D" type="Camera2D" parent="." unique_id=1646108361]

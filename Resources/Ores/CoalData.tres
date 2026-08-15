@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="OreData" format=3 uid="uid://dle5kdmawymgj"]
+
+[ext_resource type="Script" uid="uid://p3og1x53jgqk" path="res://Scripts/Ores/OreData.cs" id="1_ab5sm"]
+[ext_resource type="Resource" uid="uid://2dkiekxs1p7y" path="res://Resources/Items/CoalItem.tres" id="1_cadhn"]
+[ext_resource type="Texture2D" uid="uid://djiray5urg6ys" path="res://Sprites/Ores/Coal.png" id="2_5mjfv"]
+
+[resource]
+script = ExtResource("1_ab5sm")
+Texture = ExtResource("2_5mjfv")
+Item = ExtResource("1_cadhn")
+metadata/_custom_type_script = "uid://p3og1x53jgqk"

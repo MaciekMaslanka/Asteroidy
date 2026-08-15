@@ -2,41 +2,124 @@
 
 [ext_resource type="PackedScene" uid="uid://63b84g8fpp3u" path="res://Scenes/UI/Inv_ui.tscn" id="1_s86y4"]
 [ext_resource type="PackedScene" uid="uid://db6p8h8c3fqjs" path="res://Scenes/UI/HP_UI.tscn" id="2_636u5"]
+[ext_resource type="Script" uid="uid://csqbj27785h1y" path="res://Scripts/UI/PauseTint.cs" id="3_akgwn"]
+[ext_resource type="Texture2D" uid="uid://xkidt4jmesjy" path="res://Sprites/UI/Background1.png" id="4_b83rk"]
+[ext_resource type="Script" uid="uid://cntctubmtwy1e" path="res://Scripts/UI/PauseScript.cs" id="4_oqha6"]
+[ext_resource type="Texture2D" uid="uid://c66mjn7u5q5uw" path="res://Sprites/UI/Background1Hover.png" id="6_7tgkj"]
+[ext_resource type="Texture2D" uid="uid://4mk1tyw3rf2" path="res://Sprites/UI/Background1Click.png" id="6_jevvu"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_oqha6"]
+texture = ExtResource("4_b83rk")
+texture_margin_left = 5.0
+texture_margin_top = 5.0
+texture_margin_right = 5.0
+texture_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w8wei"]
+texture = ExtResource("6_jevvu")
+texture_margin_left = 5.0
+texture_margin_top = 5.0
+texture_margin_right = 5.0
+texture_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jevvu"]
+texture = ExtResource("6_7tgkj")
+texture_margin_left = 5.0
+texture_margin_top = 5.0
+texture_margin_right = 5.0
+texture_margin_bottom = 5.0
 
 [node name="UI" type="CanvasLayer" unique_id=1062009323]
 
-[node name="Control" type="Control" parent="." unique_id=2009421785]
+[node name="UI" type="Control" parent="." unique_id=49115209]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(3.49, 3.49)
-pivot_offset_ratio = Vector2(0.5, 0.5)
+mouse_filter = 2
 
-[node name="CenterContainer" type="CenterContainer" parent="Control" unique_id=1929979272]
-custom_minimum_size = Vector2(300, 300)
+[node name="HPbar" parent="UI" unique_id=200908839 instance=ExtResource("2_636u5")]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -150.0
-offset_top = -150.0
-offset_right = 150.0
-offset_bottom = 150.0
+pivot_offset_ratio = Vector2(0, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="UI" unique_id=951969709]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Inv_UI" parent="Control/CenterContainer" unique_id=2128682179 instance=ExtResource("1_s86y4")]
+[node name="Inv_UI" parent="UI/CenterContainer" unique_id=2128682179 instance=ExtResource("1_s86y4")]
+z_index = 5
 layout_mode = 2
 
-[node name="HPbar" parent="." unique_id=200908839 instance=ExtResource("2_636u5")]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_right = 0.0
-grow_horizontal = 1
-grow_vertical = 0
-scale = Vector2(1.415, 1.415)
+[node name="PauseTint" type="ColorRect" parent="." unique_id=1839226388]
+process_mode = 3
+z_index = 4
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
+script = ExtResource("3_akgwn")
+pauseColor = Color(0.1680183, 0.1680183, 0.1680183, 0.5)
+switchDuration = 0.2
+
+[node name="PauseMenu" type="Control" parent="." unique_id=188205592]
+process_mode = 3
+visible = false
+z_index = 10
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("4_oqha6")
+
+[node name="CenterContainer" type="CenterContainer" parent="PauseMenu" unique_id=548029423]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PauseMenu/CenterContainer" unique_id=1285432920]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=1548541921]
+layout_mode = 2
+theme_override_font_sizes/font_size = 33
+text = "Paused"
+
+[node name="Button" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=1088813882]
+texture_filter = 1
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
+text = "kys"
+
+[node name="Button2" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=240977435]
+texture_filter = 1
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
+text = "fuck you"
+
+[node name="Button3" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=1107891634]
+texture_filter = 1
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
+text = "i hate myself"
+
+[node name="Button4" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=232105188]
+texture_filter = 1
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
+text = "goon"

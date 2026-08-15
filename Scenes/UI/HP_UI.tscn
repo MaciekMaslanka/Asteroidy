@@ -2,11 +2,14 @@
 
 [ext_resource type="Texture2D" uid="uid://dtcup5wjealw6" path="res://Sprites/UI/Hp bar/HP bar background.png" id="1_ahucc"]
 [ext_resource type="Script" uid="uid://cgfg8kf2pvkx4" path="res://Scripts/UI/HpUiScript.cs" id="1_jvnrg"]
+[ext_resource type="Texture2D" uid="uid://f64xh6mku4jg" path="res://Sprites/UI/Hp bar/ShieldsBarRadioactive.png" id="2_apa2h"]
 [ext_resource type="Texture2D" uid="uid://brdwawkoyjlmd" path="res://Sprites/UI/Hp bar/HP bar foreground.png" id="2_m2flo"]
 [ext_resource type="Texture2D" uid="uid://d3w5i63bbpeyu" path="res://Sprites/UI/Hp bar/Hp bar.png" id="3_jvnrg"]
 [ext_resource type="Texture2D" uid="uid://c2hlwnlglq0xs" path="res://Sprites/UI/Hp bar/Shields bar.png" id="4_m2flo"]
+[ext_resource type="Texture2D" uid="uid://cn0cuvyy7guwc" path="res://Sprites/UI/Hp bar/RadioactiveSign.png" id="7_yckap"]
 
-[node name="HPbar" type="Control" unique_id=200908839 node_paths=PackedStringArray("hpBar", "shieldsBar")]
+[node name="HPbar" type="Control" unique_id=200908839 node_paths=PackedStringArray("hpBar", "shieldsBar", "radioactiveSign")]
+custom_minimum_size = Vector2(640, 360)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,6 +19,8 @@ grow_vertical = 2
 script = ExtResource("1_jvnrg")
 hpBar = NodePath("HpBar")
 shieldsBar = NodePath("ShieldsBar")
+radioactiveForeground = ExtResource("2_apa2h")
+radioactiveSign = NodePath("TextureRect")
 
 [node name="HpBar" type="TextureProgressBar" parent="." unique_id=736852933]
 texture_filter = 1
@@ -23,10 +28,10 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 30.0
-offset_top = -70.0
-offset_right = 419.0
-offset_bottom = -30.0
+offset_left = 15.0
+offset_top = -43.0
+offset_right = 245.0
+offset_bottom = -15.0
 grow_vertical = 0
 value = 100.0
 nine_patch_stretch = true
@@ -44,17 +49,27 @@ layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 30.0
-offset_top = -87.0
-offset_right = 419.0
-offset_bottom = -69.0
+offset_left = 15.0
+offset_top = -56.0
+offset_right = 245.0
+offset_bottom = -43.0
 grow_vertical = 0
 value = 100.0
 nine_patch_stretch = true
-stretch_margin_left = 4
-stretch_margin_top = 4
-stretch_margin_right = 4
-stretch_margin_bottom = 4
+stretch_margin_left = 5
+stretch_margin_top = 5
+stretch_margin_right = 5
+stretch_margin_bottom = 5
 texture_under = ExtResource("1_ahucc")
 texture_over = ExtResource("2_m2flo")
 texture_progress = ExtResource("4_m2flo")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=928579464]
+visible = false
+texture_filter = 1
+layout_mode = 0
+offset_left = 108.0
+offset_top = 262.0
+offset_right = 151.76364
+offset_bottom = 304.0
+texture = ExtResource("7_yckap")
