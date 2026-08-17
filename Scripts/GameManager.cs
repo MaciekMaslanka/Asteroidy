@@ -71,6 +71,7 @@ public partial class GameManager : Node
 	}
 	private BiomeType GetBiomeAt(Vector2 pos)
 	{
+		if(BiomeNoise == null) return BiomeType.Normal;
 		float noise = BiomeNoise.GetNoise2Dv(pos);
 
 		if(noise < normalThreshold)
