@@ -90,10 +90,5 @@ public class ContextMap
         }
 
         return bestDir;
-
-        /*
-        TODO:
-        -naprawić problem z ustawieniem się po avoidovaniu
-        */
     }
 }

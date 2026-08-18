@@ -1,3 +1,5 @@
+using System.ComponentModel;
+using System.Reflection.Metadata;
 using Godot;
 
 public partial class Enemy : RigidBody2D, IDamagable
@@ -27,6 +29,8 @@ public partial class Enemy : RigidBody2D, IDamagable
 	[ExportGroup("Patrol")]
 	[Export] private float minTargetDistance = 500f;
 	[Export] private float maxTargetDistance = 2000f;
+	[Export] private float targetMarginErr = 100f;
+	[Export] private float newTargetTime = 30f;
 
 	[ExportCategory("Movement")]
 	[Export] private float thrust = 25000f;
@@ -34,12 +38,17 @@ public partial class Enemy : RigidBody2D, IDamagable
 
 	//timery
 	private float escapeTimer = 0f;
-	private Vector2 escapeDirection;
+	private float newPatrolTargetTimer = 0f;
 
 	//inne
 	private PlayerScript player;
+	private Vector2 targetPosition;
 	private Vector2 desiredDirection;
+	private Vector2 escapeDirection;
 	private State currentState = State.Patrol;
+
+	//debug
+	[Export] private Sprite2D test;
 
 	public override void _Ready()
 	{
@@ -85,19 +94,19 @@ public partial class Enemy : RigidBody2D, IDamagable
 		}
 		else
 		{
-			desiredDirection = (player.GlobalPosition - GlobalPosition).Normalized();
+			HandleState(dt);
+
+			contextMap.Update(
+				GlobalPosition, 
+				desiredDirection, 
+				GetWorld2D().DirectSpaceState, 
+				contextMapRayLength,
+				avoidanceShape,
+				GetRid()
+			);
+
+			desiredDirection = contextMap.GetSteeringDirection(interestWeight, dangerWeight);
 		}
-
-		contextMap.Update(
-			GlobalPosition, 
-			desiredDirection, 
-			GetWorld2D().DirectSpaceState, 
-			contextMapRayLength,
-			avoidanceShape,
-			GetRid()
-		);
-
-		desiredDirection = contextMap.GetSteeringDirection(interestWeight, dangerWeight);
 
 		HandleRotation(dt);
 		HandleMovement(dt);
@@ -118,13 +127,21 @@ public partial class Enemy : RigidBody2D, IDamagable
 	}
 	//-------------------------------------------------------------------------------------------
 	//stany
-	private void HandleState()
+	private void HandleState(float dt)
 	{
-		
+		HandlePatrol(dt);
 	}
-	private void HandlePatrol()
+	private void HandlePatrol(float dt)
 	{
+		newPatrolTargetTimer += dt;
+
+		if(newPatrolTargetTimer >= newTargetTime || GlobalPosition.DistanceTo(targetPosition) < targetMarginErr)
+		{
+			targetPosition = SelectPatrolTarget();
+			newPatrolTargetTimer = 0f;
+		}
 		
+		desiredDirection = (targetPosition-GlobalPosition).Normalized();
 	}
 	private void HandleSearch()
 	{
@@ -144,7 +161,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 	{
 		for(int i=0; i<30; i++)
 		{
-			float angle = (float) GD.RandRange(0, Mathf.Tau);
+			float angle = (float) GD.RandRange(Rotation-Mathf.Pi/2, Rotation+Mathf.Pi/2);
 			float distance = (float) GD.RandRange(minTargetDistance, maxTargetDistance);
 
 			Vector2 canidate = GlobalPosition + Vector2.Right.Rotated(angle) * distance;
