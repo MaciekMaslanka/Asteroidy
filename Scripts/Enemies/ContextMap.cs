@@ -1,6 +1,6 @@
 using Godot;
 
-public partial class ContextMap
+public class ContextMap
 {
     private readonly int _resolution;
     private readonly float[] _interest;
@@ -51,7 +51,8 @@ public partial class ContextMap
                 Transform = new Transform2D(0f, globalPosition),
                 Motion = dir * rayLength,
                 Exclude = new Godot.Collections.Array<Rid> {selfRid},
-                CollideWithBodies = true
+                CollideWithBodies = true,
+                CollisionMask = 0b101100 //kolizja z asteroidami, oreami i borderem
             };
 
             var result = spaceState.CastMotion(query);
@@ -69,6 +70,7 @@ public partial class ContextMap
     public Vector2 GetSteeringDirection(float interestWeight = 1f, float dangerWeight = 1.5f)
     {
         Vector2 bestDir = Vector2.Zero;
+        float bestWeight = -1;
 
         for (int i=0; i<_resolution; i++)
         {
@@ -78,16 +80,20 @@ public partial class ContextMap
                 1f
             );
 
-            GD.Print(dangerPenalty);
-
             float weight = _interest[i] * interestWeight * dangerPenalty;
 
-            if((_directions[i] * weight).Length() > bestDir.Length())
+            if(weight > bestWeight)
             {
+                bestWeight = weight;
                 bestDir = _directions[i];
             }
         }
 
         return bestDir;
+
+        /*
+        TODO:
+        -naprawić problem z ustawieniem się po avoidovaniu
+        */
     }
 }

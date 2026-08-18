@@ -4,17 +4,13 @@
 [ext_resource type="PackedScene" uid="uid://b6e5k5283jnaq" path="res://Scenes/Enemy.tscn" id="2_vpo13"]
 [ext_resource type="PackedScene" uid="uid://bsnp0jrvf5bfc" path="res://Scenes/Asteroid.tscn" id="3_oydi8"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_ng8tl"]
-radius = 45.0
-
 [node name="testscene" type="Node2D" unique_id=1691269228]
 
-[node name="CharacterBody2D" parent="." unique_id=43622812 instance=ExtResource("1_ng8tl")]
-position = Vector2(1092, 1)
+[node name="Player" parent="." unique_id=43622812 instance=ExtResource("1_ng8tl")]
+position = Vector2(1179, 1)
 
 [node name="Enemy" parent="." unique_id=431999929 instance=ExtResource("2_vpo13")]
-position = Vector2(-768, -1)
-avoidanceShape = SubResource("CircleShape2D_ng8tl")
-maxSpeed = 100.0
+position = Vector2(-801, -5)
 
 [node name="Asteroid" parent="." unique_id=2009140096 instance=ExtResource("3_oydi8")]
+position = Vector2(-4, -61)

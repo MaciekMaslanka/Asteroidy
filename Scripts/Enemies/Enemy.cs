@@ -2,7 +2,12 @@ using Godot;
 
 public partial class Enemy : RigidBody2D, IDamagable
 {
-	public enum State { Idle, Aggro}
+	public enum State { 
+		Patrol,
+		Search,
+		Chase,
+		Attack
+	}
 
 	[ExportCategory("HP")]
 	[Export] private float MaxHealth = 1000f;
@@ -14,24 +19,38 @@ public partial class Enemy : RigidBody2D, IDamagable
 	[ExportGroup("Context Map")]
 	[Export] private int contextMapResolution = 32;
 	[Export] private float interestWeight = 1f;
-	[Export] private float dangerWeight = 3f;
-	[Export] private float contextMapRayLength = 1000f;
-	[Export] private CircleShape2D avoidanceShape;
+	[Export] private float dangerWeight = 1.7f;
+	[Export] private float contextMapRayLength = 500f;
+	private CircleShape2D avoidanceShape;
 	private ContextMap contextMap;
+
+	[ExportGroup("Patrol")]
+	[Export] private float minTargetDistance = 500f;
+	[Export] private float maxTargetDistance = 2000f;
 
 	[ExportCategory("Movement")]
 	[Export] private float thrust = 25000f;
 	[Export] private float maxSpeed = 300f;
+
+	//timery
+	private float escapeTimer = 0f;
+	private Vector2 escapeDirection;
+
 	//inne
 	private PlayerScript player;
 	private Vector2 desiredDirection;
-	private State currentState = State.Idle;
+	private State currentState = State.Patrol;
 
 	public override void _Ready()
 	{
+		BodyEntered += OnBodyEntered;
+
+		//ctx map
 		contextMap = new(contextMapResolution);
-		avoidanceShape = new();
-		avoidanceShape.Radius = 45f;
+		avoidanceShape = new CircleShape2D
+		{
+			Radius = 45f
+		};
 
 		//hp
 		currentHealth = MaxHealth;
@@ -58,7 +77,16 @@ public partial class Enemy : RigidBody2D, IDamagable
 	{
 		float dt = (float) delta;
 
-		desiredDirection = (player.GlobalPosition - GlobalPosition).Normalized();
+		//ucieczka po kolizji
+		if(escapeTimer > 0f)
+		{
+			escapeTimer -= dt;
+			desiredDirection = escapeDirection;
+		}
+		else
+		{
+			desiredDirection = (player.GlobalPosition - GlobalPosition).Normalized();
+		}
 
 		contextMap.Update(
 			GlobalPosition, 
@@ -68,6 +96,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 			avoidanceShape,
 			GetRid()
 		);
+
 		desiredDirection = contextMap.GetSteeringDirection(interestWeight, dangerWeight);
 
 		HandleRotation(dt);
@@ -86,7 +115,81 @@ public partial class Enemy : RigidBody2D, IDamagable
 			return;
 		}
 		hpBar.Value = currentHealth / MaxHealth * hpBar.MaxValue;
-		currentState = State.Aggro;
+	}
+	//-------------------------------------------------------------------------------------------
+	//stany
+	private void HandleState()
+	{
+		
+	}
+	private void HandlePatrol()
+	{
+		
+	}
+	private void HandleSearch()
+	{
+		
+	}
+	private void HandleChase()
+	{
+		
+	}
+	private void HandleAttack()
+	{
+		
+	}
+	//-------------------------------------------------------------------------------------------
+	//helpery do state
+	private Vector2 SelectPatrolTarget()
+	{
+		for(int i=0; i<30; i++)
+		{
+			float angle = (float) GD.RandRange(0, Mathf.Tau);
+			float distance = (float) GD.RandRange(minTargetDistance, maxTargetDistance);
+
+			Vector2 canidate = GlobalPosition + Vector2.Right.Rotated(angle) * distance;
+			if(HasLineOfSight(canidate, true))
+			{
+				return canidate;
+			}
+		}
+		return GlobalPosition;
+	}
+	private bool HasLineOfSight(Vector2 target, bool useShapeCast = false)
+	{
+		var spaceState = GetWorld2D().DirectSpaceState;
+		
+		if(useShapeCast)
+		{
+			var query = new PhysicsShapeQueryParameters2D
+			{
+				Shape = avoidanceShape,
+				Transform = new Transform2D(0f, GlobalPosition),
+				Motion = target - GlobalPosition,
+				CollideWithBodies = true,
+				CollisionMask = 0b101100, //kolizja z asteroidami, oreami i borderem
+				Exclude = new Godot.Collections.Array<Rid> {GetRid()}
+			};
+
+			var result = spaceState.CastMotion(query);
+			if(result[0] == 1f)
+				return true;
+			else
+				return false;
+		}
+		else
+		{
+			var query = new PhysicsRayQueryParameters2D
+			{
+				From = GlobalPosition,
+				To = target,
+				CollideWithBodies = true,
+				Exclude = new Godot.Collections.Array<Rid> {GetRid()}
+			};
+
+			var result = spaceState.IntersectRay(query);
+			return result.Count == 0;
+		}
 	}
 	//-------------------------------------------------------------------------------------------
 	//Movement
@@ -112,11 +215,20 @@ public partial class Enemy : RigidBody2D, IDamagable
 		);
 
 		float thrustFactor = Mathf.Cos(angleDifference);
-		thrustFactor = Mathf.Max(0, thrustFactor);
+		thrustFactor = Mathf.Max(0.30f, thrustFactor);
 
 		if(LinearVelocity.Length() < maxSpeed)
 		{
 			ApplyForce(forward * thrust * thrustFactor);
+		}
+	}
+	private void OnBodyEntered(Node body)
+	{
+		if(body is Asteroid asteroid)
+		{
+			Vector2 newEscapeDirection = (GlobalPosition - asteroid.GlobalPosition).Normalized();
+			escapeDirection = newEscapeDirection;
+			escapeTimer = 0.5f;
 		}
 	}
 }
