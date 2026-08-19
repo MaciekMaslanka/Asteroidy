@@ -1,0 +1,102 @@
+using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using Godot;
+
+public partial class EnemyGun : Sprite2D
+{
+	[Export] private float rotationSpeed = 5f;
+	[Export] private float maxAngle = 135f;
+
+	[ExportCategory("Shoot the shields")]
+	[Export] private float cooldown = 1.5f;
+	[Export] private PackedScene bulletScene;
+
+	private PlayerScript player;
+	private Node2D enemy;
+	private Marker2D muzzle;
+
+	private float shootTimer = 0f;
+
+    public override void _Ready()
+    {
+        enemy = GetParent<Node2D>();
+		muzzle = GetNode<Marker2D>("Muzzle");
+
+		if(GameManager.Instance.Player != null)
+		{
+			Init();
+		}
+		else
+		{
+			GameManager.Instance.PlayerReady += Init;
+		}
+    }
+	private void Init()
+	{
+		player = GameManager.Instance.Player;
+	}
+
+    public override void _PhysicsProcess(double delta)
+	{
+		if(player == null)
+			return;
+
+		float dt = (float) delta;
+
+		HandleRotation(dt);
+
+		shootTimer -= dt;
+
+		if(shootTimer <= 0f && CanShoot())
+		{
+			Shoot();
+			shootTimer = cooldown;
+		}
+	}
+	private void HandleRotation(float dt)
+	{
+		Vector2 toPlayer = player.GlobalPosition - GlobalPosition;
+
+		float targetGlobalAngle = toPlayer.Angle();
+
+		float relativeAngle = Mathf.AngleDifference(
+			enemy.GlobalRotation,
+			targetGlobalAngle
+		);
+
+		float maxAngleRad = Mathf.DegToRad(maxAngle);
+
+		relativeAngle = Mathf.Clamp(
+			relativeAngle,
+			-maxAngleRad,
+			maxAngleRad
+		);
+
+		Rotation = Mathf.LerpAngle(
+			Rotation,
+			relativeAngle,
+			rotationSpeed * dt
+		);
+	}
+
+	private bool CanShoot()
+	{
+		Vector2 toPlayer = player.GlobalPosition - muzzle.GlobalPosition;
+
+		float angle = Mathf.Abs(Mathf.AngleDifference(muzzle.GlobalRotation, toPlayer.Angle()));
+
+		return angle < Mathf.DegToRad(5f);
+	}
+	private void Shoot()
+	{
+		Bullet bullet = bulletScene.Instantiate<Bullet>();
+
+		bullet.GlobalPosition = muzzle.GlobalPosition;
+		bullet.GlobalRotation = muzzle.GlobalRotation;
+
+		bullet.AddCollisionExceptionWith(enemy);
+
+		GetTree().CurrentScene.AddChild(bullet);
+	}
+}

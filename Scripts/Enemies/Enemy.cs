@@ -1,5 +1,4 @@
-using System.ComponentModel;
-using System.Reflection.Metadata;
+using System.Collections.Generic;
 using Godot;
 
 public partial class Enemy : RigidBody2D, IDamagable
@@ -18,6 +17,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 	private ProgressBar hpBar;
 
 	[ExportCategory("AI")]
+
 	[ExportGroup("Context Map")]
 	[Export] private int contextMapResolution = 32;
 	[Export] private float interestWeight = 1f;
@@ -32,6 +32,18 @@ public partial class Enemy : RigidBody2D, IDamagable
 	[Export] private float targetMarginErr = 100f;
 	[Export] private float newTargetTime = 30f;
 
+	[ExportGroup("Chase")]
+	[Export] private float chaseRange = 1500f;
+	[Export] private float chasePredictionTime = 0.4f;
+
+	[ExportGroup("Attack")]
+	[Export] private float attackRange = 800f;
+	[Export] private float attackMinDistance = 500f;
+
+	[ExportGroup("Search")]
+	[Export] private float searchTime = 10f;
+	[Export] private float searchRadius = 300f;
+
 	[ExportCategory("Movement")]
 	[Export] private float thrust = 25000f;
 	[Export] private float maxSpeed = 300f;
@@ -39,12 +51,14 @@ public partial class Enemy : RigidBody2D, IDamagable
 	//timery
 	private float escapeTimer = 0f;
 	private float newPatrolTargetTimer = 0f;
+	private float searchTimer = 0f;
 
 	//inne
 	private PlayerScript player;
 	private Vector2 targetPosition;
 	private Vector2 desiredDirection;
 	private Vector2 escapeDirection;
+	private Vector2 lastKnownPlayerPosition;
 	private State currentState = State.Patrol;
 
 	//debug
@@ -60,6 +74,8 @@ public partial class Enemy : RigidBody2D, IDamagable
 		{
 			Radius = 45f
 		};
+
+		targetPosition = SelectPatrolTarget();
 
 		//hp
 		currentHealth = MaxHealth;
@@ -84,7 +100,12 @@ public partial class Enemy : RigidBody2D, IDamagable
 	}
     public override void _PhysicsProcess(double delta)
 	{
+		if(player == null)
+			return;
+			
 		float dt = (float) delta;
+
+		UpdateState();
 
 		//ucieczka po kolizji
 		if(escapeTimer > 0f)
@@ -107,6 +128,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 
 			desiredDirection = contextMap.GetSteeringDirection(interestWeight, dangerWeight);
 		}
+		test.GlobalPosition = targetPosition;
 
 		HandleRotation(dt);
 		HandleMovement(dt);
@@ -127,9 +149,78 @@ public partial class Enemy : RigidBody2D, IDamagable
 	}
 	//-------------------------------------------------------------------------------------------
 	//stany
+	private void UpdateState()
+	{
+		if(player == null)
+			return;
+
+		bool canSeePlayer = CanSeePlayer();
+
+		if(canSeePlayer)
+		{
+			lastKnownPlayerPosition = player.GlobalPosition;
+		}
+
+		float distance = GlobalPosition.DistanceTo(player.GlobalPosition);
+
+		switch(currentState)
+		{
+			case State.Patrol:
+				if(canSeePlayer)
+					currentState = State.Chase;
+				break;
+
+			case State.Chase:
+				if(!canSeePlayer)
+				{
+					currentState = State.Search;
+					searchTimer = 0f;
+				}
+				else if(distance <= attackRange)
+				{
+					currentState = State.Attack;
+				}
+				break;
+
+			case State.Attack:
+				if(!canSeePlayer)
+				{
+					currentState = State.Search;
+				}
+				else if (distance > attackRange * 1.2f)
+				{
+					currentState = State.Chase;
+				}
+				break;
+
+			case State.Search:
+				if(canSeePlayer)
+				{
+					currentState = State.Chase;
+					searchTimer = 0f;
+				}
+				break;
+		}
+	}
 	private void HandleState(float dt)
 	{
-		HandlePatrol(dt);
+		switch(currentState)
+		{
+			case State.Patrol:
+				HandlePatrol(dt);
+				break;
+			case State.Search:
+				HandleSearch(dt);
+				break;
+			case State.Chase:
+				HandleChase();
+				break;
+			case State.Attack:
+				HandleAttack(dt);
+				break;
+		}
+		GD.Print(currentState);
+		
 	}
 	private void HandlePatrol(float dt)
 	{
@@ -140,20 +231,41 @@ public partial class Enemy : RigidBody2D, IDamagable
 			targetPosition = SelectPatrolTarget();
 			newPatrolTargetTimer = 0f;
 		}
-		
-		desiredDirection = (targetPosition-GlobalPosition).Normalized();
+		desiredDirection = (targetPosition - GlobalPosition).Normalized();
 	}
-	private void HandleSearch()
+	private void HandleSearch(float dt)
 	{
-		
+		searchTimer += dt;
+
+		desiredDirection = (lastKnownPlayerPosition - GlobalPosition).Normalized();
+
+		if(searchTimer >= searchTime)
+		{
+			currentState = State.Patrol;
+			searchTimer = 0f;
+		}
 	}
 	private void HandleChase()
 	{
-		
+		Vector2 predictedPosition = player.GlobalPosition + player.LinearVelocity * chasePredictionTime;
+		targetPosition = predictedPosition;
+		desiredDirection = (targetPosition - GlobalPosition).Normalized();
 	}
-	private void HandleAttack()
+	private void HandleAttack(float dt)
 	{
-		
+		Vector2 toPlayer = player.GlobalPosition - GlobalPosition;
+		float distance = toPlayer.Length();
+
+		Vector2 direction = toPlayer.Normalized();
+
+		if(distance < attackMinDistance)
+		{
+			desiredDirection = -direction;
+		}
+		else
+		{
+			desiredDirection = Vector2.Zero;
+		}
 	}
 	//-------------------------------------------------------------------------------------------
 	//helpery do state
@@ -208,6 +320,30 @@ public partial class Enemy : RigidBody2D, IDamagable
 			return result.Count == 0;
 		}
 	}
+	private bool CanSeePlayer()
+	{
+		if(player == null) 
+			return false;
+
+		if(GlobalPosition.DistanceTo(player.GlobalPosition) > chaseRange)
+			return false;
+
+		var query = new PhysicsRayQueryParameters2D
+		{
+			From = GlobalPosition,
+			To = player.GlobalPosition,
+			CollideWithBodies = true,
+			CollisionMask = 0b101101,
+			Exclude = new Godot.Collections.Array<Rid> {GetRid()}
+		};
+
+		var result = GetWorld2D().DirectSpaceState.IntersectRay(query);
+
+		if(result.Count == 0)
+			return false;
+
+		return result["collider"].AsGodotObject() is PlayerScript;
+	}
 	//-------------------------------------------------------------------------------------------
 	//Movement
 	private void HandleRotation(float dt)
@@ -232,7 +368,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 		);
 
 		float thrustFactor = Mathf.Cos(angleDifference);
-		thrustFactor = Mathf.Max(0.30f, thrustFactor);
+		thrustFactor = Mathf.Max(0f, thrustFactor);
 
 		if(LinearVelocity.Length() < maxSpeed)
 		{
