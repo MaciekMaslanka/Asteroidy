@@ -35,8 +35,6 @@ size = Vector2(100, 32100)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_a4ucx"]
 size = Vector2(32100, 100)
 
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_f0i0x"]
-
 [node name="LVL" type="Node2D" unique_id=1367986399]
 
 [node name="Player" parent="." unique_id=1184771747 instance=ExtResource("1_qd23g")]
@@ -54,10 +52,9 @@ texture_filter = 2
 position = Vector2(-0.776699, -0.776699)
 texture = ExtResource("2_gt1wq")
 
-[node name="Enemy" parent="." unique_id=431999929 node_paths=PackedStringArray("test") instance=ExtResource("5_5yp1d")]
+[node name="Enemy" parent="." unique_id=431999929 instance=ExtResource("5_5yp1d")]
 position = Vector2(67, 362)
 can_sleep = false
-test = NodePath("../Sprite2D")
 
 [node name="AsteroidContainer" type="Node2D" parent="." unique_id=786263158]
 
@@ -112,8 +109,3 @@ shape = SubResource("RectangleShape2D_a4ucx")
 layer = 0
 
 [node name="UI" parent="." unique_id=1062009323 instance=ExtResource("4_pm3h0")]
-
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1472534488]
-position = Vector2(-4.7683716e-07, 3.8146973e-06)
-scale = Vector2(71, 47.5)
-texture = SubResource("PlaceholderTexture2D_f0i0x")

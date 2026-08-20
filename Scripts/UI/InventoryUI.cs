@@ -66,12 +66,14 @@ public partial class InventoryUI : Control
         isInventoryOpen = false;
         itemContextMenu.Close();
         Engine.TimeScale = 1;
+        GameManager.Instance.Player.LockSteering(newState: false);
     }
     private void OpenInventory()
     {
         Visible = true;
         isInventoryOpen = true;
         Engine.TimeScale = 0.25;
+        GameManager.Instance.Player.LockSteering(newState: true);
     }
     private void OpenContextMenu(InventorySlot slot)
     {

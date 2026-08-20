@@ -31,6 +31,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	[Export] private float ThrustForce = 850f;
     [Export] private float MaxLinearVelocity = 420f;
     [Export] private float LinearDamping = 1.2f;
+	private bool isSteeringLocked = false;
 
 	//narzedzia-wspolne
 	[ExportCategory("Narzedzia")]
@@ -124,13 +125,19 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	public override void _PhysicsProcess(double delta)
 	{
 		float dt = (float) delta;
-		HandleRotation(dt);
-		HandleMovement(dt);
-		RotateTool(dt);
-		HandleToolChanges();
-		HandleMouseInput(dt);
-		HandleShieldsRegen(dt);
-		HandleOtherInputs(dt);
+
+		if(!isSteeringLocked)
+		{
+			HandleRotation(dt);
+			HandleMovement(dt);
+			RotateTool(dt);
+			HandleToolChanges();
+			HandleMouseInput(dt);
+			HandleShieldsRegen(dt);
+			HandleOtherInputs(dt);
+		}
+		
+		
 
 		HandlePickupIndicator();
 
@@ -227,6 +234,11 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		{
 			LinearVelocity = LinearVelocity.Normalized() * MaxLinearVelocity;
 		}
+	}
+
+	public void LockSteering(bool newState = false)
+	{
+		isSteeringLocked = newState;
 	}
 
 	//-------------------------------------------------------------------------

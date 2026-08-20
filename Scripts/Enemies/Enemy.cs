@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Reflection.Metadata.Ecma335;
 using Godot;
 
 public partial class Enemy : RigidBody2D, IDamagable
@@ -38,7 +39,8 @@ public partial class Enemy : RigidBody2D, IDamagable
 
 	[ExportGroup("Attack")]
 	[Export] private float attackRange = 800f;
-	[Export] private float attackMinDistance = 500f;
+	[Export] private float preferedDistance = 650f;
+	[Export] private float circleStrength = 1.6f;
 
 	[ExportGroup("Search")]
 	[Export] private float searchTime = 10f;
@@ -47,6 +49,12 @@ public partial class Enemy : RigidBody2D, IDamagable
 	[ExportCategory("Movement")]
 	[Export] private float thrust = 25000f;
 	[Export] private float maxSpeed = 300f;
+
+	[ExportCategory("Dropy")]
+	[Export] private float dropChance = 0.5f;
+	[Export] private PackedScene dropItemScene;
+	[Export] private InvItem[] possibleDrops;
+	[Export] private int maxDropAmount = 5;
 
 	//timery
 	private float escapeTimer = 0f;
@@ -60,9 +68,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 	private Vector2 escapeDirection;
 	private Vector2 lastKnownPlayerPosition;
 	private State currentState = State.Patrol;
-
-	//debug
-	[Export] private Sprite2D test;
+	public bool SeesPlayer {private set; get;} = false;
 
 	public override void _Ready()
 	{
@@ -105,6 +111,8 @@ public partial class Enemy : RigidBody2D, IDamagable
 			
 		float dt = (float) delta;
 
+		SeesPlayer = CanSeePlayer();
+
 		UpdateState();
 
 		//ucieczka po kolizji
@@ -128,7 +136,6 @@ public partial class Enemy : RigidBody2D, IDamagable
 
 			desiredDirection = contextMap.GetSteeringDirection(interestWeight, dangerWeight);
 		}
-		test.GlobalPosition = targetPosition;
 
 		HandleRotation(dt);
 		HandleMovement(dt);
@@ -142,10 +149,27 @@ public partial class Enemy : RigidBody2D, IDamagable
 		currentHealth -= damage;
 		if(currentHealth <= 0)
 		{
+			DropItem();
 			QueueFree();
 			return;
 		}
 		hpBar.Value = currentHealth / MaxHealth * hpBar.MaxValue;
+	}
+	private void DropItem()
+	{
+		if(GD.Randf() > dropChance)
+			return;
+
+		if(dropItemScene == null)
+			return;
+
+		ItemDrop item = dropItemScene.Instantiate<ItemDrop>();
+
+		int dropID = GD.RandRange(0, possibleDrops.Length - 1);
+		int amount = GD.RandRange(1, maxDropAmount);
+		item.SetItem(possibleDrops[dropID], amount);
+		item.GlobalPosition = GlobalPosition;
+		GetTree().CurrentScene.GetNode("ItemDrops").AddChild(item);
 	}
 	//-------------------------------------------------------------------------------------------
 	//stany
@@ -154,9 +178,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 		if(player == null)
 			return;
 
-		bool canSeePlayer = CanSeePlayer();
-
-		if(canSeePlayer)
+		if(SeesPlayer)
 		{
 			lastKnownPlayerPosition = player.GlobalPosition;
 		}
@@ -166,12 +188,12 @@ public partial class Enemy : RigidBody2D, IDamagable
 		switch(currentState)
 		{
 			case State.Patrol:
-				if(canSeePlayer)
+				if(SeesPlayer)
 					currentState = State.Chase;
 				break;
 
 			case State.Chase:
-				if(!canSeePlayer)
+				if(!SeesPlayer)
 				{
 					currentState = State.Search;
 					searchTimer = 0f;
@@ -183,7 +205,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 				break;
 
 			case State.Attack:
-				if(!canSeePlayer)
+				if(!SeesPlayer)
 				{
 					currentState = State.Search;
 				}
@@ -194,7 +216,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 				break;
 
 			case State.Search:
-				if(canSeePlayer)
+				if(SeesPlayer)
 				{
 					currentState = State.Chase;
 					searchTimer = 0f;
@@ -219,7 +241,6 @@ public partial class Enemy : RigidBody2D, IDamagable
 				HandleAttack(dt);
 				break;
 		}
-		GD.Print(currentState);
 		
 	}
 	private void HandlePatrol(float dt)
@@ -258,14 +279,12 @@ public partial class Enemy : RigidBody2D, IDamagable
 
 		Vector2 direction = toPlayer.Normalized();
 
-		if(distance < attackMinDistance)
+		if(distance < preferedDistance * 1.4f)
 		{
-			desiredDirection = -direction;
+			Vector2 perpendicular = new Vector2(-direction.Y, direction.X);
+			direction = (direction + perpendicular * circleStrength).Normalized();
 		}
-		else
-		{
-			desiredDirection = Vector2.Zero;
-		}
+		desiredDirection = direction;
 	}
 	//-------------------------------------------------------------------------------------------
 	//helpery do state

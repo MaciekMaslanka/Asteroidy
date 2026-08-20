@@ -62,7 +62,6 @@ public partial class GameManager : Node
 
 		if(Input.IsActionJustPressed("pause"))
 		{
-			GD.Print("costam");
 			if(GetTree().Paused)
 				UnpauseGame();
 			else

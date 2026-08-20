@@ -13,14 +13,14 @@ public partial class EnemyGun : Sprite2D
 	[Export] private PackedScene bulletScene;
 
 	private PlayerScript player;
-	private Node2D enemy;
+	private Enemy enemy;
 	private Marker2D muzzle;
 
 	private float shootTimer = 0f;
 
     public override void _Ready()
     {
-        enemy = GetParent<Node2D>();
+        enemy = GetParent<Enemy>();
 		muzzle = GetNode<Marker2D>("Muzzle");
 
 		if(GameManager.Instance.Player != null)
@@ -56,28 +56,17 @@ public partial class EnemyGun : Sprite2D
 	}
 	private void HandleRotation(float dt)
 	{
-		Vector2 toPlayer = player.GlobalPosition - GlobalPosition;
+		float targetAngle = 0f;
 
-		float targetGlobalAngle = toPlayer.Angle();
-
-		float relativeAngle = Mathf.AngleDifference(
-			enemy.GlobalRotation,
-			targetGlobalAngle
-		);
-
-		float maxAngleRad = Mathf.DegToRad(maxAngle);
-
-		relativeAngle = Mathf.Clamp(
-			relativeAngle,
-			-maxAngleRad,
-			maxAngleRad
-		);
-
-		Rotation = Mathf.LerpAngle(
-			Rotation,
-			relativeAngle,
-			rotationSpeed * dt
-		);
+		if(enemy.SeesPlayer)
+		{
+			Vector2 toPlayer = player.GlobalPosition - GlobalPosition;
+			
+			float globalAngle = toPlayer.Angle();
+			targetAngle = Mathf.AngleDifference(enemy.GlobalRotation, globalAngle);
+			targetAngle = Mathf.Clamp(targetAngle, -Mathf.DegToRad(maxAngle), Mathf.DegToRad(maxAngle));
+		}
+		Rotation = Mathf.Lerp(Rotation, targetAngle, rotationSpeed * dt);
 	}
 
 	private bool CanShoot()
@@ -86,7 +75,7 @@ public partial class EnemyGun : Sprite2D
 
 		float angle = Mathf.Abs(Mathf.AngleDifference(muzzle.GlobalRotation, toPlayer.Angle()));
 
-		return angle < Mathf.DegToRad(5f);
+		return angle < Mathf.DegToRad(5f) && enemy.SeesPlayer;
 	}
 	private void Shoot()
 	{
