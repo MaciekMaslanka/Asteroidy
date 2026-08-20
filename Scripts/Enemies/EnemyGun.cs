@@ -1,6 +1,3 @@
-using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using Godot;
 
 public partial class EnemyGun : Sprite2D

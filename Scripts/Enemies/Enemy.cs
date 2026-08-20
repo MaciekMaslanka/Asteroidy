@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
 using Godot;
 
 public partial class Enemy : RigidBody2D, IDamagable
