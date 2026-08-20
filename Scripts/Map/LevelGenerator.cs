@@ -1,7 +1,5 @@
 using Godot;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.InteropServices.Marshalling;
 
 public enum BiomeType
 {
@@ -13,23 +11,32 @@ public enum BiomeType
 }
 public partial class LevelGenerator : Node2D
 {
+    [Export] private float SpawnProtectionRadius = 750f;
+
     [ExportCategory("Biomy")]
     [Export] private AsteroidSettings normalBiome;
     [Export] private AsteroidSettings iceBiome;
     [Export] private AsteroidSettings radioactiveBiome;
     [Export] private AsteroidSettings smallBiome;
     [Export] private AsteroidSettings rareBiome;
+    [Export] private FastNoiseLite biomeNoise;
+
     [ExportCategory("Asteroidy")]
     [Export] private PackedScene AsteroidScene;
     [Export] private int MapSize = 16000;
-    [Export] private int GenerationSize = 16500;
+    [Export] private int GenerationSize = 17000;
     [Export] private int MaxAsteroidsCount = 200;
     [Export] private int MinAsteroidCount = 100;
     [Export] private float MinDistanceBetweenAsteroids = 250f;
     [Export] private Node2D asteroidContainer;
     private List<Vector2> spawnedPositions = new();
 
-    [Export] private FastNoiseLite biomeNoise;
+    [ExportCategory("Enemy")]
+    [Export] private PackedScene enemyScene;
+    [Export] private Node2D enemyContainer;
+    [Export] private int minEnemyCount = 20;
+    [Export] private int maxEnemyAmount = 40;
+    [Export] private float minDistanceFromAsteroids = 500f;
 
     private float normalThreshold;
     private float iceThreshold;
@@ -55,6 +62,7 @@ public partial class LevelGenerator : Node2D
     {
         GenerateBiomes();
         GenerateAsteroids();
+        GenerateEnemies();
     }
 
     private void GenerateBiomes()
@@ -107,13 +115,17 @@ public partial class LevelGenerator : Node2D
                 Vector2 position = new(x, y);
 
                 bool tooClose = false;
-                foreach(var spawnPos in spawnedPositions)
+                
+                if(position.LengthSquared() > SpawnProtectionRadius * SpawnProtectionRadius)
                 {
-                    //wydajność maxing
-                    if(spawnPos.DistanceSquaredTo(position) < MinDistanceBetweenAsteroids * MinDistanceBetweenAsteroids)
+                    foreach(var spawnPos in spawnedPositions)
                     {
-                        tooClose = true;
-                        break;
+                        //wydajność maxing
+                        if(spawnPos.DistanceSquaredTo(position) < MinDistanceBetweenAsteroids * MinDistanceBetweenAsteroids)
+                        {
+                            tooClose = true;
+                            break;
+                        }
                     }
                 }
 
@@ -205,6 +217,60 @@ public partial class LevelGenerator : Node2D
         shapeSettings = GetAsteroidShapeSettings(settings);
         asteroid.SetSettings(settings, shapeSettings);
         asteroidContainer.CallDeferred("add_child", asteroid);
+    }
+
+    private void GenerateEnemies()
+    {
+        if(enemyScene == null)
+        {
+            GD.PrintErr("Niepodpięty enemy w lvlgenerator");
+            return;
+        }
+
+        float half = MapSize / 2;
+
+        int enemiesCount = GD.RandRange(minEnemyCount, maxEnemyAmount);
+        int attempts = enemiesCount * 20;
+
+        for(int i=0; i < enemiesCount; i++)
+        {
+            for(int j=0; j<attempts; j++)
+            {
+                float x = (float) GD.RandRange(-half, half);
+                float y = (float) GD.RandRange(-half, half);
+
+                Vector2 position = new Vector2(x, y);
+
+                bool tooClose = false;
+
+                if(position.LengthSquared() > SpawnProtectionRadius * SpawnProtectionRadius)
+                {
+                    foreach(var asteroidPos in spawnedPositions)
+                    {
+                        if(asteroidPos.DistanceSquaredTo(position) < minDistanceFromAsteroids * minDistanceFromAsteroids)
+                        {
+                            tooClose = true;
+                            break;
+                        }
+                    }
+                }
+                
+                if(tooClose)
+                    continue;
+                    
+                SpawnEnemy(position);
+                break;
+            }
+        }
+    }
+    private void SpawnEnemy(Vector2 position)
+    {
+        Enemy enemy = enemyScene.Instantiate<Enemy>();
+
+        enemy.GlobalPosition = position;
+        enemy.Rotation = (float) GD.RandRange(0, Mathf.Tau);
+
+        enemyContainer.CallDeferred("add_child", enemy);
     }
 }
 
