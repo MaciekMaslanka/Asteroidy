@@ -49,12 +49,7 @@ repeat_times = 6
 
 [node name="Sprite2D" type="Sprite2D" parent="Parallax2D" unique_id=995478668]
 texture_filter = 2
-position = Vector2(-0.776699, -0.776699)
 texture = ExtResource("2_gt1wq")
-
-[node name="Enemy" parent="." unique_id=431999929 instance=ExtResource("5_5yp1d")]
-position = Vector2(67, 362)
-can_sleep = false
 
 [node name="AsteroidContainer" type="Node2D" parent="." unique_id=786263158]
 

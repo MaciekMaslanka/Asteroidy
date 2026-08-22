@@ -24,6 +24,9 @@ height = 40.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_nn08x"]
 radius = 200.0
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_bhhdu"]
+radius = 3000.0
+
 [node name="CharacterBody2D" type="RigidBody2D" unique_id=43622812 node_paths=PackedStringArray("pickupDetector", "DropSpawner")]
 collision_mask = 62
 mass = 100.0
@@ -107,3 +110,10 @@ shape = SubResource("CircleShape2D_nn08x")
 script = ExtResource("7_52ee3")
 itemDropScene = ExtResource("8_bhhdu")
 offsetFromPlayer = 50.0
+
+[node name="EnemyActiveZone" type="Area2D" parent="." unique_id=733637819]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyActiveZone" unique_id=508846510]
+shape = SubResource("CircleShape2D_bhhdu")

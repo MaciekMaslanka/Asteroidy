@@ -2,6 +2,12 @@ using Godot;
 
 public partial class Enemy : RigidBody2D, IDamagable
 {
+	//sygnały
+	[Signal]
+	public delegate void EnemyActivatedEventHandler();
+	[Signal]
+	public delegate void EnemyDeactivatedEventHandler();
+
 	public enum State { 
 		Patrol,
 		Search,
@@ -88,6 +94,8 @@ public partial class Enemy : RigidBody2D, IDamagable
 		hpBar.Value = hpBar.MaxValue;
 		hpBarOffset = hpBar.Position;
 		hpBar.Visible = false;
+
+		Deactivate();
 
 		if(GameManager.Instance.Player != null)
 		{
@@ -400,5 +408,19 @@ public partial class Enemy : RigidBody2D, IDamagable
 			escapeDirection = newEscapeDirection;
 			escapeTimer = 0.5f;
 		}
+	}
+	//-------------------------------------------------------------------------------------------
+	//aktywacja / deaktywacja
+	public void Activate()
+	{
+		CallDeferred(MethodName.SetPhysicsProcess, true);
+		CallDeferred(MethodName.Set, "freeze", false);
+		EmitSignal(SignalName.EnemyActivated);
+	}
+	public void Deactivate()
+	{
+		CallDeferred(MethodName.SetPhysicsProcess, false);
+		CallDeferred(MethodName.Set, "freeze", true);
+		EmitSignal(SignalName.EnemyDeactivated);
 	}
 }

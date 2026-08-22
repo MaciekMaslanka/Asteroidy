@@ -20,6 +20,9 @@ public partial class EnemyGun : Sprite2D
         enemy = GetParent<Enemy>();
 		muzzle = GetNode<Marker2D>("Muzzle");
 
+		enemy.EnemyActivated += () => CallDeferred(MethodName.SetPhysicsProcess, true);
+		enemy.EnemyDeactivated += () => CallDeferred(MethodName.SetPhysicsProcess, false);
+
 		if(GameManager.Instance.Player != null)
 		{
 			Init();

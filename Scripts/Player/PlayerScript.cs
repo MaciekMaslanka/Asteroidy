@@ -75,6 +75,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	[Export] public ItemDropSpawner DropSpawner {private set; get;}
 	//inne
 	private bool isInRadioactiveBiome;
+	private Area2D enemyActivationArea;
 
     public override void _Ready()
 	{
@@ -119,6 +120,10 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 
 		pickupDetector.BodyEntered += OnPickupEnteredArea;
 		pickupDetector.BodyExited += OnPickupExitedArea;
+
+		enemyActivationArea = GetNode<Area2D>("EnemyActiveZone");
+		enemyActivationArea.BodyEntered += ActivateEnemy;
+		enemyActivationArea.BodyExited += DeactivateEnemy;
 	}
 
 	public override void _PhysicsProcess(double delta)
@@ -470,5 +475,21 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	{
 		isInRadioactiveBiome = false;
 		EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
+	}
+	//-------------------------------------------------------------------------
+	//enemy
+	private void ActivateEnemy(Node2D body)
+	{
+		if(body is Enemy enemy)
+		{
+			enemy.Activate();
+		}
+	}
+	private void DeactivateEnemy(Node2D body)
+	{
+		if(body is Enemy enemy)
+		{
+			enemy.Deactivate();
+		}
 	}
 }
