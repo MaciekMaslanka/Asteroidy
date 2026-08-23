@@ -1,7 +1,6 @@
 using Godot;
-using System;
 
-public partial class ContextMap
+public class ContextMap
 {
     private readonly int _resolution;
     private readonly float[] _interest;
@@ -22,61 +21,74 @@ public partial class ContextMap
         }
     }
 
-    public void Update(Vector2 globalPosition, Vector2 targetDirection, PhysicsDirectSpaceState2D spaceState, float maxRayDistance = 600f)
+    public void Update(
+        Vector2 globalPosition, 
+        Vector2 targetDirection,
+        PhysicsDirectSpaceState2D spaceState, 
+        float rayLength,
+        CircleShape2D avoidanceShape,
+        Rid selfRid)
     {
         //reset
-        for(int i=0; i<_resolution; i++)
+        for(int i=0; i<_directions.Length; i++)
         {
-            _interest[i] = 0;
-            _danger[i] = 0;
+            _danger[i] = 0f;
+            _interest[i] = 0f;
         }
 
-        //intrest
-        Vector2 targetDirNorm = targetDirection.Normalized();
-        for(int i=0; i<_resolution; i++)
-        {
-            float dot = _directions[i].Dot(targetDirNorm);
-            _interest[i] = Mathf.Max(0f, dot);
-        }
-
-        //danger
-        for(int i=0; i<_resolution; i++)
+        for(int i=0; i < _resolution; i++)
         {
             Vector2 dir = _directions[i];
-            Vector2 to = globalPosition + dir * maxRayDistance;
 
-            var query = new PhysicsRayQueryParameters2D
+            //interest
+            float dot = dir.Dot(targetDirection);
+            _interest[i] = Mathf.Max(0f, dot);
+
+            //przeszkody
+            var query = new PhysicsShapeQueryParameters2D
             {
-                From = globalPosition,
-                To = to,
-                CollideWithBodies = true
+                Shape = avoidanceShape,
+                Transform = new Transform2D(0f, globalPosition),
+                Motion = dir * rayLength,
+                Exclude = new Godot.Collections.Array<Rid> {selfRid},
+                CollideWithBodies = true,
+                CollisionMask = 0b101100 //kolizja z asteroidami, oreami i borderem
             };
 
-            var result = spaceState.IntersectRay(query);
+            var result = spaceState.CastMotion(query);
 
-            if(result.Count > 0)
+            if(result[0] < 1f)
             {
-                Vector2 hitPoint = (Vector2) result["position"];
-                float distance = globalPosition.DistanceTo(hitPoint);
-                float dangerValue = 1f - (distance / maxRayDistance);
-                _danger[i] = Mathf.Clamp(dangerValue * dangerValue, 0f, 1f);
+                _danger[i] = 1f - result[0];
+            }
+            else
+            {
+                _danger[i] = 0f;
             }
         }
     }
     public Vector2 GetSteeringDirection(float interestWeight = 1f, float dangerWeight = 1.5f)
     {
-        Vector2 steering = Vector2.Zero;
+        Vector2 bestDir = Vector2.Zero;
+        float bestWeight = -1;
 
         for (int i=0; i<_resolution; i++)
         {
-            float weight = _interest[i] * (1f - _danger[i] * dangerWeight);
-            steering += _directions[i] * weight;
+            float dangerPenalty = Mathf.Clamp(
+                1f - _danger[i] * dangerWeight,
+                0f,
+                1f
+            );
+
+            float weight = _interest[i] * interestWeight * dangerPenalty;
+
+            if(weight > bestWeight)
+            {
+                bestWeight = weight;
+                bestDir = _directions[i];
+            }
         }
 
-        if(steering == Vector2.Zero)
-        {
-            return Vector2.Right;
-        }
-        return steering.Normalized();
+        return bestDir;
     }
 }

@@ -62,7 +62,6 @@ public partial class GameManager : Node
 
 		if(Input.IsActionJustPressed("pause"))
 		{
-			GD.Print("costam");
 			if(GetTree().Paused)
 				UnpauseGame();
 			else
@@ -71,6 +70,7 @@ public partial class GameManager : Node
 	}
 	private BiomeType GetBiomeAt(Vector2 pos)
 	{
+		if(BiomeNoise == null) return BiomeType.Normal;
 		float noise = BiomeNoise.GetNoise2Dv(pos);
 
 		if(noise < normalThreshold)

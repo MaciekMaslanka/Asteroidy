@@ -1,5 +1,4 @@
 using Godot;
-using Microsoft.VisualBasic;
 using System.Collections.Generic;
 
 public partial class PlayerScript : RigidBody2D, IDamagable
@@ -31,6 +30,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	[Export] private float ThrustForce = 850f;
     [Export] private float MaxLinearVelocity = 420f;
     [Export] private float LinearDamping = 1.2f;
+	private bool isSteeringLocked = false;
 
 	//narzedzia-wspolne
 	[ExportCategory("Narzedzia")]
@@ -75,6 +75,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	[Export] public ItemDropSpawner DropSpawner {private set; get;}
 	//inne
 	private bool isInRadioactiveBiome;
+	private Area2D enemyActivationArea;
 
     public override void _Ready()
 	{
@@ -119,18 +120,28 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 
 		pickupDetector.BodyEntered += OnPickupEnteredArea;
 		pickupDetector.BodyExited += OnPickupExitedArea;
+
+		enemyActivationArea = GetNode<Area2D>("EnemyActiveZone");
+		enemyActivationArea.BodyEntered += ActivateEnemy;
+		enemyActivationArea.BodyExited += DeactivateEnemy;
 	}
 
 	public override void _PhysicsProcess(double delta)
 	{
 		float dt = (float) delta;
-		HandleRotation(dt);
-		HandleMovement(dt);
-		RotateTool(dt);
-		HandleToolChanges();
-		HandleMouseInput(dt);
-		HandleShieldsRegen(dt);
-		HandleOtherInputs(dt);
+
+		if(!isSteeringLocked)
+		{
+			HandleRotation(dt);
+			HandleMovement(dt);
+			RotateTool(dt);
+			HandleToolChanges();
+			HandleMouseInput(dt);
+			HandleShieldsRegen(dt);
+			HandleOtherInputs(dt);
+		}
+		
+		
 
 		HandlePickupIndicator();
 
@@ -227,6 +238,11 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		{
 			LinearVelocity = LinearVelocity.Normalized() * MaxLinearVelocity;
 		}
+	}
+
+	public void LockSteering(bool newState = false)
+	{
+		isSteeringLocked = newState;
 	}
 
 	//-------------------------------------------------------------------------
@@ -459,5 +475,21 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	{
 		isInRadioactiveBiome = false;
 		EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
+	}
+	//-------------------------------------------------------------------------
+	//enemy
+	private void ActivateEnemy(Node2D body)
+	{
+		if(body is Enemy enemy)
+		{
+			enemy.Activate();
+		}
+	}
+	private void DeactivateEnemy(Node2D body)
+	{
+		if(body is Enemy enemy)
+		{
+			enemy.Deactivate();
+		}
 	}
 }

@@ -1,8 +1,14 @@
 [gd_scene format=3 uid="uid://b6e5k5283jnaq"]
 
 [ext_resource type="Script" uid="uid://das1pnl3h3d4g" path="res://Scripts/Enemies/Enemy.cs" id="1_wovta"]
+[ext_resource type="PackedScene" uid="uid://5o3wihxk8csq" path="res://Scenes/ItemDrop.tscn" id="2_idouy"]
 [ext_resource type="PackedScene" uid="uid://diy7v3bb12uso" path="res://Scenes/Bullet.tscn" id="2_kpr8r"]
+[ext_resource type="Resource" uid="uid://ddyxoqc6d868" path="res://Resources/Items/Other/RepairKit.tres" id="3_0o0ue"]
+[ext_resource type="Texture2D" uid="uid://bv2ospmuu8bmc" path="res://Sprites/Player/weaponPlaceholder.png" id="3_kpr8r"]
 [ext_resource type="Texture2D" uid="uid://b4ego6utl6yy6" path="res://Sprites/Player/enemy.png" id="3_xeo28"]
+[ext_resource type="Resource" uid="uid://c02ashvkkq8kv" path="res://Resources/Items/CopperItem.tres" id="4_6s1gy"]
+[ext_resource type="Script" uid="uid://d2wy45eprf36d" path="res://Scripts/Enemies/EnemyGun.cs" id="4_kpr8r"]
+[ext_resource type="Resource" uid="uid://c0ma0gskik048" path="res://Resources/Items/IronItem.tres" id="5_uihya"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kpr8r"]
 radius = 14.0
@@ -29,8 +35,9 @@ mass = 100.0
 gravity_scale = 0.0
 linear_damp = 1.2
 script = ExtResource("1_wovta")
-DetectionRange = 500.0
-BulletScene = ExtResource("2_kpr8r")
+attackRange = 500.0
+dropItemScene = ExtResource("2_idouy")
+possibleDrops = Array[Object]([ExtResource("3_0o0ue"), ExtResource("4_6s1gy"), ExtResource("5_uihya")])
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=748898151]
 texture_filter = 1
@@ -45,11 +52,6 @@ shape = SubResource("CapsuleShape2D_kpr8r")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=1554380372]
 polygon = PackedVector2Array(-27, -36, -7, -36, 19, -15, 19, 15, -7, 36, -27, 36, -27, 31, -15, 16, -15, -16, -27, -31)
-
-[node name="Sensors" type="Node2D" parent="." unique_id=113185535]
-
-[node name="VisionRay" type="RayCast2D" parent="Sensors" unique_id=1059269135]
-collision_mask = 13
 
 [node name="HpBar" type="ProgressBar" parent="." unique_id=1188885761]
 texture_filter = 1
@@ -68,3 +70,15 @@ theme_override_styles/background = SubResource("StyleBoxFlat_xeo28")
 theme_override_styles/fill = SubResource("StyleBoxFlat_kpr8r")
 value = 50.0
 show_percentage = false
+
+[node name="Gun" type="Sprite2D" parent="." unique_id=124335289]
+z_index = -1
+position = Vector2(45, 0)
+scale = Vector2(0.02, 0.02)
+texture = ExtResource("3_kpr8r")
+offset = Vector2(400, 0)
+script = ExtResource("4_kpr8r")
+bulletScene = ExtResource("2_kpr8r")
+
+[node name="Muzzle" type="Marker2D" parent="Gun" unique_id=160073419]
+position = Vector2(1200, 0)

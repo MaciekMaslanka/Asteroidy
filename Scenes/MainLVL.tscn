@@ -49,31 +49,30 @@ repeat_times = 6
 
 [node name="Sprite2D" type="Sprite2D" parent="Parallax2D" unique_id=995478668]
 texture_filter = 2
-position = Vector2(-0.776699, -0.776699)
 texture = ExtResource("2_gt1wq")
-
-[node name="Enemy" parent="." unique_id=431999929 instance=ExtResource("5_5yp1d")]
-position = Vector2(67, 362)
-can_sleep = false
 
 [node name="AsteroidContainer" type="Node2D" parent="." unique_id=786263158]
 
-[node name="LevelGenerator" type="Node2D" parent="." unique_id=111583895 node_paths=PackedStringArray("asteroidContainer")]
+[node name="EnemyContainer" type="Node2D" parent="." unique_id=1963469132]
+
+[node name="ItemDrops" type="Node2D" parent="." unique_id=1031677191]
+
+[node name="LevelGenerator" type="Node2D" parent="." unique_id=111583895 node_paths=PackedStringArray("asteroidContainer", "enemyContainer")]
 script = ExtResource("5_pobvj")
 normalBiome = ExtResource("6_a4ucx")
 iceBiome = ExtResource("7_jlbws")
 radioactiveBiome = ExtResource("8_f0i0x")
 smallBiome = ExtResource("9_33tof")
 rareBiome = ExtResource("10_od46y")
+biomeNoise = SubResource("FastNoiseLite_f0i0x")
 AsteroidScene = ExtResource("3_lvojy")
 MapSize = 32000
 GenerationSize = 33000
 MaxAsteroidsCount = 1000
 MinAsteroidCount = 300
 asteroidContainer = NodePath("../AsteroidContainer")
-biomeNoise = SubResource("FastNoiseLite_f0i0x")
-
-[node name="ItemDrops" type="Node2D" parent="." unique_id=1031677191]
+enemyScene = ExtResource("5_5yp1d")
+enemyContainer = NodePath("../EnemyContainer")
 
 [node name="Border" type="StaticBody2D" parent="." unique_id=975424245]
 z_index = -10

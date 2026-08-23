@@ -14,7 +14,7 @@ collision_layer = 16
 collision_mask = 13
 motion_mode = 1
 script = ExtResource("1_vlxeq")
-Speed = 1000.0
+Speed = 600.0
 Damage = 100.0
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1299033435]
