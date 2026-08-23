@@ -68,8 +68,10 @@ public partial class Asteroid : RigidBody2D
 	{
 		//visuals
 		if(Settings.Texture != null)
+		{
 			body.Texture = Settings.Texture;
 			background.Texture = Settings.Texture;
+		}
 			
 		//asteroida
 		BaseRadius = ShapeSettings.BaseRadius;
@@ -131,22 +133,28 @@ public partial class Asteroid : RigidBody2D
 	}
 	private void SmoothShape()
 	{
-		if(currentShape.Length < 6) return;
+		if(currentShape.Length < 6) 
+			return;
 
-		List<Vector2> smoothed = new();
-		smoothed.Add(currentShape[0]);
+		List<Vector2> smoothed = new() {currentShape[0]};
 
 		for(int i=1; i<currentShape.Length - 1; i++)
 		{
 			Vector2 prev = currentShape[i-1];
 			Vector2 current = currentShape[i];
 
-			if(current.DistanceTo(prev) < minDistance)
-				continue;
-
-			smoothed.Add(current);
+			if(current.DistanceTo(prev) >= minDistance)
+				smoothed.Add(current);
 		}
-		smoothed.Add(currentShape[^1]); // ^ zwraca od konca tablicy (nie wiedziałem że takie coś istnieje)
+		smoothed.Add(currentShape[^1]);
+
+		if(smoothed.Count < 3)
+			return;
+
+		float area = PolygonUtils.CalculatePolygonArea(smoothed.ToArray());
+		
+		if(area < 100f)
+			return;
 
 		UpdateShape(smoothed.ToArray());
 	}
