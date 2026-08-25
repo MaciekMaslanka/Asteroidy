@@ -4,9 +4,9 @@ public partial class Enemy : RigidBody2D, IDamagable
 {
 	//sygnały
 	[Signal]
-	public delegate void EnemyActivatedEventHandler();
+	public delegate void EnemyActivatedEventHandler(Enemy enemy);
 	[Signal]
-	public delegate void EnemyDeactivatedEventHandler();
+	public delegate void EnemyDeactivatedEventHandler(Enemy enemy);
 
 	public enum State { 
 		Patrol,
@@ -71,8 +71,10 @@ public partial class Enemy : RigidBody2D, IDamagable
 	private Vector2 desiredDirection;
 	private Vector2 escapeDirection;
 	private Vector2 lastKnownPlayerPosition;
-	private State currentState = State.Patrol;
+	public State CurrentState {private set; get;} = State.Patrol;
 	public bool SeesPlayer {private set; get;} = false;
+	public bool IsOnScreen {private set; get;} = false;
+	private VisibleOnScreenNotifier2D visibileNotifier;
 
 	public override void _Ready()
 	{
@@ -105,6 +107,10 @@ public partial class Enemy : RigidBody2D, IDamagable
 		{
 			GameManager.Instance.PlayerReady += Init;
 		}
+
+		visibileNotifier = GetNode<VisibleOnScreenNotifier2D>("VisibleNotifier");
+		visibileNotifier.ScreenEntered += () => IsOnScreen = true;
+		visibileNotifier.ScreenExited += () => IsOnScreen = false;
 	}
 	private void Init()
 	{
@@ -191,40 +197,40 @@ public partial class Enemy : RigidBody2D, IDamagable
 
 		float distance = GlobalPosition.DistanceTo(player.GlobalPosition);
 
-		switch(currentState)
+		switch(CurrentState)
 		{
 			case State.Patrol:
 				if(SeesPlayer)
-					currentState = State.Chase;
+					CurrentState = State.Chase;
 				break;
 
 			case State.Chase:
 				if(!SeesPlayer)
 				{
-					currentState = State.Search;
+					CurrentState = State.Search;
 					searchTimer = 0f;
 				}
 				else if(distance <= attackRange)
 				{
-					currentState = State.Attack;
+					CurrentState = State.Attack;
 				}
 				break;
 
 			case State.Attack:
 				if(!SeesPlayer)
 				{
-					currentState = State.Search;
+					CurrentState = State.Search;
 				}
 				else if (distance > attackRange * 1.2f)
 				{
-					currentState = State.Chase;
+					CurrentState = State.Chase;
 				}
 				break;
 
 			case State.Search:
 				if(SeesPlayer)
 				{
-					currentState = State.Chase;
+					CurrentState = State.Chase;
 					searchTimer = 0f;
 				}
 				break;
@@ -232,7 +238,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 	}
 	private void HandleState(float dt)
 	{
-		switch(currentState)
+		switch(CurrentState)
 		{
 			case State.Patrol:
 				HandlePatrol(dt);
@@ -268,7 +274,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 
 		if(searchTimer >= searchTime)
 		{
-			currentState = State.Patrol;
+			CurrentState = State.Patrol;
 			searchTimer = 0f;
 		}
 	}
@@ -415,12 +421,12 @@ public partial class Enemy : RigidBody2D, IDamagable
 	{
 		CallDeferred(MethodName.SetPhysicsProcess, true);
 		CallDeferred(MethodName.Set, "freeze", false);
-		EmitSignal(SignalName.EnemyActivated);
+		EmitSignal(SignalName.EnemyActivated, this);
 	}
 	public void Deactivate()
 	{
 		CallDeferred(MethodName.SetPhysicsProcess, false);
 		CallDeferred(MethodName.Set, "freeze", true);
-		EmitSignal(SignalName.EnemyDeactivated);
+		EmitSignal(SignalName.EnemyDeactivated, this);
 	}
 }
