@@ -73,6 +73,8 @@ MinAsteroidCount = 300
 asteroidContainer = NodePath("../AsteroidContainer")
 enemyScene = ExtResource("5_5yp1d")
 enemyContainer = NodePath("../EnemyContainer")
+minEnemyCount = 40
+maxEnemyAmount = 70
 
 [node name="Border" type="StaticBody2D" parent="." unique_id=975424245]
 z_index = -10

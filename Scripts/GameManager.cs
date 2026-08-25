@@ -8,6 +8,8 @@ public partial class GameManager : Node
 	[Signal]
 	public delegate void InventoryReadyEventHandler();
 	[Signal]
+	public delegate void EIndicatorsManagerReadyEventHandler();
+	[Signal]
 	public delegate void BiomeSwitchedEventHandler(BiomeType newBiome);
 	[Signal]
 	public delegate void PlayerEnteredRadioactiveBiomeEventHandler();
@@ -34,6 +36,7 @@ public partial class GameManager : Node
 	public Inventory Inventory {private set; get;}
 
 	public Image MinimapImage {private set; get;}
+	public EIndicatorsManager EnemyIndicatorsManager {private set; get;}
 
     public override void _Ready()
 	{
@@ -111,6 +114,14 @@ public partial class GameManager : Node
 
 		Inventory = inv;
 		EmitSignal(SignalName.InventoryReady);
+	}
+	public void RegisterEnemyIndicatorsManager(EIndicatorsManager indicatorsManager)
+	{
+		if(EnemyIndicatorsManager != null)
+			throw new InvalidOperationException("EIM już ustawiony");
+
+		EnemyIndicatorsManager = indicatorsManager;
+		EmitSignal(SignalName.EIndicatorsManagerReady);
 	}
 	public void PauseGame()
 	{
