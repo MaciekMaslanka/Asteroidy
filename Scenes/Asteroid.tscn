@@ -13,6 +13,7 @@ bounce = 0.48
 absorbent = true
 
 [node name="Asteroid" type="RigidBody2D" unique_id=2009140096]
+visibility_layer = 3
 collision_layer = 4
 collision_mask = 7
 mass = 50.0

@@ -73,8 +73,6 @@ public partial class Enemy : RigidBody2D, IDamagable
 	private Vector2 lastKnownPlayerPosition;
 	public State CurrentState {private set; get;} = State.Patrol;
 	public bool SeesPlayer {private set; get;} = false;
-	public bool IsOnScreen {private set; get;} = false;
-	private VisibleOnScreenNotifier2D visibileNotifier;
 
 	public override void _Ready()
 	{
@@ -107,10 +105,6 @@ public partial class Enemy : RigidBody2D, IDamagable
 		{
 			GameManager.Instance.PlayerReady += Init;
 		}
-
-		visibileNotifier = GetNode<VisibleOnScreenNotifier2D>("VisibleNotifier");
-		visibileNotifier.ScreenEntered += () => IsOnScreen = true;
-		visibileNotifier.ScreenExited += () => IsOnScreen = false;
 	}
 	private void Init()
 	{

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Godot;
+using GodotPlugins.Game;
 
 public partial class EIndicatorsManager : Control
 {
@@ -28,7 +29,8 @@ public partial class EIndicatorsManager : Control
 
     private void UpdateIndicators()
     {
-        Vector2 screenSize = GetViewportRect().Size;
+        var mainViewport = GetTree().Root;
+        Vector2 screenSize = mainViewport.GetVisibleRect().Size;
         Vector2 screenCenter = screenSize / 2f;
 
         foreach (var (enemy, indicator) in indicators)
@@ -36,13 +38,16 @@ public partial class EIndicatorsManager : Control
             if (!IsInstanceValid(enemy) || enemy.IsQueuedForDeletion())
                 continue;
 
-            if (enemy.IsOnScreen)
+            Vector2 enemyScreenPos = enemy.GetGlobalTransformWithCanvas().Origin;
+            bool onMainScreen = GetTree().Root.GetVisibleRect().Grow(-20).HasPoint(enemyScreenPos);
+    
+            if(onMainScreen)
             {
                 indicator.Hide();
                 continue;
             }
 
-            Vector2 enemyScreenPos = enemy.GetGlobalTransformWithCanvas().Origin;
+            
             Vector2 dir = (enemyScreenPos - screenCenter).Normalized();
             
             float maxX = screenSize.X / 2;

@@ -42,6 +42,7 @@ position = Vector2(249, 368)
 diggerSpeed = 10.0
 
 [node name="Parallax2D" type="Parallax2D" parent="." unique_id=512764058]
+visibility_layer = 2
 z_index = -100
 scroll_scale = Vector2(0.2, 0.2)
 repeat_size = Vector2(1000, 1000)
@@ -77,6 +78,7 @@ minEnemyCount = 40
 maxEnemyAmount = 70
 
 [node name="Border" type="StaticBody2D" parent="." unique_id=975424245]
+visibility_layer = 3
 z_index = -10
 collision_layer = 32
 collision_mask = 0
