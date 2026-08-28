@@ -419,6 +419,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 	}
 	public void Deactivate()
 	{
+		CurrentState = State.Patrol;
 		CallDeferred(MethodName.SetPhysicsProcess, false);
 		CallDeferred(MethodName.Set, "freeze", true);
 		EmitSignal(SignalName.EnemyDeactivated, this);

@@ -106,6 +106,8 @@ public partial class LevelGenerator : Node2D
         int asteroidsAmount = GD.RandRange(MinAsteroidCount, MaxAsteroidsCount);
         int attempts = asteroidsAmount * 12;
 
+        float spawnProtectionRadiusSquared = SpawnProtectionRadius * SpawnProtectionRadius;
+
         for(int i=0; i < asteroidsAmount; i++)
         {
             for(int j=0; j < attempts; j++)
@@ -114,18 +116,18 @@ public partial class LevelGenerator : Node2D
                 float y = (float) GD.RandRange(-half, half);
                 Vector2 position = new(x, y);
 
+                if(position.LengthSquared() < spawnProtectionRadiusSquared)
+                    continue;
+
                 bool tooClose = false;
-                
-                if(position.LengthSquared() > SpawnProtectionRadius * SpawnProtectionRadius)
+            
+                foreach(var spawnPos in spawnedPositions)
                 {
-                    foreach(var spawnPos in spawnedPositions)
+                    //wydajność maxing
+                    if(spawnPos.DistanceSquaredTo(position) < MinDistanceBetweenAsteroids * MinDistanceBetweenAsteroids)
                     {
-                        //wydajność maxing
-                        if(spawnPos.DistanceSquaredTo(position) < MinDistanceBetweenAsteroids * MinDistanceBetweenAsteroids)
-                        {
-                            tooClose = true;
-                            break;
-                        }
+                        tooClose = true;
+                        break;
                     }
                 }
 
@@ -232,6 +234,8 @@ public partial class LevelGenerator : Node2D
         int enemiesCount = GD.RandRange(minEnemyCount, maxEnemyAmount);
         int attempts = enemiesCount * 20;
 
+        float spawnProtectionRadiusSquared = SpawnProtectionRadius * SpawnProtectionRadius;
+
         for(int i=0; i < enemiesCount; i++)
         {
             for(int j=0; j<attempts; j++)
@@ -241,17 +245,17 @@ public partial class LevelGenerator : Node2D
 
                 Vector2 position = new Vector2(x, y);
 
+                if(position.LengthSquared() < spawnProtectionRadiusSquared)
+                    continue;
+
                 bool tooClose = false;
 
-                if(position.LengthSquared() > SpawnProtectionRadius * SpawnProtectionRadius)
+                foreach(var asteroidPos in spawnedPositions)
                 {
-                    foreach(var asteroidPos in spawnedPositions)
+                    if(asteroidPos.DistanceSquaredTo(position) < minDistanceFromAsteroids * minDistanceFromAsteroids)
                     {
-                        if(asteroidPos.DistanceSquaredTo(position) < minDistanceFromAsteroids * minDistanceFromAsteroids)
-                        {
-                            tooClose = true;
-                            break;
-                        }
+                        tooClose = true;
+                        break;
                     }
                 }
                 
@@ -273,4 +277,3 @@ public partial class LevelGenerator : Node2D
         enemyContainer.CallDeferred("add_child", enemy);
     }
 }
-

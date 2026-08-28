@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dxkd0abk0u3et"
-path="res://.godot/imported/EnemyIndicatorPlaceholder.png-bc10e58acd0214afa2a809931ef29f53.ctex"
+uid="uid://bxnyh624lj34h"
+path="res://.godot/imported/MapOutline.png-a494b5e776590461024fe7254da3c130.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Sprites/UI/EnemyIndicatorPlaceholder.png"
-dest_files=["res://.godot/imported/EnemyIndicatorPlaceholder.png-bc10e58acd0214afa2a809931ef29f53.ctex"]
+source_file="res://Sprites/UI/MapIcons/MapOutline.png"
+dest_files=["res://.godot/imported/MapOutline.png-a494b5e776590461024fe7254da3c130.ctex"]
 
 [params]
 

@@ -77,6 +77,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	private Area2D enemyActivationArea;
 	private Area2D enemyDeactivationArea;
 	private EIndicatorsManager indicatorsManager;
+	private MiniMap miniMap;
 
     public override void _Ready()
 	{
@@ -136,6 +137,16 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		{
 			GameManager.Instance.EIndicatorsManagerReady += () => 
 				indicatorsManager = GameManager.Instance.EnemyIndicatorsManager;
+		}
+
+		if(GameManager.Instance.Minimap != null)
+		{
+			miniMap = GameManager.Instance.Minimap;
+		}
+		else
+		{
+			GameManager.Instance.MinimapReady += () => 
+				miniMap = GameManager.Instance.Minimap;
 		}
 	}
 
@@ -497,6 +508,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		{
 			enemy.Activate();
 			indicatorsManager.AddEnemy(enemy);
+			miniMap.AddEnemy(enemy);
 		}
 	}
 	private void DeactivateEnemy(Node2D body)
@@ -505,6 +517,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		{
 			enemy.Deactivate();
 			indicatorsManager.RemoveEnemy(enemy);
+			miniMap.RemoveEnemy(enemy);
 		}
 	}
 }

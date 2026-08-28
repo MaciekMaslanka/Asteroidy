@@ -1,12 +1,17 @@
 using System.Collections.Generic;
 using Godot;
-using GodotPlugins.Game;
 
 public partial class EIndicatorsManager : Control
 {
+    [Signal]
+    public delegate void EnemyAddedEventHandler(Enemy enemy);
+    [Signal]
+    public delegate void EnemyRemovedEventHandler(Enemy enemy);
+
     [Export] private PackedScene indicatorScene;
     private PlayerScript player;
 	private List<Enemy> activeEnemies = new();
+    public IReadOnlyList<Enemy> ActiveEnemies => activeEnemies;
     private Dictionary<Enemy, EnemyIndicator> indicators = new();
     
     public override void _Ready()
