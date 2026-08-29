@@ -43,6 +43,7 @@ public partial class GameManager : Node
 	{
 		Instance = this;
 		ProcessMode = ProcessModeEnum.Always;
+		GetViewport().CanvasCullMask = 0b01;
 	}
     public override void _PhysicsProcess(double delta)
 	{

@@ -29,7 +29,6 @@ corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
 [node name="Enemy" type="RigidBody2D" unique_id=431999929]
-visibility_layer = 3
 collision_layer = 2
 collision_mask = 61
 mass = 100.0

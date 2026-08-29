@@ -31,7 +31,6 @@ radius = 3000.0
 radius = 3300.0
 
 [node name="CharacterBody2D" type="RigidBody2D" unique_id=43622812 node_paths=PackedStringArray("pickupDetector", "DropSpawner")]
-visibility_layer = 3
 collision_mask = 62
 mass = 100.0
 gravity_scale = 0.0
@@ -73,7 +72,6 @@ position_smoothing_enabled = true
 editor_draw_drag_margin = true
 
 [node name="ToolContainer" type="Node2D" parent="." unique_id=747940764]
-visibility_layer = 2
 z_index = -1
 position = Vector2(0, -46)
 

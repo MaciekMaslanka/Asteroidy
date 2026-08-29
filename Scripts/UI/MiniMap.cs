@@ -7,7 +7,6 @@ public partial class MiniMap : Control
 	[Export] private Camera2D miniCam;
 	[Export] private TextureRect minimapImage;
 	[Export] private float zoom;
-	[Export] private uint canvasCullMask = 0b1;
 	[Export] private TextureRect playerIcon;
 	[Export] private PackedScene enemyIconScene;
 	private PlayerScript player;
@@ -21,8 +20,6 @@ public partial class MiniMap : Control
 		miniCam.Enabled = true;
 		miniCam.MakeCurrent();
 		miniCam.Zoom = new Vector2(zoom, zoom);
-
-		subViewport.CanvasCullMask = canvasCullMask;
 
 		GameManager.Instance.RegisterMinimap(this);
 

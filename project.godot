@@ -98,8 +98,8 @@ pause={
 
 [layer_names]
 
-2d_render/layer_1="minimap"
-2d_render/layer_2="normal"
+2d_render/layer_1="normal"
+2d_render/layer_2="minimap"
 2d_physics/layer_1="Player"
 2d_physics/layer_2="Enemies"
 2d_physics/layer_3="Asteroids"

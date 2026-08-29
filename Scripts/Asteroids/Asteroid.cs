@@ -31,6 +31,8 @@ public partial class Asteroid : RigidBody2D
 	//shape
 	public Polygon2D body {private set; get;}
 	private Polygon2D background;
+	private Polygon2D minimapBody;
+	private Polygon2D minimapBG;
 	private CollisionPolygon2D collider;
 	public Vector2[] currentShape {private set; get;}
 	private bool hasCustomShape = false;
@@ -39,6 +41,10 @@ public partial class Asteroid : RigidBody2D
 	{
 		body = GetNode<Polygon2D>("Polygon2D");
 		background = GetNode<Polygon2D>("Polygon2DBackground");
+
+		minimapBody = GetNode<Polygon2D>("MinimapPolygon");
+		minimapBG = GetNode<Polygon2D>("MinimapPolygonBG");
+
 		collider = GetNode<CollisionPolygon2D>("CollisionPolygon2D");
 		AsteroidScene = GD.Load<PackedScene>("res://Scenes/Asteroid.tscn");
 
@@ -100,8 +106,14 @@ public partial class Asteroid : RigidBody2D
 		currentShape = points;
 		body.Polygon = currentShape;
 		collider.Polygon = currentShape;
+
+		minimapBody.Polygon = currentShape;
+
 		if(UpdateBackground)
+		{
 			background.Polygon = currentShape;
+			minimapBG.Polygon = currentShape;
+		}
 	}
 	private void GenerateShape()
 	{

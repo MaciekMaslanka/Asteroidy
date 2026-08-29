@@ -10,8 +10,6 @@ public partial class EIndicatorsManager : Control
 
     [Export] private PackedScene indicatorScene;
     private PlayerScript player;
-	private List<Enemy> activeEnemies = new();
-    public IReadOnlyList<Enemy> ActiveEnemies => activeEnemies;
     private Dictionary<Enemy, EnemyIndicator> indicators = new();
     
     public override void _Ready()
@@ -71,10 +69,8 @@ public partial class EIndicatorsManager : Control
     }
     public void AddEnemy(Enemy enemy)
     {
-        if(!activeEnemies.Contains(enemy))
+        if(!indicators.ContainsKey(enemy))
         {
-            activeEnemies.Add(enemy);
-
             EnemyIndicator indicator = indicatorScene.Instantiate<EnemyIndicator>();
             AddChild(indicator);
 
@@ -83,11 +79,10 @@ public partial class EIndicatorsManager : Control
     }
     public void RemoveEnemy(Enemy enemy)
     {
-        if(activeEnemies.Contains(enemy))
+        if(indicators.TryGetValue(enemy, out var indicator))
         {
-            activeEnemies.Remove(enemy);
-            indicators[enemy].HideAndFree();
             indicators.Remove(enemy);
+            indicator.HideAndFree();
         }
     }
 }

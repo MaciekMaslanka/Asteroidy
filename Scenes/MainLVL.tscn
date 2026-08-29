@@ -36,13 +36,13 @@ size = Vector2(100, 32100)
 size = Vector2(32100, 100)
 
 [node name="LVL" type="Node2D" unique_id=1367986399]
+visibility_layer = 3
 
 [node name="Player" parent="." unique_id=1184771747 instance=ExtResource("1_qd23g")]
 position = Vector2(249, 368)
 diggerSpeed = 10.0
 
 [node name="Parallax2D" type="Parallax2D" parent="." unique_id=512764058]
-visibility_layer = 2
 z_index = -100
 scroll_scale = Vector2(0.2, 0.2)
 repeat_size = Vector2(1000, 1000)
@@ -53,6 +53,7 @@ texture_filter = 2
 texture = ExtResource("2_gt1wq")
 
 [node name="AsteroidContainer" type="Node2D" parent="." unique_id=786263158]
+visibility_layer = 3
 
 [node name="EnemyContainer" type="Node2D" parent="." unique_id=1963469132]
 
