@@ -31,6 +31,8 @@ public partial class Asteroid : RigidBody2D
 	//shape
 	public Polygon2D body {private set; get;}
 	private Polygon2D background;
+	private Polygon2D minimapBody;
+	private Polygon2D minimapBG;
 	private CollisionPolygon2D collider;
 	public Vector2[] currentShape {private set; get;}
 	private bool hasCustomShape = false;
@@ -39,6 +41,10 @@ public partial class Asteroid : RigidBody2D
 	{
 		body = GetNode<Polygon2D>("Polygon2D");
 		background = GetNode<Polygon2D>("Polygon2DBackground");
+
+		minimapBody = GetNode<Polygon2D>("MinimapPolygon");
+		minimapBG = GetNode<Polygon2D>("MinimapPolygonBG");
+
 		collider = GetNode<CollisionPolygon2D>("CollisionPolygon2D");
 		AsteroidScene = GD.Load<PackedScene>("res://Scenes/Asteroid.tscn");
 
@@ -68,8 +74,10 @@ public partial class Asteroid : RigidBody2D
 	{
 		//visuals
 		if(Settings.Texture != null)
+		{
 			body.Texture = Settings.Texture;
 			background.Texture = Settings.Texture;
+		}
 			
 		//asteroida
 		BaseRadius = ShapeSettings.BaseRadius;
@@ -98,8 +106,14 @@ public partial class Asteroid : RigidBody2D
 		currentShape = points;
 		body.Polygon = currentShape;
 		collider.Polygon = currentShape;
+
+		minimapBody.Polygon = currentShape;
+
 		if(UpdateBackground)
+		{
 			background.Polygon = currentShape;
+			minimapBG.Polygon = currentShape;
+		}
 	}
 	private void GenerateShape()
 	{
@@ -131,22 +145,28 @@ public partial class Asteroid : RigidBody2D
 	}
 	private void SmoothShape()
 	{
-		if(currentShape.Length < 6) return;
+		if(currentShape.Length < 6) 
+			return;
 
-		List<Vector2> smoothed = new();
-		smoothed.Add(currentShape[0]);
+		List<Vector2> smoothed = new() {currentShape[0]};
 
 		for(int i=1; i<currentShape.Length - 1; i++)
 		{
 			Vector2 prev = currentShape[i-1];
 			Vector2 current = currentShape[i];
 
-			if(current.DistanceTo(prev) < minDistance)
-				continue;
-
-			smoothed.Add(current);
+			if(current.DistanceTo(prev) >= minDistance)
+				smoothed.Add(current);
 		}
-		smoothed.Add(currentShape[^1]); // ^ zwraca od konca tablicy (nie wiedziałem że takie coś istnieje)
+		smoothed.Add(currentShape[^1]);
+
+		if(smoothed.Count < 3)
+			return;
+
+		float area = PolygonUtils.CalculatePolygonArea(smoothed.ToArray());
+		
+		if(area < 100f)
+			return;
 
 		UpdateShape(smoothed.ToArray());
 	}

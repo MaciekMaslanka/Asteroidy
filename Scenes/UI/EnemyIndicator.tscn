@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://buutxtnnfnq8e"]
+
+[ext_resource type="Script" uid="uid://be3waflv7ok2y" path="res://Scripts/UI/EnemyIndicator.cs" id="1_n5pmf"]
+[ext_resource type="Texture2D" uid="uid://cu1yyjs0dqlh5" path="res://Sprites/UI/EnemyIndicators/EnemyPatrolIndicator.png" id="2_bc4vc"]
+[ext_resource type="Texture2D" uid="uid://drxiojny0t05t" path="res://Sprites/UI/EnemyIndicators/EnemySearchIndicator.png" id="3_i53x4"]
+[ext_resource type="Texture2D" uid="uid://cj25t3qrap7ym" path="res://Sprites/UI/EnemyIndicators/EnemyChaseIndicator.png" id="4_g5g0n"]
+
+[node name="Control" type="Control" unique_id=158523123 node_paths=PackedStringArray("patrolSprite", "searchSprite", "chaseSprite")]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_n5pmf")
+patrolSprite = NodePath("PatrolSprite")
+searchSprite = NodePath("SearchSprite")
+chaseSprite = NodePath("ChaseSprite")
+
+[node name="PatrolSprite" type="Sprite2D" parent="." unique_id=544032263]
+texture_filter = 1
+position = Vector2(-15, 0)
+rotation = 1.5707964
+texture = ExtResource("2_bc4vc")
+
+[node name="SearchSprite" type="Sprite2D" parent="." unique_id=2047533988]
+texture_filter = 1
+position = Vector2(-15, 0)
+rotation = 1.5707964
+texture = ExtResource("3_i53x4")
+
+[node name="ChaseSprite" type="Sprite2D" parent="." unique_id=1160659668]
+texture_filter = 1
+position = Vector2(-15, 0)
+rotation = 1.5707964
+texture = ExtResource("4_g5g0n")

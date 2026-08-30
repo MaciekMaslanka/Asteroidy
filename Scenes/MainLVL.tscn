@@ -36,6 +36,7 @@ size = Vector2(100, 32100)
 size = Vector2(32100, 100)
 
 [node name="LVL" type="Node2D" unique_id=1367986399]
+visibility_layer = 3
 
 [node name="Player" parent="." unique_id=1184771747 instance=ExtResource("1_qd23g")]
 position = Vector2(249, 368)
@@ -52,6 +53,7 @@ texture_filter = 2
 texture = ExtResource("2_gt1wq")
 
 [node name="AsteroidContainer" type="Node2D" parent="." unique_id=786263158]
+visibility_layer = 3
 
 [node name="EnemyContainer" type="Node2D" parent="." unique_id=1963469132]
 
@@ -59,6 +61,7 @@ texture = ExtResource("2_gt1wq")
 
 [node name="LevelGenerator" type="Node2D" parent="." unique_id=111583895 node_paths=PackedStringArray("asteroidContainer", "enemyContainer")]
 script = ExtResource("5_pobvj")
+SpawnProtectionRadius = 1000.0
 normalBiome = ExtResource("6_a4ucx")
 iceBiome = ExtResource("7_jlbws")
 radioactiveBiome = ExtResource("8_f0i0x")
@@ -73,8 +76,11 @@ MinAsteroidCount = 300
 asteroidContainer = NodePath("../AsteroidContainer")
 enemyScene = ExtResource("5_5yp1d")
 enemyContainer = NodePath("../EnemyContainer")
+minEnemyCount = 40
+maxEnemyAmount = 70
 
 [node name="Border" type="StaticBody2D" parent="." unique_id=975424245]
+visibility_layer = 3
 z_index = -10
 collision_layer = 32
 collision_mask = 0

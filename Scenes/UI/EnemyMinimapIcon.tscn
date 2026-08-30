@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://p0ypija87qn7"]
+
+[ext_resource type="Texture2D" uid="uid://chbqavsics8xf" path="res://Sprites/UI/MapIcons/EnemyIcon.png" id="1_tp61f"]
+
+[node name="TextureRect" type="TextureRect" unique_id=1739208368]
+texture_filter = 1
+offset_right = 40.0
+offset_bottom = 40.0
+scale = Vector2(0.75, 0.75)
+pivot_offset_ratio = Vector2(0.5, 0.5)
+texture = ExtResource("1_tp61f")

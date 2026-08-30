@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using Godot;
 
 public partial class DiggingHandler : Node
@@ -56,12 +54,11 @@ public partial class DiggingHandler : Node
 	private void HandleFragments(Godot.Collections.Array<Vector2[]> result)
 	{
 		//sprawdzenie czy nie zrobił się problem z otoczeniem polB przez polA
-		var resultCopy = result;
-		foreach (var el in resultCopy)
+		for(int i = result.Count-1; i>=0; i--)
 		{
-			if(Geometry2D.IsPolygonClockwise(el))
+			if(Geometry2D.IsPolygonClockwise(result[i]))
 			{
-				result.Remove(el);
+				result.RemoveAt(i);
 			}
 		}
 
