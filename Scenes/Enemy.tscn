@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://b6e5k5283jnaq"]
 
 [ext_resource type="Script" uid="uid://das1pnl3h3d4g" path="res://Scripts/Enemies/Enemy.cs" id="1_wovta"]
+[ext_resource type="PackedScene" uid="uid://lk55y0pwse78" path="res://Scenes/Explosion.tscn" id="2_0o0ue"]
 [ext_resource type="PackedScene" uid="uid://5o3wihxk8csq" path="res://Scenes/ItemDrop.tscn" id="2_idouy"]
 [ext_resource type="PackedScene" uid="uid://diy7v3bb12uso" path="res://Scenes/Bullet.tscn" id="2_kpr8r"]
 [ext_resource type="Resource" uid="uid://ddyxoqc6d868" path="res://Resources/Items/Other/RepairKit.tres" id="3_0o0ue"]
@@ -35,6 +36,7 @@ mass = 100.0
 gravity_scale = 0.0
 linear_damp = 1.2
 script = ExtResource("1_wovta")
+explosionScene = ExtResource("2_0o0ue")
 attackRange = 500.0
 dropItemScene = ExtResource("2_idouy")
 possibleDrops = Array[Object]([ExtResource("3_0o0ue"), ExtResource("4_6s1gy"), ExtResource("5_uihya")])

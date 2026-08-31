@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using Godot;
 
 public partial class Enemy : RigidBody2D, IDamagable
@@ -20,6 +21,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 	private float currentHealth;
 	private Vector2 hpBarOffset;
 	private ProgressBar hpBar;
+	[Export] private PackedScene explosionScene;
 
 	[ExportCategory("AI")]
 
@@ -155,11 +157,19 @@ public partial class Enemy : RigidBody2D, IDamagable
 		currentHealth -= damage;
 		if(currentHealth <= 0)
 		{
-			DropItem();
-			QueueFree();
-			return;
+			Die();
 		}
 		hpBar.Value = currentHealth / MaxHealth * hpBar.MaxValue;
+	}
+	private void Die()
+	{
+		DropItem();
+		var explosion = explosionScene.Instantiate<Explosion>();
+		explosion.GlobalRotation = GlobalRotation;
+		explosion.GlobalPosition = GlobalPosition;
+		GetParent().AddChild(explosion);
+		QueueFree();
+		return;
 	}
 	private void DropItem()
 	{
