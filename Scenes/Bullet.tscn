@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://diy7v3bb12uso"]
 
 [ext_resource type="Script" uid="uid://de6ok44l5vgy0" path="res://Scripts/Enemies/Bullet.cs" id="1_vlxeq"]
+[ext_resource type="PackedScene" uid="uid://b6ec2nx2jv5kx" path="res://Scenes/HitSparks.tscn" id="2_14k46"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_nr8tw"]
 
@@ -8,7 +9,7 @@
 radius = 6.0
 height = 54.0
 
-[node name="Node2D" type="CharacterBody2D" unique_id=1189485208]
+[node name="Bullet" type="CharacterBody2D" unique_id=1189485208]
 scale = Vector2(0.35, 0.35)
 collision_layer = 16
 collision_mask = 13
@@ -16,6 +17,7 @@ motion_mode = 1
 script = ExtResource("1_vlxeq")
 Speed = 600.0
 Damage = 100.0
+sparksScene = ExtResource("2_14k46")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1299033435]
 position = Vector2(4.7683716e-07, 1.9073486e-06)

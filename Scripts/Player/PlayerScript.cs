@@ -72,6 +72,11 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	private List<ItemDrop> pickableDrops = new();
 	private ItemDrop selectedItemDrop;
 	[Export] public ItemDropSpawner DropSpawner {private set; get;}
+
+	//particle
+	[ExportCategory("Particle")]
+	[Export] private PackedScene hitParticles;
+	[Export] private float particlesMinImpactSpeed = 400f;
 	//inne
 	private bool isInRadioactiveBiome;
 	private Area2D enemyActivationArea;
@@ -129,6 +134,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		enemyDeactivationArea = GetNode<Area2D>("EnemyDeactivationArea");
 		enemyDeactivationArea.BodyExited += DeactivateEnemy;
 
+
 		if(GameManager.Instance.EnemyIndicatorsManager != null)
 		{
 			indicatorsManager = GameManager.Instance.EnemyIndicatorsManager;
@@ -175,6 +181,23 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		if(firingTimer > 0)
 			firingTimer -= (float) delta;
 	}
+    public override void _IntegrateForces(PhysicsDirectBodyState2D state)
+    {
+        for(int i=0; i < state.GetContactCount(); i++)
+		{
+			if(state.GetContactColliderObject(i) is Node2D collider)
+			{
+				Vector2 myVelocity = state.GetContactLocalVelocityAtPosition(i);
+				Vector2 otherVelocity = state.GetContactColliderVelocityAtPosition(i);
+				Vector2 relativeVelocity = myVelocity - otherVelocity;
+
+				if(relativeVelocity.LengthSquared() >= particlesMinImpactSpeed * particlesMinImpactSpeed)
+				{
+					SpawnParticles(state.GetContactColliderPosition(i));
+				}
+			}
+		}
+    }
 
 	//-------------------------------------------------------------------------
 	//damage
@@ -214,11 +237,13 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	private void TakeHPDamage(float amount)
 	{
 		currentHp -= amount;
-		EmitSignal(SignalName.HealthChanged, currentHp, MaxHP);
 		if(currentHp <= 0f)
 		{
+			currentHp = 0f;
 			Die();
 		}
+		EmitSignal(SignalName.HealthChanged, currentHp, MaxHP);
+		
 	}
 	private void Die()
 	{
@@ -337,6 +362,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 				{
 					asteroid.DigAt(hitPoint, 10f, 10);
 					diggingTimer = 1 / diggerSpeed;
+					SpawnParticles(hitPoint);
 				}
 			}
 			else if (diggerRay.GetCollider() is OreScript ore)
@@ -345,6 +371,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 				{
 					ore.TakeDamage(diggerSpeed);
 					diggingTimer = 1 / diggerSpeed;
+					SpawnParticles(hitPoint);
 				}
 			}
 
@@ -384,6 +411,12 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	public int CollectItem(InvItem item, int amount)
 	{
 		return Inventory.AddItem(item, amount);
+	}
+	private void SpawnParticles(Vector2 pos)
+	{
+		var particles = hitParticles.Instantiate<HitSparks>();
+		particles.GlobalPosition = pos;
+		GetParent().AddChild(particles);
 	}
 	//-------------------------------------------------------------------------
 	//pickups

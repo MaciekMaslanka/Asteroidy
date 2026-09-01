@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bpuh5mv7mmqcy"]
 
 [ext_resource type="Script" uid="uid://duly8slb8dtiq" path="res://Scripts/Player/PlayerScript.cs" id="1_kyqiw"]
+[ext_resource type="PackedScene" uid="uid://b6ec2nx2jv5kx" path="res://Scenes/HitSparks.tscn" id="2_megsn"]
 [ext_resource type="PackedScene" uid="uid://diy7v3bb12uso" path="res://Scenes/Bullet.tscn" id="2_nn08x"]
 [ext_resource type="Resource" uid="uid://dr4sjuvevyri8" path="res://Resources/Invectory/PlayerInventory.tres" id="3_nn08x"]
 [ext_resource type="Texture2D" uid="uid://bduxlxoulsvy2" path="res://Sprites/Player/diggingToolPlaceholder.png" id="4_5ixxa"]
@@ -35,6 +36,8 @@ collision_mask = 62
 mass = 100.0
 gravity_scale = 0.0
 can_sleep = false
+contact_monitor = true
+max_contacts_reported = 4
 script = ExtResource("1_kyqiw")
 ShieldsRegenDelay = 5.0
 MaxAngularVelocity = 20.0
@@ -42,6 +45,7 @@ AngularDamping = 1.0
 ThrustForce = 85000.0
 toolRotationLimit = 100.0
 diggerRange = 40.0
+hitParticles = ExtResource("2_megsn")
 BulletScene = ExtResource("2_nn08x")
 Inventory = ExtResource("3_nn08x")
 pickupDetector = NodePath("PickupDetector")
@@ -106,6 +110,7 @@ texture = ExtResource("5_nn08x")
 position = Vector2(0, -24)
 
 [node name="PickupDetector" type="Area2D" parent="." unique_id=1622104866]
+visible = false
 collision_layer = 0
 collision_mask = 64
 
@@ -118,6 +123,7 @@ itemDropScene = ExtResource("8_bhhdu")
 offsetFromPlayer = 50.0
 
 [node name="EnemyActivationArea" type="Area2D" parent="." unique_id=733637819]
+visible = false
 collision_layer = 0
 collision_mask = 2
 
@@ -125,6 +131,7 @@ collision_mask = 2
 shape = SubResource("CircleShape2D_bhhdu")
 
 [node name="EnemyDeactivationArea" type="Area2D" parent="." unique_id=892005086]
+visible = false
 collision_layer = 0
 collision_mask = 2
 

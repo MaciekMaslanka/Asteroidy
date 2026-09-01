@@ -1,6 +1,4 @@
 using Godot;
-using System;
-using System.Numerics;
 using Vector2 = Godot.Vector2;
 
 public partial class Bullet : CharacterBody2D
@@ -9,6 +7,8 @@ public partial class Bullet : CharacterBody2D
     [Export] float Damage = 10f;
     [Export] float LifeTime = 10f;
     private float LifeTimer = 0f;
+
+    [Export] private PackedScene sparksScene;
 
     public override void _PhysicsProcess(double delta)
     {
@@ -32,7 +32,14 @@ public partial class Bullet : CharacterBody2D
             {
                 collider.TakeDamage(Damage);
             }
+            SpawnHitSparks(collision.GetPosition());
         }
         QueueFree();
+    }
+    private void SpawnHitSparks(Vector2 pos)
+    {
+        var sparks = sparksScene.Instantiate<HitSparks>();
+        sparks.GlobalPosition = pos;
+        GetParent().AddChild(sparks);
     }
 }

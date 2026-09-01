@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://b6ec2nx2jv5kx"]
+
+[ext_resource type="Texture2D" uid="uid://ci57b6vxpy7t" path="res://Sprites/Animations/Explosion/ExplosionParticle.png" id="1_k0gdr"]
+[ext_resource type="Script" uid="uid://dygacm105m65g" path="res://Scripts/Enemies/HitSparks.cs" id="1_wqbry"]
+
+[sub_resource type="Gradient" id="Gradient_wqbry"]
+colors = PackedColorArray(0.9333369, 0.79951173, 0, 1, 1, 0.2739889, 0.21327025, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_m1t0t"]
+gradient = SubResource("Gradient_wqbry")
+
+[sub_resource type="Gradient" id="Gradient_ytqi5"]
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_uuo5v"]
+gradient = SubResource("Gradient_ytqi5")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_g56wh"]
+lifetime_randomness = 0.3
+particle_flag_disable_z = true
+spread = 180.0
+initial_velocity_min = 300.0
+initial_velocity_max = 300.0
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("GradientTexture1D_uuo5v")
+color_initial_ramp = SubResource("GradientTexture1D_m1t0t")
+turbulence_enabled = true
+
+[node name="HitSparks" type="Node2D" unique_id=1028070042 node_paths=PackedStringArray("particles")]
+script = ExtResource("1_wqbry")
+particles = NodePath("GPUParticles2D")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="." unique_id=1706094571]
+emitting = false
+amount = 15
+texture = ExtResource("1_k0gdr")
+lifetime = 0.6
+one_shot = true
+explosiveness = 1.0
+trail_enabled = true
+trail_lifetime = 0.08
+process_material = SubResource("ParticleProcessMaterial_g56wh")
