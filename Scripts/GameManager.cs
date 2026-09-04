@@ -48,19 +48,17 @@ public partial class GameManager : Node
     public override void _PhysicsProcess(double delta)
 	{
 		BiomeType newBiome = GetBiomeAt(Player.GlobalPosition);
-		if(newBiome == BiomeType.Radioactive)
-		{
-			//wejscie do radioaktywnego biomu
-			EmitSignal(SignalName.PlayerEnteredRadioactiveBiome);
-		}
-		else if(newBiome != BiomeType.Radioactive && currentPlayerBiome == BiomeType.Radioactive)
-		{
-			//wyjscie z radioaktywnego biomu
-			EmitSignal(SignalName.PlayerExitedRadioactiveBiome);
-		}
 
 		if(newBiome != currentPlayerBiome)
 		{
+			//wejscie do radioaktywnego biomu
+			if(newBiome == BiomeType.Radioactive)
+				EmitSignal(SignalName.PlayerEnteredRadioactiveBiome);
+
+			//wyjscie z radioaktywnego biomu
+			if(currentPlayerBiome == BiomeType.Radioactive) 
+				EmitSignal(SignalName.PlayerExitedRadioactiveBiome);
+
 			currentPlayerBiome = newBiome;
 			EmitSignal(SignalName.BiomeSwitched, Variant.From((int) currentPlayerBiome));
 		}
@@ -152,5 +150,18 @@ public partial class GameManager : Node
 	public void TurnOffPauseTint()
 	{
 		EmitSignal(SignalName.TurnOffPauseTintS);
+	}
+
+    public override void _ExitTree()
+    {
+        Unregister();
+    }
+	private void Unregister()
+	{
+		BiomeNoise = null;
+		Player = null;
+		Inventory = null;
+		EnemyIndicatorsManager = null;
+		Minimap = null;
 	}
 }

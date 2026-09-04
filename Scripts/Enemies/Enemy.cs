@@ -50,7 +50,6 @@ public partial class Enemy : RigidBody2D, IDamagable
 
 	[ExportGroup("Search")]
 	[Export] private float searchTime = 10f;
-	[Export] private float searchRadius = 300f;
 
 	[ExportCategory("Movement")]
 	[Export] private float thrust = 25000f;
@@ -177,6 +176,9 @@ public partial class Enemy : RigidBody2D, IDamagable
 			return;
 
 		if(dropItemScene == null)
+			return;
+
+		if(possibleDrops == null || possibleDrops.Length == 0)
 			return;
 
 		ItemDrop item = dropItemScene.Instantiate<ItemDrop>();

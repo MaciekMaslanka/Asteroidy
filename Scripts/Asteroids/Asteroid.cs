@@ -62,6 +62,7 @@ public partial class Asteroid : RigidBody2D
 		{
 			UpdateShape(currentShape);
 			background.Visible = false;
+			minimapBG.Visible = false;
 		}
 		UpdateMass();
 	}
@@ -93,6 +94,7 @@ public partial class Asteroid : RigidBody2D
 		OresMaxAmount = ShapeSettings.MaxOreAmount;
 		MinDistanceBetweenOres = Settings.MinDistanceBetweenOres;
 		OreRarities = Settings.OreRarities;
+		OresGenerationOffset = Settings.OresGenerationOffset;
 	}
 
 	//kształt
@@ -120,7 +122,8 @@ public partial class Asteroid : RigidBody2D
 		FastNoiseLite noise = new();
 		noise.Seed = GD.RandRange(0, 999999);
 		noise.Frequency = Frequency;
-		noise.FractalOctaves = 4;
+		noise.FractalOctaves = Octaves;
+
 		Vector2[] points = new Vector2[PointsAmount];
 		float MaxRadius = 0f;
 		for(int i=0; i<PointsAmount; i++)

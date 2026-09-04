@@ -66,7 +66,17 @@ public partial class EnemyIndicator : Control
 	}
 	public void HideAndFree()
 	{
+		if(!Visible)
+		{
+			QueueFree();
+			return;
+		}
+
 		Hide();
-		tween.Finished += () => QueueFree();
+
+		if(tween != null)
+			tween.Finished += () => QueueFree();
+		else
+			QueueFree();
 	}
 }

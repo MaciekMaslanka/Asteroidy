@@ -1,4 +1,5 @@
 using Godot;
+using System;
 using System.Collections.Generic;
 
 public partial class PlayerScript : RigidBody2D, IDamagable
@@ -117,7 +118,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 
 		if(Inventory == null)
 		{
-			Inventory = new Inventory();
+			throw new InvalidOperationException("Inventory nie zostało skonfigurowane");
 		}
 
 		GameManager.Instance.PlayerEnteredRadioactiveBiome += OnRadioactiveBiomeEnter;

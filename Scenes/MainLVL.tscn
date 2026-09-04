@@ -73,11 +73,13 @@ MapSize = 32000
 GenerationSize = 33000
 MaxAsteroidsCount = 1000
 MinAsteroidCount = 300
+MinDistanceBetweenAsteroids = 400.0
 asteroidContainer = NodePath("../AsteroidContainer")
 enemyScene = ExtResource("5_5yp1d")
 enemyContainer = NodePath("../EnemyContainer")
 minEnemyCount = 40
 maxEnemyAmount = 70
+minDistanceFromAsteroids = 250.0
 
 [node name="Border" type="StaticBody2D" parent="." unique_id=975424245]
 visibility_layer = 3

@@ -37,6 +37,9 @@ public partial class OreGenerator
 			OreScript ore = oreScene.Instantiate<OreScript>();
 
 			Vector2 pos = GetRandomPointInAsteroid();
+			if(pos == Vector2.Inf)
+				continue;
+			
 			ore.Position = pos;
 
 			ore.AddCollisionExceptionWith(parent);
@@ -90,18 +93,22 @@ public partial class OreGenerator
 		float maxY= parentShape.Max(p => p.Y) - offset;
 
 		Vector2 point;
-		int tries = 0;
-
-		do
+		for(int tries = 0; tries < 50; tries++)
 		{
 			float x = (float) GD.RandRange(minX, maxX);
 			float y = (float) GD.RandRange(minY, maxY);
 			point = new Vector2(x, y);
-			tries++;
-		}
-		while((!Geometry2D.IsPointInPolygon(point, parentShape) || !IsPointFarEnough(point)) && tries <= 50);
 
-		return point;
+			if(
+				Geometry2D.IsPointInPolygon(point, parentShape) &&
+				IsPointFarEnough(point)
+			)
+			{
+				return point;
+			}
+		}
+		
+		return Vector2.Inf;
 	}
 	private bool IsPointFarEnough(Vector2 point)
 	{

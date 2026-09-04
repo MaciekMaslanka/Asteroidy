@@ -29,7 +29,8 @@ public partial class LevelGenerator : Node2D
     [Export] private int MinAsteroidCount = 100;
     [Export] private float MinDistanceBetweenAsteroids = 250f;
     [Export] private Node2D asteroidContainer;
-    private List<Vector2> spawnedPositions = new();
+    const float cellSize = 400f;
+    private readonly Dictionary<Vector2I, List<Vector2>> asteroidSpatialGrid = new();
 
     [ExportCategory("Enemy")]
     [Export] private PackedScene enemyScene;
@@ -69,7 +70,7 @@ public partial class LevelGenerator : Node2D
     {
         biomeNoise.Seed = GD.RandRange(0, 99999);
 
-        const int samples = 100000;
+        const int samples = 10000;
 
         List<float> values = new(samples);
 
@@ -119,23 +120,11 @@ public partial class LevelGenerator : Node2D
                 if(position.LengthSquared() < spawnProtectionRadiusSquared)
                     continue;
 
-                bool tooClose = false;
-            
-                foreach(var spawnPos in spawnedPositions)
-                {
-                    //wydajność maxing
-                    if(spawnPos.DistanceSquaredTo(position) < MinDistanceBetweenAsteroids * MinDistanceBetweenAsteroids)
-                    {
-                        tooClose = true;
-                        break;
-                    }
-                }
-
-                if(tooClose)
+                if(!IsPositionValid(position, MinDistanceBetweenAsteroids, asteroidSpatialGrid))
                     continue;
 
                 SpawnAsteroid(position);
-                spawnedPositions.Add(position);
+                AddToGrid(position, asteroidSpatialGrid);
                 break;
             }
         }
@@ -182,6 +171,54 @@ public partial class LevelGenerator : Node2D
         }
 
         return settings.SizeSettings[0].ShapeSetting;
+    }
+    private bool IsPositionValid(Vector2 position, float minDistance, Dictionary<Vector2I, List<Vector2>> grid)
+    {
+        Vector2I cell = GetCell(position);
+
+        int cellRange = Mathf.CeilToInt(minDistance / cellSize);
+
+        float minDistanceSquared = minDistance * minDistance;
+
+        for(int x = -1; x<=1; x++)
+        {
+            for(int y = -cellRange; y<=cellRange; y++)
+            {
+                Vector2I neighbourCell = cell + new Vector2I(x, y);
+
+                if(!grid.TryGetValue(neighbourCell, out var positions))
+                    continue;
+                
+                foreach(Vector2 otherPosition in positions)
+                {
+                    if(position.DistanceSquaredTo(otherPosition) < minDistance * minDistance)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+    private Vector2I GetCell(Vector2 pos)
+    {
+        return new Vector2I(
+            Mathf.FloorToInt(pos.X / cellSize),
+            Mathf.FloorToInt(pos.Y / cellSize)
+        );
+    }
+    private void AddToGrid(Vector2 position, Dictionary<Vector2I, List<Vector2>> grid)
+    {
+        Vector2I cell = GetCell(position);
+
+        if(!grid.TryGetValue(cell, out var positions))
+        {
+            positions = new List<Vector2>();
+            grid[cell] = positions;
+        }
+
+        positions.Add(position);
     }
     private void SpawnAsteroid(Vector2 position)
     {
@@ -248,20 +285,9 @@ public partial class LevelGenerator : Node2D
                 if(position.LengthSquared() < spawnProtectionRadiusSquared)
                     continue;
 
-                bool tooClose = false;
-
-                foreach(var asteroidPos in spawnedPositions)
-                {
-                    if(asteroidPos.DistanceSquaredTo(position) < minDistanceFromAsteroids * minDistanceFromAsteroids)
-                    {
-                        tooClose = true;
-                        break;
-                    }
-                }
-                
-                if(tooClose)
+                if(!IsPositionValid(position, minDistanceFromAsteroids, asteroidSpatialGrid))
                     continue;
-                    
+                
                 SpawnEnemy(position);
                 break;
             }

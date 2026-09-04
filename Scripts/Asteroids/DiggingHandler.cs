@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Godot;
 
-public partial class DiggingHandler : Node
+public partial class DiggingHandler
 {
 	private Vector2 point;
 	private float radius;

@@ -38,6 +38,9 @@ public partial class MiniMap : Control
 	}
     public override void _PhysicsProcess(double delta)
 	{
+		if(player == null)
+			return;
+		
 		miniCam.GlobalPosition = player.GlobalPosition;
 		minimapImage.Texture = subViewport.GetTexture();
 		playerIcon.Rotation = player.GlobalRotation - Mathf.Pi / 2;

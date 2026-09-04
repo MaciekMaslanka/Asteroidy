@@ -81,7 +81,8 @@ public partial class InventoryUI : Control
     }
     private void HandleInventoryChange(Array<InventorySlot> slots)
     {
-        for(int i=0; i<slots.Count; i++)
+        int count = Mathf.Min(slots.Count, uiSlots.Count);
+        for(int i=0; i<count; i++)
         {
             uiSlots[i].UpdateSlot(slots[i]);
         }
