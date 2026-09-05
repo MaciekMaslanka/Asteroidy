@@ -47,6 +47,11 @@ public partial class GameManager : Node
 	}
     public override void _PhysicsProcess(double delta)
 	{
+		if(Player == null)
+		{
+			return;
+		}
+
 		BiomeType newBiome = GetBiomeAt(Player.GlobalPosition);
 
 		if(newBiome != currentPlayerBiome)
@@ -151,12 +156,7 @@ public partial class GameManager : Node
 	{
 		EmitSignal(SignalName.TurnOffPauseTintS);
 	}
-
-    public override void _ExitTree()
-    {
-        Unregister();
-    }
-	private void Unregister()
+	public void Unregister()
 	{
 		BiomeNoise = null;
 		Player = null;

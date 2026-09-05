@@ -100,9 +100,8 @@ script = ExtResource("3_akgwn")
 pauseColor = Color(0.1680183, 0.1680183, 0.1680183, 0.5)
 switchDuration = 0.2
 
-[node name="PauseMenu" type="Control" parent="." unique_id=188205592]
+[node name="PauseMenu" type="Control" parent="." unique_id=188205592 node_paths=PackedStringArray("rescumeButton", "restartButton", "quitButton")]
 process_mode = 3
-visible = false
 z_index = 10
 layout_mode = 3
 anchors_preset = 15
@@ -111,6 +110,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("4_oqha6")
+rescumeButton = NodePath("CenterContainer/VBoxContainer/ResumeButton")
+restartButton = NodePath("CenterContainer/VBoxContainer/RestartButton")
+quitButton = NodePath("CenterContainer/VBoxContainer/QuitButton")
 
 [node name="CenterContainer" type="CenterContainer" parent="PauseMenu" unique_id=548029423]
 layout_mode = 1
@@ -128,28 +130,26 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 33
 text = "Paused"
 
-[node name="Button" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=1088813882]
+[node name="ResumeButton" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=1088813882]
 texture_filter = 1
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
-text = "kys"
+text = "Resume"
 
-[node name="Button2" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=240977435]
+[node name="RestartButton" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=210449578]
 texture_filter = 1
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
-text = "fuck you"
+theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
+text = "Restart"
 
-[node name="Button3" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=1107891634]
+[node name="QuitButton" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=425293731]
 texture_filter = 1
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
-text = "i hate myself"
-
-[node name="Button4" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=232105188]
-texture_filter = 1
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
-text = "goon"
+theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
+text = "Quit"

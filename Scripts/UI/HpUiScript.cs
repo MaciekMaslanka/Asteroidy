@@ -47,4 +47,13 @@ public partial class HpUiScript : Control
 		shieldsBar.TextureOver = normalForeGround;
 		radioactiveSign.Visible = false;
 	}
+
+    public override void _ExitTree()
+    {
+		if(GameManager.Instance != null)
+		{
+			GameManager.Instance.PlayerEnteredRadioactiveBiome -= OnRadioactiveBiomeEnter;
+			GameManager.Instance.PlayerExitedRadioactiveBiome -= OnRadioactiveBiomeExit;
+		}
+    }
 }

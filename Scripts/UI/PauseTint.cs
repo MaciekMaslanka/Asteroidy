@@ -27,4 +27,16 @@ public partial class PauseTint : ColorRect
 		tween = CreateTween();
 		tween.TweenProperty(this, "color", new Color("#000", 0), switchDuration);
 	}
+
+	public override void _ExitTree()
+	{
+		if (GameManager.Instance != null)
+		{
+			GameManager.Instance.TurnOnPauseTintS -= TurnOnTint;
+			GameManager.Instance.TurnOffPauseTintS -= TurnOffTint;
+		}
+
+		if (tween != null)
+			tween.Kill();
+	}
 }

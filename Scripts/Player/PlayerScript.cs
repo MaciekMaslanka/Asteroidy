@@ -554,4 +554,13 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 			miniMap.RemoveEnemy(enemy);
 		}
 	}
+
+    public override void _ExitTree()
+    {
+        if(GameManager.Instance != null)
+		{
+			GameManager.Instance.PlayerEnteredRadioactiveBiome -= OnRadioactiveBiomeEnter;
+			GameManager.Instance.PlayerExitedRadioactiveBiome -= OnRadioactiveBiomeExit;
+		}
+    }
 }

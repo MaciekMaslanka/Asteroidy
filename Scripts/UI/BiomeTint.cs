@@ -36,4 +36,12 @@ public partial class BiomeTint : CanvasLayer
 
 		biomeTween.TweenProperty(biomeTint, "color", biomeTints[newBiome], tintChangeDuration);
 	}
+
+    public override void _ExitTree()
+    {
+        if(GameManager.Instance != null)
+		{
+			GameManager.Instance.BiomeSwitched -= SetBiomeType;
+		}
+    }
 }
