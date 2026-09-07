@@ -43,10 +43,6 @@ public partial class LevelGenerator : Node2D
     private float iceThreshold;
     private float radioactiveThreshold;
     private float smallThreshold;
-
-    // [ExportCategory("Minimap")]
-    // [Export] private Image minimapImage;
-    // [Export] private int MinimapSize = 1000;
     
     public override void _Ready()
     {

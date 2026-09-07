@@ -1,5 +1,4 @@
 using Godot;
-using Vector2 = Godot.Vector2;
 
 public partial class Bullet : CharacterBody2D
 {

@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Godot;
 
 public partial class Enemy : RigidBody2D, IDamagable
