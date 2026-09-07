@@ -100,25 +100,25 @@ isDummy = true
 
 [node name="Enemy2" parent="Stuff/Enemies" unique_id=1875381021 instance=ExtResource("5_koqhg")]
 position = Vector2(-955, 1328)
-rotation = 0.14564271
+rotation = -1.2101642
 isAlwaysActive = true
 isDummy = true
 
 [node name="Enemy3" parent="Stuff/Enemies" unique_id=172497804 instance=ExtResource("5_koqhg")]
 position = Vector2(1069, 1228)
-rotation = 0.068092965
+rotation = -1.0997603
 isAlwaysActive = true
 isDummy = true
 
 [node name="Enemy4" parent="Stuff/Enemies" unique_id=828231888 instance=ExtResource("5_koqhg")]
 position = Vector2(2364, -218)
-rotation = -0.045479488
+rotation = 2.9565952
 isAlwaysActive = true
 isDummy = true
 
 [node name="Enemy5" parent="Stuff/Enemies" unique_id=1548808908 instance=ExtResource("5_koqhg")]
 position = Vector2(524, -1519)
-rotation = 0.08885133
+rotation = 1.263215
 isAlwaysActive = true
 isDummy = true
 

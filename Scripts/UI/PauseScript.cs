@@ -34,13 +34,11 @@ public partial class PauseScript : Control
 	}
 	private void RestartGame()
 	{
-		GameManager.Instance.Unregister();
-		GetTree().Paused = false;
-		GetTree().ReloadCurrentScene();
+		GameManager.Instance.RestartGame();
 	}
 	private void QuitGame()
 	{
-		GetTree().Quit();
+		GameManager.Instance.ExitGame();
 	}
 
     public override void _ExitTree()

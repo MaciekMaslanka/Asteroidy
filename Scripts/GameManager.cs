@@ -156,6 +156,16 @@ public partial class GameManager : Node
 	{
 		EmitSignal(SignalName.TurnOffPauseTintS);
 	}
+	public void RestartGame()
+	{
+		Unregister();
+		GetTree().Paused = false;
+		GetTree().ReloadCurrentScene();
+	}
+	public void ExitGame()
+	{
+		GetTree().Quit();
+	}
 	public void Unregister()
 	{
 		BiomeNoise = null;

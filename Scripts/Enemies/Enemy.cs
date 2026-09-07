@@ -118,9 +118,6 @@ public partial class Enemy : RigidBody2D, IDamagable
 	}
     public override void _PhysicsProcess(double delta)
 	{
-		if(player == null && !isDummy)
-			return;
-			
 		float dt = (float) delta;
 
 		SeesPlayer = CanSeePlayer();

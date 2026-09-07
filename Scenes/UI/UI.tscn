@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://dhvnl281s2puc" path="res://Scenes/UI/MiniMap.tscn" id="5_y85ht"]
 [ext_resource type="Texture2D" uid="uid://c66mjn7u5q5uw" path="res://Sprites/UI/Background1Hover.png" id="6_7tgkj"]
 [ext_resource type="Texture2D" uid="uid://4mk1tyw3rf2" path="res://Sprites/UI/Background1Click.png" id="6_jevvu"]
+[ext_resource type="Script" uid="uid://3a0fyx8x6lw4" path="res://Scripts/UI/DeathScreen.cs" id="11_nqsl3"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_oqha6"]
 texture = ExtResource("4_b83rk")
@@ -102,6 +103,7 @@ switchDuration = 0.2
 
 [node name="PauseMenu" type="Control" parent="." unique_id=188205592 node_paths=PackedStringArray("rescumeButton", "restartButton", "quitButton")]
 process_mode = 3
+visible = false
 z_index = 10
 layout_mode = 3
 anchors_preset = 15
@@ -153,3 +155,88 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
 text = "Quit"
+
+[node name="DeathScreen" type="Control" parent="." unique_id=371451121 node_paths=PackedStringArray("restartButton", "quitButton")]
+visible = false
+z_index = 10
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("11_nqsl3")
+restartButton = NodePath("VBoxContainer/RestartButton")
+quitButton = NodePath("VBoxContainer/QuitButton")
+
+[node name="ColorRect" type="ColorRect" parent="DeathScreen" unique_id=1319191743]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0, 0, 0.386)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DeathScreen" unique_id=1322424402]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -124.0
+offset_top = -65.0
+offset_right = 124.0
+offset_bottom = 65.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 7
+alignment = 1
+
+[node name="NinePatchRect" type="NinePatchRect" parent="DeathScreen/VBoxContainer" unique_id=1384825359]
+texture_filter = 1
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+texture = ExtResource("4_b83rk")
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
+
+[node name="Label" type="Label" parent="DeathScreen/VBoxContainer/NinePatchRect" unique_id=1335042277]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/shadow_outline_size = 3
+theme_override_font_sizes/font_size = 30
+text = "You died!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RestartButton" type="Button" parent="DeathScreen/VBoxContainer" unique_id=1539960200]
+texture_filter = 1
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
+text = "Restart"
+
+[node name="QuitButton" type="Button" parent="DeathScreen/VBoxContainer" unique_id=1848775835]
+texture_filter = 1
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
+text = "Quit
+"

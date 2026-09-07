@@ -9,6 +9,8 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	public delegate void ShieldChangedEventHandler(float currentShields, float maxShields);
 	[Signal]
 	public delegate void HealthChangedEventHandler(float currentHealth, float maxHealth);
+	[Signal]
+	public delegate void PlayerDiedEventHandler();
 	//hp
 	[ExportCategory("HP")]
 	[Export] float MaxHP = 500f;
@@ -248,7 +250,9 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	}
 	private void Die()
 	{
-		GD.Print("Zdechłeś cwelu");
+		LockSteering(newState:true);
+		Engine.TimeScale = 0.25;
+		EmitSignal(SignalName.PlayerDied);
 	}
 	private void HandleShieldsRegen(float dt)
 	{
