@@ -361,7 +361,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 	}
 	private bool CanSeePlayer()
 	{
-		if(player == null) 
+		if(player == null || player.IsDead)
 			return false;
 
 		if(GlobalPosition.DistanceTo(player.GlobalPosition) > chaseRange)

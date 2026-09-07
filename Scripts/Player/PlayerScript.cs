@@ -20,6 +20,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	private float currentHp;
 	private float currentShields;
 	private float timeSinceLastHit = 0f;
+	public bool IsDead {private set; get;} = false;
 
 	//rotacja
 	[ExportCategory("Rotacja")]
@@ -80,6 +81,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	[ExportCategory("Particle")]
 	[Export] private PackedScene hitParticles;
 	[Export] private float particlesMinImpactSpeed = 400f;
+	[Export] private PackedScene explosionScene;
 	//inne
 	private bool isInRadioactiveBiome;
 	private Area2D enemyActivationArea;
@@ -215,6 +217,9 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	}
 	public void TakeDamage(float amount)
 	{
+		if(IsDead)
+			return;
+		
 		timeSinceLastHit = 0f;
 		if(currentShields > 0f)
 		{
@@ -250,9 +255,21 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	}
 	private void Die()
 	{
-		LockSteering(newState:true);
+		IsDead = true;
+		LockSteering(true);
+
 		Engine.TimeScale = 0.25;
 		EmitSignal(SignalName.PlayerDied);
+
+		var explosion = explosionScene.Instantiate<Explosion>();
+		explosion.GlobalPosition = GlobalPosition;
+		explosion.GlobalRotation = GlobalRotation;
+		GetParent().AddChild(explosion);
+
+		Visible = false;
+		SetPhysicsProcess(false);
+		CollisionLayer = 0;
+		CollisionMask = 0;
 	}
 	private void HandleShieldsRegen(float dt)
 	{
