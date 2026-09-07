@@ -67,6 +67,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 	private float searchTimer = 0f;
 
 	//inne
+	[ExportCategory("Inne")]
 	private PlayerScript player;
 	private Vector2 targetPosition;
 	private Vector2 desiredDirection;
@@ -74,6 +75,8 @@ public partial class Enemy : RigidBody2D, IDamagable
 	private Vector2 lastKnownPlayerPosition;
 	public State CurrentState {private set; get;} = State.Patrol;
 	public bool SeesPlayer {private set; get;} = false;
+	[Export] private bool isAlwaysActive = false;
+	[Export] private bool isDummy = false;
 
 	public override void _Ready()
 	{
@@ -109,11 +112,14 @@ public partial class Enemy : RigidBody2D, IDamagable
 	}
 	private void Init()
 	{
+		if(isDummy)
+			return;
+		
 		player = GameManager.Instance.Player;
 	}
     public override void _PhysicsProcess(double delta)
 	{
-		if(player == null)
+		if(player == null && !isDummy)
 			return;
 			
 		float dt = (float) delta;
@@ -425,12 +431,18 @@ public partial class Enemy : RigidBody2D, IDamagable
 	//aktywacja / deaktywacja
 	public void Activate()
 	{
+		if(isAlwaysActive)
+			return;
+
 		CallDeferred(MethodName.SetPhysicsProcess, true);
 		CallDeferred(MethodName.Set, "freeze", false);
 		EmitSignal(SignalName.EnemyActivated, this);
 	}
 	public void Deactivate()
 	{
+		if(isAlwaysActive)
+			return;
+
 		CurrentState = State.Patrol;
 		CallDeferred(MethodName.SetPhysicsProcess, false);
 		CallDeferred(MethodName.Set, "freeze", true);
