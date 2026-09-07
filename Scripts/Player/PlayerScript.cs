@@ -177,10 +177,10 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		HandlePickupIndicator();
 
 		if(diggingTimer > 0)
-			diggingTimer -= (float) delta;
+			diggingTimer -= dt;
 		
 		if(firingTimer > 0)
-			firingTimer -= (float) delta;
+			firingTimer -= dt;
 	}
     public override void _IntegrateForces(PhysicsDirectBodyState2D state)
     {
@@ -353,37 +353,27 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		diggerRay.TargetPosition = new Vector2(0, diggerRange); //range lasera
 		diggerRay.ForceRaycastUpdate();
 
+		diggerLine.ClearPoints();
+		diggerLine.AddPoint(Vector2.Zero);
+
 		if(diggerRay.IsColliding())
 		{
 			Vector2 hitPoint = diggerRay.GetCollisionPoint();
 
-			if(diggerRay.GetCollider() is Asteroid asteroid)
+			if(diggerRay.GetCollider() is IDiggable diggable)
 			{
-				if(diggingTimer <= 0)
+				if(diggingTimer <= 0f)
 				{
-					asteroid.DigAt(hitPoint, 10f, 10);
-					diggingTimer = 1 / diggerSpeed;
-					SpawnParticles(hitPoint);
-				}
-			}
-			else if (diggerRay.GetCollider() is OreScript ore)
-			{
-				if(diggingTimer <= 0)
-				{
-					ore.TakeDamage(diggerSpeed);
+					diggable.Dig(diggerSpeed, hitPoint, 10f, 10);
 					diggingTimer = 1 / diggerSpeed;
 					SpawnParticles(hitPoint);
 				}
 			}
 
-			diggerLine.ClearPoints();
-			diggerLine.AddPoint(Vector2.Zero);
 			diggerLine.AddPoint(diggerLine.ToLocal(hitPoint));
 		}
 		else
 		{
-			diggerLine.ClearPoints();
-			diggerLine.AddPoint(Vector2.Zero);
 			diggerLine.AddPoint(new Vector2(0, diggerRange));
 		}
 	}

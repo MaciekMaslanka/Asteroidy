@@ -13,7 +13,7 @@ public enum OreType
     Uranium
 }
 
-public partial class OreScript : StaticBody2D
+public partial class OreScript : StaticBody2D, IDiggable
 {
 	[Export] private float MaxHealth = 50f;
     [Export] private Godot.Collections.Array<OreData> OreInfo;
@@ -41,9 +41,9 @@ public partial class OreScript : StaticBody2D
         }
     }
 
-    public void TakeDamage(float amount)
+    public void Dig(float hp, Vector2 _point, float _radius, int _segments)
     {
-        CurrentHealth -= amount;
+        CurrentHealth -= hp;
 
         if (CurrentHealth <= 0)
         {
@@ -57,9 +57,11 @@ public partial class OreScript : StaticBody2D
     }
     private void GenerateShape(float baseRadius = 35f, float amplitude = 0.3f)
     {
-        var noise = new FastNoiseLite();
-        noise.Seed = GD.RandRange(0, 99999);
-        noise.Frequency = 0.8f;
+        var noise = new FastNoiseLite
+        {
+            Seed = GD.RandRange(0, 99999),
+            Frequency = 0.8f
+        };
 
         int pointCount = 24;
         var points = new Vector2[pointCount];
