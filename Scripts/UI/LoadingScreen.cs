@@ -4,17 +4,21 @@ public partial class LoadingScreen : CanvasLayer
 {
 	[Export] private Label loadingLabel;
 	[Export] private TextureProgressBar progressBar;
-	[Export] private float transitionDuration;
 	[Export] private PackedScene mainLevelScene;
 
 	private bool isMainSceneLoaded = false;
 	private LevelGenerator generator;
 
-    public override async void _Ready()
-	{
-		await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+	[Export] private ColorRect fadeRect;
+	[Export] private float transitionDuration = 0.25f;
 
-		ResourceLoader.LoadThreadedRequest(mainLevelScene.ResourcePath);
+    public override void _Ready()
+	{
+		fadeRect.Color = Colors.Black;
+
+		var fadeInTween = CreateTween();
+		fadeInTween.TweenProperty(fadeRect, "color:a", 0f, transitionDuration);
+		fadeInTween.Finished += () => ResourceLoader.LoadThreadedRequest(mainLevelScene.ResourcePath);
 	}
     public override void _Process(double delta)
     {	
@@ -47,10 +51,15 @@ public partial class LoadingScreen : CanvasLayer
 
 		if(progress >= 1.0f)
 		{
-
 			Visible = false;
-			//tu animacja zanikania
+			Engine.TimeScale = 0.1f;
+			var timeTween = CreateTween();
+			timeTween.TweenMethod(new Callable(this, MethodName.UpdateTimeScale), 0.1f, 1f, transitionDuration);
 		}
+	}
+	private void UpdateTimeScale(double newScale)
+	{
+		Engine.TimeScale = newScale;
 	}
     public override void _ExitTree()
     {

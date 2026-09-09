@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.Marshalling;
 using Godot;
 
 public partial class MainMenu : Control
@@ -5,6 +6,8 @@ public partial class MainMenu : Control
 	[Export] private Button playButton;
 	[Export] private Button exitButton;
 	[Export] private PackedScene gameScene;
+	[Export] private float transitionDuration = 0.25f;
+	[Export] private ColorRect fadeRect;
 
     public override void _Ready()
     {
@@ -13,7 +16,9 @@ public partial class MainMenu : Control
     }
 	private void PlayGame()
 	{
-		GetTree().ChangeSceneToPacked(gameScene);
+		var tween = CreateTween();
+		tween.TweenProperty(fadeRect, "color:a", 1f, transitionDuration);
+		tween.Finished += () => GetTree().ChangeSceneToPacked(gameScene);
 	}
 	private void ExitGame()
 	{

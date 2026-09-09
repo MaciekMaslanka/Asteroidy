@@ -6,12 +6,13 @@
 [ext_resource type="Texture2D" uid="uid://brdwawkoyjlmd" path="res://Sprites/UI/Hp bar/HP bar foreground.png" id="3_ysiql"]
 [ext_resource type="Texture2D" uid="uid://c2hlwnlglq0xs" path="res://Sprites/UI/Hp bar/Shields bar.png" id="4_2w0ij"]
 
-[node name="LoadingScreen" type="CanvasLayer" unique_id=1243092587 node_paths=PackedStringArray("loadingLabel", "progressBar")]
+[node name="LoadingScreen" type="CanvasLayer" unique_id=1243092587 node_paths=PackedStringArray("loadingLabel", "progressBar", "fadeRect")]
 layer = 2
 script = ExtResource("1_nxngd")
 loadingLabel = NodePath("CenterContainer/VBoxContainer/Label")
 progressBar = NodePath("CenterContainer/VBoxContainer/TextureProgressBar")
 mainLevelScene = ExtResource("2_ysiql")
+fadeRect = NodePath("FadeRect")
 
 [node name="ColorRect" type="ColorRect" parent="." unique_id=413174619]
 anchors_preset = 15
@@ -53,3 +54,12 @@ stretch_margin_bottom = 4
 texture_under = ExtResource("2_idrhg")
 texture_over = ExtResource("3_ysiql")
 texture_progress = ExtResource("4_2w0ij")
+
+[node name="FadeRect" type="ColorRect" parent="." unique_id=163159624]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)

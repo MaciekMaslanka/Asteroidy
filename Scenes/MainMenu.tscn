@@ -147,7 +147,7 @@ zoom = Vector2(0.2, 0.2)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=843087941]
 
-[node name="Control" type="Control" parent="CanvasLayer" unique_id=147600231 node_paths=PackedStringArray("playButton", "exitButton")]
+[node name="Control" type="Control" parent="CanvasLayer" unique_id=147600231 node_paths=PackedStringArray("playButton", "exitButton", "fadeRect")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -158,6 +158,7 @@ script = ExtResource("6_cmrfp")
 playButton = NodePath("Buttons/PlayButton")
 exitButton = NodePath("Buttons/ExitButton")
 gameScene = ExtResource("7_loo7a")
+fadeRect = NodePath("../FadeRect")
 
 [node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/Control" unique_id=503837297]
 texture_filter = 1
@@ -229,3 +230,13 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_cmrfp")
 text = "Quit
 
 "
+
+[node name="FadeRect" type="ColorRect" parent="CanvasLayer" unique_id=1893134638]
+z_index = 5
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
