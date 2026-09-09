@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://cx574t1rwwqos"]
+
+[ext_resource type="PackedScene" uid="uid://slfy6ajii11p" path="res://Scenes/UI/LoadingScreen.tscn" id="2_j5yw3"]
+
+[node name="Game" type="Node" unique_id=682137419]
+
+[node name="LoadingScreen" parent="." unique_id=919456111 instance=ExtResource("2_j5yw3")]
+process_mode = 3

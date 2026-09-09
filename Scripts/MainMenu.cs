@@ -4,7 +4,7 @@ public partial class MainMenu : Control
 {
 	[Export] private Button playButton;
 	[Export] private Button exitButton;
-	[Export] private PackedScene mainLVL;
+	[Export] private PackedScene gameScene;
 
     public override void _Ready()
     {
@@ -13,7 +13,7 @@ public partial class MainMenu : Control
     }
 	private void PlayGame()
 	{
-		GetTree().ChangeSceneToPacked(mainLVL);
+		GetTree().ChangeSceneToPacked(gameScene);
 	}
 	private void ExitGame()
 	{

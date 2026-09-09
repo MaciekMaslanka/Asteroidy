@@ -74,6 +74,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 	private Vector2 lastKnownPlayerPosition;
 	public State CurrentState {private set; get;} = State.Patrol;
 	public bool SeesPlayer {private set; get;} = false;
+
 	[Export] private bool isAlwaysActive = false;
 	[Export] private bool isDummy = false;
 
@@ -189,7 +190,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 		int amount = GD.RandRange(1, maxDropAmount);
 		item.SetItem(possibleDrops[dropID], amount);
 		item.GlobalPosition = GlobalPosition;
-		GetTree().CurrentScene.GetNode("ItemDrops").AddChild(item);
+		GameManager.Instance.MainNode.GetNode("ItemDrops").AddChild(item);
 	}
 	//-------------------------------------------------------------------------------------------
 	//stany

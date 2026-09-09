@@ -11,6 +11,9 @@ public enum BiomeType
 }
 public partial class LevelGenerator : Node2D
 {
+    [Signal]
+    public delegate void GenerationProgressEventHandler(float progress);
+
     [Export] private float SpawnProtectionRadius = 750f;
 
     [ExportCategory("Biomy")]
@@ -51,15 +54,24 @@ public partial class LevelGenerator : Node2D
             GD.PrintErr("Niepodpięta asteroida w lvlgenerator");
             return;
         }
-
+    }
+    public void StartGeneration()
+    {
         GenerateLevel();
     }
 
-    private void GenerateLevel()
+    private async void GenerateLevel()
     {
         GenerateBiomes();
+        EmitSignal(SignalName.GenerationProgress, 0.33f);
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+
         GenerateAsteroids();
+        EmitSignal(SignalName.GenerationProgress, 0.66f);
+        await ToSignal(GetTree(), SceneTree.SignalName.ProcessFrame);
+
         GenerateEnemies();
+        EmitSignal(SignalName.GenerationProgress, 1f);
     }
 
     private void GenerateBiomes()
@@ -173,10 +185,9 @@ public partial class LevelGenerator : Node2D
         Vector2I cell = GetCell(position);
 
         int cellRange = Mathf.CeilToInt(minDistance / cellSize);
-
         float minDistanceSquared = minDistance * minDistance;
 
-        for(int x = -1; x<=1; x++)
+        for(int x = -cellRange; x<=cellRange; x++)
         {
             for(int y = -cellRange; y<=cellRange; y++)
             {
@@ -187,7 +198,7 @@ public partial class LevelGenerator : Node2D
                 
                 foreach(Vector2 otherPosition in positions)
                 {
-                    if(position.DistanceSquaredTo(otherPosition) < minDistance * minDistance)
+                    if(position.DistanceSquaredTo(otherPosition) < minDistanceSquared)
                     {
                         return false;
                     }

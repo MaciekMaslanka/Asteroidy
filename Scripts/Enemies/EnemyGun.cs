@@ -86,6 +86,6 @@ public partial class EnemyGun : Sprite2D
 
 		bullet.AddCollisionExceptionWith(enemy);
 
-		GetTree().CurrentScene.AddChild(bullet);
+		GameManager.Instance.MainNode.AddChild(bullet);
 	}
 }

@@ -49,7 +49,7 @@ public partial class OreScript : StaticBody2D, IDiggable
             var itemDrop = itemDropScene.Instantiate<ItemDrop>();
             itemDrop.GlobalPosition = this.GlobalPosition;
             itemDrop.SetItem(item, 1);
-            GetTree().CurrentScene.GetNode("ItemDrops").AddChild(itemDrop);
+            GameManager.Instance.MainNode.GetNode("ItemDrops").AddChild(itemDrop);
             
             GetParent<Asteroid>().OnOreDestroyed(this);
         }

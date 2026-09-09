@@ -9,7 +9,7 @@
 [ext_resource type="Resource" uid="uid://s20f57vbv5s7" path="res://Resources/Asteroids/Shapes/MidSetting.tres" id="4_koqhg"]
 [ext_resource type="PackedScene" uid="uid://b6e5k5283jnaq" path="res://Scenes/Enemy.tscn" id="5_koqhg"]
 [ext_resource type="Script" uid="uid://cdlyf2s0e6131" path="res://Scripts/MainMenu.cs" id="6_cmrfp"]
-[ext_resource type="PackedScene" uid="uid://b0ro51x3qchbv" path="res://Scenes/MainLVL.tscn" id="7_loo7a"]
+[ext_resource type="PackedScene" uid="uid://cx574t1rwwqos" path="res://Scenes/Game.tscn" id="7_loo7a"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xim88"]
 texture = ExtResource("2_ghw46")
@@ -157,7 +157,7 @@ grow_vertical = 2
 script = ExtResource("6_cmrfp")
 playButton = NodePath("Buttons/PlayButton")
 exitButton = NodePath("Buttons/ExitButton")
-mainLVL = ExtResource("7_loo7a")
+gameScene = ExtResource("7_loo7a")
 
 [node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/Control" unique_id=503837297]
 texture_filter = 1

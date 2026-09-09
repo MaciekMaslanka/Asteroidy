@@ -1,5 +1,6 @@
 using System;
 using Godot;
+using GodotPlugins.Game;
 
 public partial class GameManager : Node
 {
@@ -38,6 +39,7 @@ public partial class GameManager : Node
 	public Inventory Inventory {private set; get;}
 	public EIndicatorsManager EnemyIndicatorsManager {set; get;}
 	public MiniMap Minimap {private set; get;}
+	public Node MainNode;
 
     public override void _Ready()
 	{
@@ -136,6 +138,13 @@ public partial class GameManager : Node
 		Minimap = miniMap;
 		EmitSignal(SignalName.MinimapReady);
 	}
+	public void RegisterMainNode(Node node)
+	{
+		if(MainNode != null)
+			throw new InvalidOperationException("MainNode jest już ustawiony");
+
+		MainNode = node;
+	}
 	public void PauseGame()
 	{
 		GetTree().Paused = true;
@@ -173,5 +182,6 @@ public partial class GameManager : Node
 		Inventory = null;
 		EnemyIndicatorsManager = null;
 		Minimap = null;
+		MainNode = null;
 	}
 }

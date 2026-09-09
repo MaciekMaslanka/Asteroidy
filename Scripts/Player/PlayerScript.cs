@@ -417,7 +417,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 			bullet.Rotation = toolsContainer.GlobalRotation - Mathf.Pi/2;
 			bullet.AddCollisionExceptionWith(this);
 			bullet.SetCollisionMaskValue(2, true); //kolizja z enemy
-			GetTree().CurrentScene.AddChild(bullet);
+			GameManager.Instance.MainNode.AddChild(bullet);
 		}
 	}
 	public int CollectItem(InvItem item, int amount)
