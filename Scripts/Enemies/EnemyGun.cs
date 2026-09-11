@@ -1,24 +1,23 @@
 using Godot;
 
-public partial class EnemyGun : Sprite2D
+public partial class EnemyGun : AnimatedSprite2D
 {
 	[Export] private float rotationSpeed = 5f;
 	[Export] private float maxAngle = 135f;
 
-	[ExportCategory("Shoot the shields")]
+	[ExportCategory("Shooting")]
 	[Export] private float cooldown = 1.5f;
 	[Export] private PackedScene bulletScene;
-
+	[Export] private Marker2D muzzle;
 	private PlayerScript player;
 	private Enemy enemy;
-	private Marker2D muzzle;
+	
 
 	private float shootTimer = 0f;
 
     public override void _Ready()
     {
         enemy = GetParent<Enemy>();
-		muzzle = GetNode<Marker2D>("Muzzle");
 
 		enemy.EnemyActivated += (Enemy _) => CallDeferred(MethodName.SetPhysicsProcess, true);
 		enemy.EnemyDeactivated += (Enemy _) => CallDeferred(MethodName.SetPhysicsProcess, false);
@@ -62,7 +61,7 @@ public partial class EnemyGun : Sprite2D
 		{
 			Vector2 toPlayer = player.GlobalPosition - GlobalPosition;
 			
-			float globalAngle = toPlayer.Angle();
+			float globalAngle = toPlayer.Angle() + Mathf.Pi / 2;
 			targetAngle = Mathf.AngleDifference(enemy.GlobalRotation, globalAngle);
 			targetAngle = Mathf.Clamp(targetAngle, -Mathf.DegToRad(maxAngle), Mathf.DegToRad(maxAngle));
 		}
@@ -73,16 +72,18 @@ public partial class EnemyGun : Sprite2D
 	{
 		Vector2 toPlayer = player.GlobalPosition - muzzle.GlobalPosition;
 
-		float angle = Mathf.Abs(Mathf.AngleDifference(muzzle.GlobalRotation, toPlayer.Angle()));
+		float angle = Mathf.Abs(Mathf.AngleDifference(muzzle.GlobalRotation - Mathf.Pi / 2, toPlayer.Angle()));
 
 		return angle < Mathf.DegToRad(5f) && enemy.SeesPlayer;
 	}
 	private void Shoot()
 	{
+		Play("shoot");
+
 		Bullet bullet = bulletScene.Instantiate<Bullet>();
 
 		bullet.GlobalPosition = muzzle.GlobalPosition;
-		bullet.GlobalRotation = muzzle.GlobalRotation;
+		bullet.GlobalRotation = muzzle.GlobalRotation - Mathf.Pi / 2;
 
 		bullet.AddCollisionExceptionWith(enemy);
 

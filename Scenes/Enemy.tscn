@@ -5,11 +5,11 @@
 [ext_resource type="PackedScene" uid="uid://5o3wihxk8csq" path="res://Scenes/ItemDrop.tscn" id="2_idouy"]
 [ext_resource type="PackedScene" uid="uid://diy7v3bb12uso" path="res://Scenes/Bullet.tscn" id="2_kpr8r"]
 [ext_resource type="Resource" uid="uid://ddyxoqc6d868" path="res://Resources/Items/Other/RepairKit.tres" id="3_0o0ue"]
-[ext_resource type="Texture2D" uid="uid://bv2ospmuu8bmc" path="res://Sprites/Player/weaponPlaceholder.png" id="3_kpr8r"]
 [ext_resource type="Texture2D" uid="uid://b4ego6utl6yy6" path="res://Sprites/Player/enemy.png" id="3_xeo28"]
 [ext_resource type="Resource" uid="uid://c02ashvkkq8kv" path="res://Resources/Items/CopperItem.tres" id="4_6s1gy"]
 [ext_resource type="Script" uid="uid://d2wy45eprf36d" path="res://Scripts/Enemies/EnemyGun.cs" id="4_kpr8r"]
 [ext_resource type="Resource" uid="uid://c0ma0gskik048" path="res://Resources/Items/IronItem.tres" id="5_uihya"]
+[ext_resource type="Texture2D" uid="uid://bck00o8usrfia" path="res://Sprites/Player/Gun.png" id="8_0o0ue"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kpr8r"]
 radius = 14.0
@@ -28,6 +28,63 @@ corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6s1gy"]
+atlas = ExtResource("8_0o0ue")
+region = Rect2(64, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uihya"]
+atlas = ExtResource("8_0o0ue")
+region = Rect2(128, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_27ry8"]
+atlas = ExtResource("8_0o0ue")
+region = Rect2(192, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_esfq3"]
+atlas = ExtResource("8_0o0ue")
+region = Rect2(256, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qlal6"]
+atlas = ExtResource("8_0o0ue")
+region = Rect2(320, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dascy"]
+atlas = ExtResource("8_0o0ue")
+region = Rect2(384, 0, 64, 64)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rm7px"]
+atlas = ExtResource("8_0o0ue")
+region = Rect2(448, 0, 64, 64)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_5yix0"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6s1gy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uihya")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_27ry8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_esfq3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qlal6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dascy")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rm7px")
+}],
+"loop": true,
+"name": &"shoot",
+"speed": 5.0
+}]
 
 [node name="Enemy" type="RigidBody2D" unique_id=431999929]
 collision_layer = 2
@@ -73,14 +130,17 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_kpr8r")
 value = 50.0
 show_percentage = false
 
-[node name="Gun" type="Sprite2D" parent="." unique_id=124335289]
+[node name="Gun" type="AnimatedSprite2D" parent="." unique_id=1881961320 node_paths=PackedStringArray("muzzle")]
 z_index = -1
+texture_filter = 1
 position = Vector2(45, 0)
-scale = Vector2(0.02, 0.02)
-texture = ExtResource("3_kpr8r")
-offset = Vector2(400, 0)
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_5yix0")
+animation = &"shoot"
+offset = Vector2(0, -10.04)
 script = ExtResource("4_kpr8r")
 bulletScene = ExtResource("2_kpr8r")
+muzzle = NodePath("Muzzle")
 
 [node name="Muzzle" type="Marker2D" parent="Gun" unique_id=160073419]
-position = Vector2(1200, 0)
+position = Vector2(-1.3113416e-06, -30)

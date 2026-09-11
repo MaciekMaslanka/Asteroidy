@@ -46,7 +46,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		GunTool
 	}
 	private ToolsEnum currentTool = ToolsEnum.DiggingTool;
-	Node2D toolsContainer = null;
+	[Export] private Node2D toolsContainer;
 
 	//narzedzie do kopania
 	[ExportCategory("Kopanie")]
@@ -63,8 +63,9 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	[ExportCategory("Strzelanie")]
 	[Export] private float firingCd = 0.5f;
 	private float firingTimer = 0f;
-	private Node2D gunContainer;
-	private Node2D bulletSpawn;
+	[Export] private Node2D gunContainer;
+	[Export] private Node2D bulletSpawn;
+	[Export] private AnimatedSprite2D gunSprite;
 	[Export] PackedScene BulletScene;
 
 	//eq
@@ -85,14 +86,13 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	[Export] private PackedScene explosionScene;
 	//inne
 	private bool isInRadioactiveBiome;
-	private Area2D enemyActivationArea;
-	private Area2D enemyDeactivationArea;
+	[Export] private Area2D enemyActivationArea;
+	[Export] private Area2D enemyDeactivationArea;
 	private EIndicatorsManager indicatorsManager;
 	private MiniMap miniMap;
 
     public override void _Ready()
 	{
-		//ważne!!- nie zmieniać nazw nodeów, bo się spieprzy
 		//hp
 		currentHp = MaxHP;
 		currentShields = MaxShields;
@@ -100,22 +100,16 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
 
 		//narzedzia
-		toolsContainer = GetNode<Node2D>("ToolContainer");
 		toolRotationLimit = Mathf.DegToRad(toolRotationLimit);
-
+		diggerContainer.Visible = true;
+		gunContainer.Visible = false;
+		
 		//digger
 		diggerRange = -diggerRange;
 
 		//stan wyłączony
 		diggerSprite.Animation = "turnOff";
 		diggerSprite.Frame = 5;
-
-		//broń
-		gunContainer = toolsContainer.GetNode<Node2D>("GunTool");
-		bulletSpawn = toolsContainer.GetNode<Node2D>("GunTool/BulletsSpawn");
-
-		diggerContainer.Visible = true;
-		gunContainer.Visible = false;
 
 		//ustawienia fizyki
 		GravityScale = 0f;
@@ -135,10 +129,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		pickupDetector.BodyEntered += OnPickupEnteredArea;
 		pickupDetector.BodyExited += OnPickupExitedArea;
 
-		enemyActivationArea = GetNode<Area2D>("EnemyActivationArea");
 		enemyActivationArea.BodyEntered += ActivateEnemy;
-
-		enemyDeactivationArea = GetNode<Area2D>("EnemyDeactivationArea");
 		enemyDeactivationArea.BodyExited += DeactivateEnemy;
 
 
@@ -323,13 +314,14 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	private void RotateTool(float dt)
 	{
 		Vector2 direction = GetGlobalMousePosition() - toolsContainer.GlobalPosition;
+
 		float globalAngle = direction.Angle();
 		float targetAngle = globalAngle - GlobalRotation + Mathf.Pi / 2;
+
 		targetAngle = Mathf.Wrap(targetAngle, -Mathf.Pi, Mathf.Pi); //przylimituj kąt do +- 180 stopni żeby nie działy się funky rzeczy
 		targetAngle = Mathf.Clamp(targetAngle, -toolRotationLimit, toolRotationLimit);
-		toolsContainer.Rotation = Mathf.Lerp(toolsContainer.Rotation, targetAngle, toolRotationSpeed*dt);
 
-		//rotacja w godocie to dziadostwo
+		toolsContainer.Rotation = Mathf.Lerp(toolsContainer.Rotation, targetAngle, toolRotationSpeed*dt);
 	}
 	private void HandleToolChanges()
 	{
@@ -374,6 +366,9 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 			diggerLine.Visible = true;
 			diggerSprite.Play("turnOn");
 		}
+
+		if(diggerSprite.IsPlaying())
+			return;
 		
 		diggerRay.TargetPosition = new Vector2(0, diggerRange); //range lasera
 		diggerRay.ForceRaycastUpdate();
@@ -409,6 +404,8 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 			isDiggerActive = false;
 			diggerSprite.Play("turnOff");
 			diggerRay.Enabled = false;
+
+			diggerLine.ClearPoints();
 			diggerLine.Visible = false;
 		}
 	}
@@ -417,7 +414,10 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		if(firingTimer <= 0)
 		{
 			firingTimer = firingCd;
+			gunSprite.Play("shoot");
+			
 			var bullet = BulletScene.Instantiate<Bullet>();
+			
 			bullet.GlobalPosition = bulletSpawn.GlobalPosition;
 			bullet.Rotation = toolsContainer.GlobalRotation - Mathf.Pi/2;
 			bullet.AddCollisionExceptionWith(this);

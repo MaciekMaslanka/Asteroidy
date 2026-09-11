@@ -28,7 +28,7 @@ public partial class ItemContextMenu : PanelContainer
 		ResetSize();
 		Close();
 
-		if(slot == null) return;
+		if(slot == null || slot.Item == null) return;
 
 		currentSlot = slot;
 		itemName.Text = slot.Item.ItemName;
@@ -47,15 +47,28 @@ public partial class ItemContextMenu : PanelContainer
 
 	private void UseItem()
 	{
+		if(currentSlot?.Item == null)
+		{
+			Close();
+			return;
+		}
+
 		if(currentSlot.Item.CanUse())
 		{
 			if(currentSlot.Item.Use())
 				GameManager.Instance.Inventory.RemoveItem(currentSlot, 1);
 		}
+
 		Close();
 	}
 	private void DropItem()
 	{
+		if(currentSlot?.Item == null)
+		{
+			Close();
+			return;
+		}
+
 		if(currentSlot.Item.CanDrop())
 		{
 			dropSlider.MaxValue = currentSlot.Amount;
@@ -67,6 +80,12 @@ public partial class ItemContextMenu : PanelContainer
 	}
 	private void OnDropConfirm()
 	{
+		if(currentSlot?.Item == null)
+		{
+			Close();
+			return;
+		}
+
 		InvItem item = currentSlot.Item;
 		int amount = (int) dropSlider.Value;
 		if(GameManager.Instance.Inventory.RemoveItem(currentSlot,(int) dropSlider.Value))
