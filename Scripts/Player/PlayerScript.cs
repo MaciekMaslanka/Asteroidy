@@ -52,10 +52,11 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	[ExportCategory("Kopanie")]
 	[Export] private float diggerRange = 100f; //potem ujemny bo dziwne rzeczy się dzieją z raycastem
 	[Export] private float diggerSpeed = 2f;
+	[Export] private RayCast2D diggerRay;
+	[Export] private Line2D diggerLine;
+	[Export] private Node2D diggerContainer;
+	[Export] private AnimatedSprite2D diggerSprite;
 	private float diggingTimer = 0f;
-	private RayCast2D diggerRay;
-	private Line2D diggerLine;
-	private Node2D diggerContainer;
 	private bool isDiggerActive = false;
 
 	//narzedzie do strzelania
@@ -104,9 +105,10 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 
 		//digger
 		diggerRange = -diggerRange;
-		diggerRay = toolsContainer.GetNode<RayCast2D>("DiggingTool/RayCast2D");
-		diggerLine = toolsContainer.GetNode<Line2D>("DiggingTool/Line2D");
-		diggerContainer = toolsContainer.GetNode<Node2D>("DiggingTool");
+
+		//stan wyłączony
+		diggerSprite.Animation = "turnOff";
+		diggerSprite.Frame = 5;
 
 		//broń
 		gunContainer = toolsContainer.GetNode<Node2D>("GunTool");
@@ -370,7 +372,9 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 			isDiggerActive = true;
 			diggerRay.Enabled = true;
 			diggerLine.Visible = true;
+			diggerSprite.Play("turnOn");
 		}
+		
 		diggerRay.TargetPosition = new Vector2(0, diggerRange); //range lasera
 		diggerRay.ForceRaycastUpdate();
 
@@ -403,6 +407,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		if(isDiggerActive)
 		{
 			isDiggerActive = false;
+			diggerSprite.Play("turnOff");
 			diggerRay.Enabled = false;
 			diggerLine.Visible = false;
 		}
