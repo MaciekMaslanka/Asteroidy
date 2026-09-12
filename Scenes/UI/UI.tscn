@@ -101,7 +101,7 @@ script = ExtResource("3_akgwn")
 pauseColor = Color(0.1680183, 0.1680183, 0.1680183, 0.5)
 switchDuration = 0.2
 
-[node name="PauseMenu" type="Control" parent="." unique_id=188205592 node_paths=PackedStringArray("rescumeButton", "restartButton", "quitButton")]
+[node name="PauseMenu" type="Control" parent="." unique_id=188205592 node_paths=PackedStringArray("rescumeButton", "restartButton", "quitToDesktopButton")]
 process_mode = 3
 visible = false
 z_index = 10
@@ -114,7 +114,7 @@ grow_vertical = 2
 script = ExtResource("4_oqha6")
 rescumeButton = NodePath("CenterContainer/VBoxContainer/ResumeButton")
 restartButton = NodePath("CenterContainer/VBoxContainer/RestartButton")
-quitButton = NodePath("CenterContainer/VBoxContainer/QuitButton")
+quitToDesktopButton = NodePath("CenterContainer/VBoxContainer/QuitButton")
 
 [node name="CenterContainer" type="CenterContainer" parent="PauseMenu" unique_id=548029423]
 layout_mode = 1

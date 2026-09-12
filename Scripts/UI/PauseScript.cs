@@ -4,8 +4,7 @@ public partial class PauseScript : Control
 {
 	[Export] private Button rescumeButton;
 	[Export] private Button restartButton;
-	[Export] private Button quitButton;
-	
+	[Export] private Button quitToDesktopButton;
     public override void _Ready()
 	{
 		ProcessMode = ProcessModeEnum.Always;
@@ -15,7 +14,8 @@ public partial class PauseScript : Control
 
 		rescumeButton.Pressed += RescumeGame;
 		restartButton.Pressed += RestartGame;
-		quitButton.Pressed += QuitGame;
+		// quitToMenuButton.Pressed += ReturnToMenu;
+		quitToDesktopButton.Pressed += QuitGame;
 
 		Visible = false;
 	}
@@ -36,6 +36,11 @@ public partial class PauseScript : Control
 	{
 		GameManager.Instance.RestartGame();
 	}
+	// private void ReturnToMenu()
+	// {
+	// 	GameManager.Instance.Unregister();
+	// 	GetTree().ChangeSceneToPacked(mainMenuScene);
+	// }
 	private void QuitGame()
 	{
 		GameManager.Instance.ExitGame();

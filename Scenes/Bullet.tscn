@@ -2,12 +2,11 @@
 
 [ext_resource type="Script" uid="uid://de6ok44l5vgy0" path="res://Scripts/Enemies/Bullet.cs" id="1_vlxeq"]
 [ext_resource type="PackedScene" uid="uid://b6ec2nx2jv5kx" path="res://Scenes/HitSparks.tscn" id="2_14k46"]
-
-[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_nr8tw"]
+[ext_resource type="Texture2D" uid="uid://2cs63e7ort3j" path="res://Sprites/Other/Bullet.png" id="3_qvus8"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_vlxeq"]
 radius = 6.0
-height = 54.0
+height = 39.999996
 
 [node name="Bullet" type="CharacterBody2D" unique_id=1189485208]
 scale = Vector2(0.35, 0.35)
@@ -20,10 +19,10 @@ Damage = 100.0
 sparksScene = ExtResource("2_14k46")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1299033435]
+texture_filter = 1
 position = Vector2(4.7683716e-07, 1.9073486e-06)
-rotation = 1.5707964
-scale = Vector2(11.999999, 54.000004)
-texture = SubResource("PlaceholderTexture2D_nr8tw")
+scale = Vector2(2.8571427, 2.1428568)
+texture = ExtResource("3_qvus8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1001833695]
 rotation = 1.5707964
