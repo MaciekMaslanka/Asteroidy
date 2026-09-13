@@ -325,13 +325,52 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	}
 	private void HandleToolChanges()
 	{
+		ToolsEnum newTool;
 		if(Input.IsActionJustPressed("diggingToolSelect"))
+		{
+			newTool = ToolsEnum.DiggingTool;
+			SetNewTool();
+			return;
+		}
+		if(Input.IsActionJustPressed("gunToolSelect"))
+		{
+			newTool = ToolsEnum.GunTool;
+			SetNewTool();
+			return;
+		}
+
+		if(Input.IsActionJustPressed("nextTool") || Input.IsActionJustPressed("previousTool"))
+		{
+			newTool = currentTool switch
+			{
+				ToolsEnum.DiggingTool => ToolsEnum.GunTool,
+				ToolsEnum.GunTool => ToolsEnum.DiggingTool,
+				_ => ToolsEnum.DiggingTool 
+			};
+			SetNewTool();
+			return;
+		}
+
+		void SetNewTool()
+		{
+			switch(newTool)
+			{
+				case ToolsEnum.DiggingTool:
+					SelectDiggingTool();
+					break;
+
+				case ToolsEnum.GunTool:
+					SelectGunTool();
+					break;
+			}
+		}
+		void SelectDiggingTool()
 		{
 			currentTool = ToolsEnum.DiggingTool;
 			diggerContainer.Visible = true;
 			gunContainer.Visible = false;
 		}
-		if(Input.IsActionJustPressed("gunToolSelect"))
+		void SelectGunTool()
 		{
 			currentTool = ToolsEnum.GunTool;
 			diggerContainer.Visible = false;
@@ -384,7 +423,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 			{
 				if(diggingTimer <= 0f)
 				{
-					diggable.Dig(diggerSpeed, hitPoint, 10f, 10);
+					diggable.Dig(diggerSpeed, hitPoint, 15f, 10);
 					diggingTimer = 1 / diggerSpeed;
 					SpawnParticles(hitPoint);
 				}

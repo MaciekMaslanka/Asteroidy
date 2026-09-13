@@ -55,7 +55,7 @@ public partial class EnemyGun : AnimatedSprite2D
 	}
 	private void HandleRotation(float dt)
 	{
-		float targetAngle = 0f;
+		float targetAngle = Mathf.Pi / 2;
 
 		if(enemy.SeesPlayer)
 		{

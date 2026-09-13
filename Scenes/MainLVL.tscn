@@ -39,7 +39,6 @@ size = Vector2(32100, 100)
 visibility_layer = 3
 
 [node name="Player" parent="." unique_id=1184771747 instance=ExtResource("1_qd23g")]
-position = Vector2(249, 368)
 diggerSpeed = 10.0
 
 [node name="Parallax2D" type="Parallax2D" parent="." unique_id=512764058]
@@ -88,27 +87,33 @@ collision_layer = 32
 collision_mask = 0
 
 [node name="Line2D" type="Line2D" parent="Border" unique_id=2140923817]
+visibility_layer = 3
 scale = Vector2(0.9991655, 0.9991655)
 points = PackedVector2Array(15970, -15970, 15970, 15970, -15970, 15970, -15970, -15970)
 closed = true
-width = 20.0
+width = 30.0
 texture = SubResource("GradientTexture2D_a4ucx")
 texture_mode = 2
 joint_mode = 2
+antialiased = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Border" unique_id=908588018]
+visibility_layer = 3
 position = Vector2(16000, 0)
 shape = SubResource("RectangleShape2D_pobvj")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Border" unique_id=109834001]
+visibility_layer = 3
 position = Vector2(-16000, 0)
 shape = SubResource("RectangleShape2D_pobvj")
 
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="Border" unique_id=1349749612]
+visibility_layer = 3
 position = Vector2(0, 16000)
 shape = SubResource("RectangleShape2D_a4ucx")
 
 [node name="CollisionShape2D4" type="CollisionShape2D" parent="Border" unique_id=740175870]
+visibility_layer = 3
 position = Vector2(0, -16000)
 shape = SubResource("RectangleShape2D_a4ucx")
 

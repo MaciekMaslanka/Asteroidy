@@ -11,6 +11,7 @@ public partial class MainMenu : Control
     public override void _Ready()
     {
 		GetTree().Paused = false;
+		Input.MouseMode = Input.MouseModeEnum.Visible;
 
         playButton.Pressed += PlayGame;
 		exitButton.Pressed += ExitGame;
@@ -18,7 +19,7 @@ public partial class MainMenu : Control
 	private void PlayGame()
 	{
 		Input.MouseMode = Input.MouseModeEnum.Hidden;
-		
+
 		var tween = CreateTween();
 		tween.TweenProperty(fadeRect, "color:a", 1f, transitionDuration);
 		tween.Finished += () => GetTree().ChangeSceneToPacked(gameScene);

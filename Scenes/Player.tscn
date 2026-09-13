@@ -189,7 +189,7 @@ max_contacts_reported = 4
 script = ExtResource("1_kyqiw")
 ShieldsRegenDelay = 5.0
 MaxAngularVelocity = 20.0
-AngularDamping = 1.0
+AngularDamping = 1.7
 ThrustForce = 85000.0
 toolRotationLimit = 100.0
 toolsContainer = NodePath("ToolContainer")
@@ -246,7 +246,7 @@ scale = Vector2(4, 27.5)
 [node name="RayCast2D" type="RayCast2D" parent="ToolContainer/DiggingTool" unique_id=347423408]
 position = Vector2(1.1920929e-07, 0.48181844)
 target_position = Vector2(-1.0430812e-07, -5.7090907)
-collision_mask = 14
+collision_mask = 46
 
 [node name="Line2D" type="Line2D" parent="ToolContainer/DiggingTool" unique_id=2139775971]
 position = Vector2(0, -0.22)

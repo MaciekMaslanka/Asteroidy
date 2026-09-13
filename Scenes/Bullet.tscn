@@ -11,7 +11,7 @@ height = 39.999996
 [node name="Bullet" type="CharacterBody2D" unique_id=1189485208]
 scale = Vector2(0.35, 0.35)
 collision_layer = 16
-collision_mask = 13
+collision_mask = 45
 motion_mode = 1
 script = ExtResource("1_vlxeq")
 Speed = 600.0
