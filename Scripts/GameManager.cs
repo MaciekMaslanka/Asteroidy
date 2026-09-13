@@ -41,6 +41,8 @@ public partial class GameManager : Node
 	public MiniMap Minimap {private set; get;}
 	public Node MainNode;
 
+	private const string mainMenuPath = "res://Scenes/MainMenu.tscn";
+
     public override void _Ready()
 	{
 		Instance = this;
@@ -165,11 +167,17 @@ public partial class GameManager : Node
 	{
 		EmitSignal(SignalName.TurnOffPauseTintS);
 	}
+
 	public void RestartGame()
 	{
 		Unregister();
 		GetTree().Paused = false;
 		GetTree().ReloadCurrentScene();
+	}
+	public void QuitToMenu()
+	{
+		Unregister();
+		GetTree().ChangeSceneToFile(mainMenuPath);
 	}
 	public void ExitGame()
 	{

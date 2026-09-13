@@ -24,12 +24,12 @@ public partial class Bullet : CharacterBody2D
     }
     private void HandleCollisions()
     {
-        for(int i=0; i<GetSlideCollisionCount(); i++)
+        if(GetSlideCollisionCount() > 0)
         {
-            var collision = GetSlideCollision(i);
-            if(collision.GetCollider() is IDamagable collider)
+            var collision = GetSlideCollision(0);
+            if(collision.GetCollider() is IDamagable damagable)
             {
-                collider.TakeDamage(Damage);
+                damagable.TakeDamage(Damage);
             }
             SpawnHitSparks(collision.GetPosition());
         }

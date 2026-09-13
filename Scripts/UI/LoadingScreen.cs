@@ -51,8 +51,11 @@ public partial class LoadingScreen : CanvasLayer
 
 		if(progress >= 1.0f)
 		{
+			Input.MouseMode = Input.MouseModeEnum.Visible;
+
 			Visible = false;
 			Engine.TimeScale = 0.1f;
+			
 			var timeTween = CreateTween();
 			timeTween.TweenMethod(new Callable(this, MethodName.UpdateTimeScale), 0.1f, 1f, transitionDuration);
 		}

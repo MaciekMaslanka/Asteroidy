@@ -4,6 +4,7 @@ public partial class PauseScript : Control
 {
 	[Export] private Button rescumeButton;
 	[Export] private Button restartButton;
+	[Export] private Button quitToMenuButton;
 	[Export] private Button quitToDesktopButton;
     public override void _Ready()
 	{
@@ -14,7 +15,7 @@ public partial class PauseScript : Control
 
 		rescumeButton.Pressed += RescumeGame;
 		restartButton.Pressed += RestartGame;
-		// quitToMenuButton.Pressed += ReturnToMenu;
+		quitToMenuButton.Pressed += ReturnToMenu;
 		quitToDesktopButton.Pressed += QuitGame;
 
 		Visible = false;
@@ -36,11 +37,10 @@ public partial class PauseScript : Control
 	{
 		GameManager.Instance.RestartGame();
 	}
-	// private void ReturnToMenu()
-	// {
-	// 	GameManager.Instance.Unregister();
-	// 	GetTree().ChangeSceneToPacked(mainMenuScene);
-	// }
+	private void ReturnToMenu()
+	{
+		GameManager.Instance.QuitToMenu();
+	}
 	private void QuitGame()
 	{
 		GameManager.Instance.ExitGame();

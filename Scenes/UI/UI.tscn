@@ -101,9 +101,8 @@ script = ExtResource("3_akgwn")
 pauseColor = Color(0.1680183, 0.1680183, 0.1680183, 0.5)
 switchDuration = 0.2
 
-[node name="PauseMenu" type="Control" parent="." unique_id=188205592 node_paths=PackedStringArray("rescumeButton", "restartButton", "quitToDesktopButton")]
+[node name="PauseMenu" type="Control" parent="." unique_id=188205592 node_paths=PackedStringArray("rescumeButton", "restartButton", "quitToMenuButton", "quitToDesktopButton")]
 process_mode = 3
-visible = false
 z_index = 10
 layout_mode = 3
 anchors_preset = 15
@@ -114,7 +113,8 @@ grow_vertical = 2
 script = ExtResource("4_oqha6")
 rescumeButton = NodePath("CenterContainer/VBoxContainer/ResumeButton")
 restartButton = NodePath("CenterContainer/VBoxContainer/RestartButton")
-quitToDesktopButton = NodePath("CenterContainer/VBoxContainer/QuitButton")
+quitToMenuButton = NodePath("CenterContainer/VBoxContainer/QuitToMenuButton")
+quitToDesktopButton = NodePath("CenterContainer/VBoxContainer/QuitToDesktopButton")
 
 [node name="CenterContainer" type="CenterContainer" parent="PauseMenu" unique_id=548029423]
 layout_mode = 1
@@ -131,6 +131,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_font_sizes/font_size = 33
 text = "Paused"
+horizontal_alignment = 1
 
 [node name="ResumeButton" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=1088813882]
 texture_filter = 1
@@ -148,13 +149,21 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
 text = "Restart"
 
-[node name="QuitButton" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=425293731]
+[node name="QuitToMenuButton" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=1521019552]
 texture_filter = 1
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
-text = "Quit"
+text = "Quit to menu"
+
+[node name="QuitToDesktopButton" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=425293731]
+texture_filter = 1
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
+text = "Quit to desktop"
 
 [node name="DeathScreen" type="Control" parent="." unique_id=371451121 node_paths=PackedStringArray("restartButton", "quitButton")]
 visible = false

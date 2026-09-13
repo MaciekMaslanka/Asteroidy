@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices.Marshalling;
 using Godot;
 
 public partial class MainMenu : Control
@@ -11,11 +10,15 @@ public partial class MainMenu : Control
 
     public override void _Ready()
     {
+		GetTree().Paused = false;
+
         playButton.Pressed += PlayGame;
 		exitButton.Pressed += ExitGame;
     }
 	private void PlayGame()
 	{
+		Input.MouseMode = Input.MouseModeEnum.Hidden;
+		
 		var tween = CreateTween();
 		tween.TweenProperty(fadeRect, "color:a", 1f, transitionDuration);
 		tween.Finished += () => GetTree().ChangeSceneToPacked(gameScene);
