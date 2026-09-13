@@ -4,7 +4,11 @@ using System.Collections.Generic;
 
 public partial class InventoryUI : Control
 {
+    /*
+    tymczasowo inventory obsługuje wynik do czasu gdy nie ruszę 4 liter i nie zrobię sklepu
+    */
     [Export] private ItemContextMenu itemContextMenu;
+    [Export] private Label scoreLabel;
     private List<InvUISlot> uiSlots = new();
     private bool isInventoryOpen = false;
     private Inventory connectedInventory;
@@ -12,7 +16,7 @@ public partial class InventoryUI : Control
     private bool isPlayerDead = false;
     public override void _Ready()
     {
-        GridContainer grid = GetNode<GridContainer>("NinePatchRect/GridContainer");
+        GridContainer grid = GetNode<GridContainer>("NinePatchRect/VBoxContainer/GridContainer");
         
         foreach(Node child in grid.GetChildren())
         {
@@ -55,6 +59,7 @@ public partial class InventoryUI : Control
         }
 
         GameManager.Instance.GamePaused += CloseInventory;
+        GameManager.Instance.ScoreChanged += UpdateScore;
     }
     private void InitPlayer()
     {
@@ -131,6 +136,7 @@ public partial class InventoryUI : Control
             GameManager.Instance.InventoryReady -= InitInventory;
             GameManager.Instance.PlayerReady -= InitPlayer;
             GameManager.Instance.GamePaused -= CloseInventory;
+            GameManager.Instance.ScoreChanged -= UpdateScore;
         }
 
         if(connectedInventory != null)
@@ -147,5 +153,10 @@ public partial class InventoryUI : Control
         {
             slot.SlotPressed -= OpenContextMenu;
         }
+    }
+
+    private void UpdateScore(int newAmount)
+    {
+        scoreLabel.Text = $"Score: {newAmount}";
     }
 }

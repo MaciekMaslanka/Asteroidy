@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Godot;
+using Microsoft.VisualBasic;
 
 public enum OreType
 {
@@ -19,6 +20,7 @@ public partial class OreScript : StaticBody2D, IDiggable
     private Dictionary<OreType, OreData> oreLookup;
     [Export] public InvItem item {private set; get;}
     [Export] private PackedScene itemDropScene;
+    [Export] private PackedScene scoreFloatingNumberScene; 
     public float CurrentHealth { get; private set; }
 
     public Polygon2D shape {get; private set;}
@@ -50,7 +52,15 @@ public partial class OreScript : StaticBody2D, IDiggable
             itemDrop.GlobalPosition = this.GlobalPosition;
             itemDrop.SetItem(item, 1);
             GameManager.Instance.MainNode.GetNode("ItemDrops").AddChild(itemDrop);
+
+            GameManager.Instance.AddScore(oreLookup[type].ScoreValue);
+
+            var scoreNumber = scoreFloatingNumberScene.Instantiate<ScoreFloatingNumber>();
+            scoreNumber.SetScore(oreLookup[type].ScoreValue);
+            scoreNumber.GlobalPosition = GlobalPosition;
             
+            GameManager.Instance.MainNode.GetNode("ItemDrops").AddChild(scoreNumber);
+
             GetParent<Asteroid>().OnOreDestroyed(this);
         }
     }

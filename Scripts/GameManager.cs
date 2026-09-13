@@ -1,6 +1,6 @@
 using System;
+using System.ComponentModel;
 using Godot;
-using GodotPlugins.Game;
 
 public partial class GameManager : Node
 {
@@ -12,20 +12,26 @@ public partial class GameManager : Node
 	public delegate void EIndicatorsManagerReadyEventHandler();
 	[Signal]
 	public delegate void MinimapReadyEventHandler();
+	
 	[Signal]
 	public delegate void BiomeSwitchedEventHandler(BiomeType newBiome);
 	[Signal]
 	public delegate void PlayerEnteredRadioactiveBiomeEventHandler();
 	[Signal]
 	public delegate void PlayerExitedRadioactiveBiomeEventHandler();
+
 	[Signal]
 	public delegate void GamePausedEventHandler();
 	[Signal]
 	public delegate void GameUnpausedEventHandler();
+
 	[Signal]
 	public delegate void TurnOnPauseTintSEventHandler();
 	[Signal]
 	public delegate void TurnOffPauseTintSEventHandler();
+
+	[Signal]
+	public delegate void ScoreChangedEventHandler(int newValue);
 
 	public static GameManager Instance {private set; get;}
 	public FastNoiseLite BiomeNoise {set; get;}
@@ -40,6 +46,8 @@ public partial class GameManager : Node
 	public EIndicatorsManager EnemyIndicatorsManager {set; get;}
 	public MiniMap Minimap {private set; get;}
 	public Node MainNode;
+
+	public int Score {private set; get;} = 0;
 
 	private const string mainMenuPath = "res://Scenes/MainMenu.tscn";
 
@@ -147,6 +155,13 @@ public partial class GameManager : Node
 
 		MainNode = node;
 	}
+
+	public void AddScore(int amount)
+	{
+		Score += amount;
+		EmitSignal(SignalName.ScoreChanged, Score);
+	}
+
 	public void PauseGame()
 	{
 		GetTree().Paused = true;
@@ -191,5 +206,6 @@ public partial class GameManager : Node
 		EnemyIndicatorsManager = null;
 		Minimap = null;
 		MainNode = null;
+		Score = 0;
 	}
 }

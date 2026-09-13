@@ -9,4 +9,5 @@ script = ExtResource("1_qalec")
 Type = 4
 Texture = ExtResource("2_7iwiv")
 Item = ExtResource("1_cecku")
+ScoreValue = 20
 metadata/_custom_type_script = "uid://p3og1x53jgqk"
