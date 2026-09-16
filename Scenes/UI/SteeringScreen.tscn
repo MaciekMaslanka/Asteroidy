@@ -1,0 +1,124 @@
+[gd_scene format=3 uid="uid://de3l5r2s834sx"]
+
+[ext_resource type="Texture2D" uid="uid://xkidt4jmesjy" path="res://Sprites/UI/Background1.png" id="1_74we5"]
+[ext_resource type="Texture2D" uid="uid://4mk1tyw3rf2" path="res://Sprites/UI/Background1Click.png" id="2_hu37j"]
+[ext_resource type="Texture2D" uid="uid://c66mjn7u5q5uw" path="res://Sprites/UI/Background1Hover.png" id="3_wi27m"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_oqha6"]
+texture = ExtResource("1_74we5")
+texture_margin_left = 5.0
+texture_margin_top = 5.0
+texture_margin_right = 5.0
+texture_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_w8wei"]
+texture = ExtResource("2_hu37j")
+texture_margin_left = 5.0
+texture_margin_top = 5.0
+texture_margin_right = 5.0
+texture_margin_bottom = 5.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jevvu"]
+texture = ExtResource("3_wi27m")
+texture_margin_left = 5.0
+texture_margin_top = 5.0
+texture_margin_right = 5.0
+texture_margin_bottom = 5.0
+
+[node name="SteeringScreen" type="NinePatchRect" unique_id=1743319844]
+texture_filter = 1
+custom_minimum_size = Vector2(190, 212.475)
+texture = ExtResource("1_74we5")
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1639642061]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 5.0
+offset_right = -8.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Movement" type="HBoxContainer" parent="VBoxContainer" unique_id=1244946793]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Movement" unique_id=446628717]
+layout_mode = 2
+text = "W S A D "
+
+[node name="Label2" type="Label" parent="VBoxContainer/Movement" unique_id=1132320460]
+layout_mode = 2
+text = "- Movement"
+
+[node name="UseTool" type="HBoxContainer" parent="VBoxContainer" unique_id=189913169]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/UseTool" unique_id=838402249]
+layout_mode = 2
+text = "LMB"
+
+[node name="Label2" type="Label" parent="VBoxContainer/UseTool" unique_id=2122913]
+layout_mode = 2
+text = "- Use tool"
+
+[node name="Inventory" type="HBoxContainer" parent="VBoxContainer" unique_id=1174611680]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Inventory" unique_id=2107264227]
+layout_mode = 2
+text = "TAB"
+
+[node name="Label2" type="Label" parent="VBoxContainer/Inventory" unique_id=1069331732]
+layout_mode = 2
+text = "- Open inventory"
+
+[node name="SwitchTool" type="HBoxContainer" parent="VBoxContainer" unique_id=1231064124]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/SwitchTool" unique_id=786715643]
+layout_mode = 2
+text = "Scroll / 1,2"
+
+[node name="Label2" type="Label" parent="VBoxContainer/SwitchTool" unique_id=1526514450]
+layout_mode = 2
+text = "- Select tool"
+
+[node name="PickUp" type="HBoxContainer" parent="VBoxContainer" unique_id=1113327997]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PickUp" unique_id=907232239]
+layout_mode = 2
+text = "E"
+
+[node name="Label2" type="Label" parent="VBoxContainer/PickUp" unique_id=746750895]
+layout_mode = 2
+text = "- Pick up"
+
+[node name="Pause" type="HBoxContainer" parent="VBoxContainer" unique_id=1811588955]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/Pause" unique_id=2071369774]
+layout_mode = 2
+text = "ESC"
+
+[node name="Label2" type="Label" parent="VBoxContainer/Pause" unique_id=289494311]
+layout_mode = 2
+text = "- Pause"
+
+[node name="CloseSteeringButton" type="Button" parent="VBoxContainer" unique_id=1659209756]
+texture_filter = 1
+custom_minimum_size = Vector2(70, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
+text = "Back"

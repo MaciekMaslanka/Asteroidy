@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://b6e5k5283jnaq" path="res://Scenes/Enemy.tscn" id="5_koqhg"]
 [ext_resource type="Script" uid="uid://cdlyf2s0e6131" path="res://Scripts/MainMenu.cs" id="6_cmrfp"]
 [ext_resource type="PackedScene" uid="uid://cx574t1rwwqos" path="res://Scenes/Game.tscn" id="7_loo7a"]
+[ext_resource type="PackedScene" uid="uid://de3l5r2s834sx" path="res://Scenes/UI/SteeringScreen.tscn" id="11_if7li"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xim88"]
 texture = ExtResource("2_ghw46")
@@ -147,7 +148,7 @@ zoom = Vector2(0.2, 0.2)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=843087941]
 
-[node name="Control" type="Control" parent="CanvasLayer" unique_id=147600231 node_paths=PackedStringArray("playButton", "exitButton", "fadeRect")]
+[node name="Control" type="Control" parent="CanvasLayer" unique_id=147600231 node_paths=PackedStringArray("playButton", "steeringButton", "exitButton", "fadeRect", "closeSteeringButton", "steeringScreen")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -156,9 +157,12 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("6_cmrfp")
 playButton = NodePath("Buttons/PlayButton")
+steeringButton = NodePath("Buttons/SteeringButton")
 exitButton = NodePath("Buttons/ExitButton")
 gameScene = ExtResource("7_loo7a")
 fadeRect = NodePath("../FadeRect")
+closeSteeringButton = NodePath("SteeringScreen/VBoxContainer/CloseSteeringButton")
+steeringScreen = NodePath("SteeringScreen")
 
 [node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/Control" unique_id=503837297]
 texture_filter = 1
@@ -221,6 +225,14 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_cmrfp")
 text = "Play
 "
 
+[node name="SteeringButton" type="Button" parent="CanvasLayer/Control/Buttons" unique_id=1771845853]
+texture_filter = 1
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_xim88")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_koqhg")
+theme_override_styles/hover = SubResource("StyleBoxTexture_cmrfp")
+text = "Steering"
+
 [node name="ExitButton" type="Button" parent="CanvasLayer/Control/Buttons" unique_id=1190778841]
 texture_filter = 1
 layout_mode = 2
@@ -231,6 +243,21 @@ text = "Quit
 
 "
 
+[node name="SteeringScreen" parent="CanvasLayer/Control" unique_id=1743319844 instance=ExtResource("11_if7li")]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -95.0
+offset_top = -106.2375
+offset_right = 95.0
+offset_bottom = 106.2375
+grow_horizontal = 2
+grow_vertical = 2
+
 [node name="FadeRect" type="ColorRect" parent="CanvasLayer" unique_id=1893134638]
 z_index = 5
 anchors_preset = 15
@@ -240,3 +267,5 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0)
+
+[editable path="CanvasLayer/Control/SteeringScreen"]

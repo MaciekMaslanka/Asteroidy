@@ -3,10 +3,14 @@ using Godot;
 public partial class MainMenu : Control
 {
 	[Export] private Button playButton;
+	[Export] private Button steeringButton;
 	[Export] private Button exitButton;
 	[Export] private PackedScene gameScene;
 	[Export] private float transitionDuration = 0.25f;
 	[Export] private ColorRect fadeRect;
+
+	[Export] private Button closeSteeringButton;
+	[Export] private Control steeringScreen;
 
     public override void _Ready()
     {
@@ -15,6 +19,11 @@ public partial class MainMenu : Control
 
         playButton.Pressed += PlayGame;
 		exitButton.Pressed += ExitGame;
+
+		steeringButton.Pressed += () => SwitchSteeringScreen(true);
+		closeSteeringButton.Pressed += () => SwitchSteeringScreen(false);
+
+		steeringScreen.Visible = false;
     }
 	private void PlayGame()
 	{
@@ -27,5 +36,9 @@ public partial class MainMenu : Control
 	private void ExitGame()
 	{
 		GetTree().Quit();
+	}
+	private void SwitchSteeringScreen(bool newState)
+	{
+		steeringScreen.Visible = newState;
 	}
 }

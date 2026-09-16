@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://c66mjn7u5q5uw" path="res://Sprites/UI/Background1Hover.png" id="6_7tgkj"]
 [ext_resource type="Texture2D" uid="uid://4mk1tyw3rf2" path="res://Sprites/UI/Background1Click.png" id="6_jevvu"]
 [ext_resource type="Script" uid="uid://3a0fyx8x6lw4" path="res://Scripts/UI/DeathScreen.cs" id="11_nqsl3"]
+[ext_resource type="PackedScene" uid="uid://de3l5r2s834sx" path="res://Scenes/UI/SteeringScreen.tscn" id="11_u6hof"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_oqha6"]
 texture = ExtResource("4_b83rk")
@@ -101,7 +102,7 @@ script = ExtResource("3_akgwn")
 pauseColor = Color(0.1680183, 0.1680183, 0.1680183, 0.5)
 switchDuration = 0.2
 
-[node name="PauseMenu" type="Control" parent="." unique_id=188205592 node_paths=PackedStringArray("rescumeButton", "restartButton", "quitToMenuButton", "quitToDesktopButton")]
+[node name="PauseMenu" type="Control" parent="." unique_id=188205592 node_paths=PackedStringArray("rescumeButton", "restartButton", "steeringButton", "quitToMenuButton", "quitToDesktopButton", "steeringScreen", "closeSteeringScreenButton")]
 process_mode = 3
 z_index = 10
 layout_mode = 3
@@ -111,10 +112,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("4_oqha6")
-rescumeButton = NodePath("CenterContainer/VBoxContainer/ResumeButton")
-restartButton = NodePath("CenterContainer/VBoxContainer/RestartButton")
-quitToMenuButton = NodePath("CenterContainer/VBoxContainer/QuitToMenuButton")
-quitToDesktopButton = NodePath("CenterContainer/VBoxContainer/QuitToDesktopButton")
+rescumeButton = NodePath("CenterContainer/pauseMenu/ResumeButton")
+restartButton = NodePath("CenterContainer/pauseMenu/RestartButton")
+steeringButton = NodePath("CenterContainer/pauseMenu/SteeringButton")
+quitToMenuButton = NodePath("CenterContainer/pauseMenu/QuitToMenuButton")
+quitToDesktopButton = NodePath("CenterContainer/pauseMenu/QuitToDesktopButton")
+steeringScreen = NodePath("CenterContainer/SteeringScreen")
+closeSteeringScreenButton = NodePath("CenterContainer/SteeringScreen/VBoxContainer/CloseSteeringButton")
 
 [node name="CenterContainer" type="CenterContainer" parent="PauseMenu" unique_id=548029423]
 layout_mode = 1
@@ -124,16 +128,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PauseMenu/CenterContainer" unique_id=1285432920]
+[node name="pauseMenu" type="VBoxContainer" parent="PauseMenu/CenterContainer" unique_id=1285432920]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=1548541921]
+[node name="Label" type="Label" parent="PauseMenu/CenterContainer/pauseMenu" unique_id=1548541921]
 layout_mode = 2
 theme_override_font_sizes/font_size = 33
 text = "Paused"
 horizontal_alignment = 1
 
-[node name="ResumeButton" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=1088813882]
+[node name="ResumeButton" type="Button" parent="PauseMenu/CenterContainer/pauseMenu" unique_id=1088813882]
 texture_filter = 1
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
@@ -141,7 +145,7 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
 text = "Resume"
 
-[node name="RestartButton" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=210449578]
+[node name="RestartButton" type="Button" parent="PauseMenu/CenterContainer/pauseMenu" unique_id=210449578]
 texture_filter = 1
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
@@ -149,7 +153,15 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
 text = "Restart"
 
-[node name="QuitToMenuButton" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=1521019552]
+[node name="SteeringButton" type="Button" parent="PauseMenu/CenterContainer/pauseMenu" unique_id=382820805]
+texture_filter = 1
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
+text = "Steering"
+
+[node name="QuitToMenuButton" type="Button" parent="PauseMenu/CenterContainer/pauseMenu" unique_id=1521019552]
 texture_filter = 1
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
@@ -157,13 +169,16 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
 text = "Quit to menu"
 
-[node name="QuitToDesktopButton" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=425293731]
+[node name="QuitToDesktopButton" type="Button" parent="PauseMenu/CenterContainer/pauseMenu" unique_id=425293731]
 texture_filter = 1
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
 text = "Quit to desktop"
+
+[node name="SteeringScreen" parent="PauseMenu/CenterContainer" unique_id=1743319844 instance=ExtResource("11_u6hof")]
+layout_mode = 2
 
 [node name="DeathScreen" type="Control" parent="." unique_id=371451121 node_paths=PackedStringArray("restartButton", "quitButton")]
 visible = false
