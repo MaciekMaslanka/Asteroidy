@@ -2,6 +2,12 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
+public enum ToolsEnum
+{
+	None,
+	DiggingTool,
+	GunTool
+}
 public partial class PlayerScript : RigidBody2D, IDamagable
 {
 	//sygnały
@@ -9,6 +15,8 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	public delegate void ShieldChangedEventHandler(float currentShields, float maxShields);
 	[Signal]
 	public delegate void HealthChangedEventHandler(float currentHealth, float maxHealth);
+	[Signal]
+	public delegate void ToolChangedEventHandler(ToolsEnum newTool);
 	[Signal]
 	public delegate void PlayerDiedEventHandler();
 	//hp
@@ -39,13 +47,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	[ExportCategory("Narzedzia")]
 	[Export] private float toolRotationSpeed = 10f;
 	[Export] private float toolRotationLimit = 135f; //potem zamieniana na radiany
-	private enum ToolsEnum
-	{
-		None,
-		DiggingTool,
-		GunTool
-	}
-	private ToolsEnum currentTool = ToolsEnum.DiggingTool;
+	public ToolsEnum CurrentTool {private set; get;} = ToolsEnum.DiggingTool;
 	[Export] private Node2D toolsContainer;
 
 	//narzedzie do kopania
@@ -341,7 +343,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 
 		if(Input.IsActionJustPressed("nextTool") || Input.IsActionJustPressed("previousTool"))
 		{
-			newTool = currentTool switch
+			newTool = CurrentTool switch
 			{
 				ToolsEnum.DiggingTool => ToolsEnum.GunTool,
 				ToolsEnum.GunTool => ToolsEnum.DiggingTool,
@@ -353,6 +355,9 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 
 		void SetNewTool()
 		{
+			if(newTool == CurrentTool)
+				return;
+			
 			switch(newTool)
 			{
 				case ToolsEnum.DiggingTool:
@@ -363,23 +368,25 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 					SelectGunTool();
 					break;
 			}
+			EmitSignal(SignalName.ToolChanged, Variant.From(CurrentTool));
 		}
+
 		void SelectDiggingTool()
 		{
-			currentTool = ToolsEnum.DiggingTool;
+			CurrentTool = ToolsEnum.DiggingTool;
 			diggerContainer.Visible = true;
 			gunContainer.Visible = false;
 		}
 		void SelectGunTool()
 		{
-			currentTool = ToolsEnum.GunTool;
+			CurrentTool = ToolsEnum.GunTool;
 			diggerContainer.Visible = false;
 			gunContainer.Visible = true;
 		}
 	}
 	private void HandleMouseInput(float dt)
 	{
-		switch(currentTool)
+		switch(CurrentTool)
 		{
 			case ToolsEnum.DiggingTool:
 				if(Input.IsActionPressed("mouseLeft"))

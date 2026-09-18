@@ -5,6 +5,7 @@ public partial class DeathScreen : Control
 	[Export] private float transitionDuration = 0.5f;
 	[Export] private Button restartButton;
 	[Export] private Button quitButton;
+	[Export] private Label scoreText;
 	private PlayerScript connectedPlayer;
 	private Tween deathTween;
 
@@ -29,6 +30,8 @@ public partial class DeathScreen : Control
 	private void HandlePlayerDeath()
 	{
 		Visible = true;
+
+		scoreText.Text = $"Score: {GameManager.Instance.Score}";
 
 		deathTween?.Kill();
 
