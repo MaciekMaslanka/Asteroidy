@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_jetyl")
-ItemName = "Iron"
+ItemName = "ITEM_IRON"
 Icon = ExtResource("1_hgl5s")
 Actions = Array[int]([1])
 metadata/_custom_type_script = "uid://nbarmfmf5ki"

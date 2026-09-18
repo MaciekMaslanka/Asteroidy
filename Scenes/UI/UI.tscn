@@ -135,7 +135,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="PauseMenu/CenterContainer/pauseMenu" unique_id=1548541921]
 layout_mode = 2
 theme_override_font_sizes/font_size = 33
-text = "Paused"
+text = "UI_PAUSE_TITLE"
 horizontal_alignment = 1
 
 [node name="ResumeButton" type="Button" parent="PauseMenu/CenterContainer/pauseMenu" unique_id=1088813882]
@@ -144,7 +144,7 @@ layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
-text = "Resume"
+text = "UI_RESUME"
 
 [node name="RestartButton" type="Button" parent="PauseMenu/CenterContainer/pauseMenu" unique_id=210449578]
 texture_filter = 1
@@ -152,7 +152,7 @@ layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
-text = "Restart"
+text = "UI_RESTART"
 
 [node name="SteeringButton" type="Button" parent="PauseMenu/CenterContainer/pauseMenu" unique_id=382820805]
 texture_filter = 1
@@ -160,7 +160,7 @@ layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
-text = "Steering"
+text = "UI_STEERING"
 
 [node name="QuitToMenuButton" type="Button" parent="PauseMenu/CenterContainer/pauseMenu" unique_id=1521019552]
 texture_filter = 1
@@ -168,7 +168,7 @@ layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
-text = "Quit to menu"
+text = "UI_QUIT_TO_MENU"
 
 [node name="QuitToDesktopButton" type="Button" parent="PauseMenu/CenterContainer/pauseMenu" unique_id=425293731]
 texture_filter = 1
@@ -176,7 +176,7 @@ layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
-text = "Quit to desktop"
+text = "UI_QUIT_TO_DESKTOP"
 
 [node name="SteeringScreen" parent="PauseMenu/CenterContainer" unique_id=1743319844 instance=ExtResource("11_u6hof")]
 visible = false
@@ -244,7 +244,7 @@ theme_override_constants/shadow_offset_x = 2
 theme_override_constants/shadow_offset_y = 2
 theme_override_constants/shadow_outline_size = 3
 theme_override_font_sizes/font_size = 30
-text = "You died!"
+text = "UI_DIED"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -257,7 +257,7 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 theme_override_constants/shadow_outline_size = 2
-text = "Score: NONE"
+text = "UI_SCORE NONE"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -269,7 +269,7 @@ size_flags_horizontal = 4
 theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
-text = "Restart"
+text = "UI_RESTART"
 
 [node name="QuitButton" type="Button" parent="DeathScreen/VBoxContainer" unique_id=1848775835]
 texture_filter = 1
@@ -279,5 +279,4 @@ size_flags_horizontal = 4
 theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
-text = "Quit
-"
+text = "UI_QUIT"

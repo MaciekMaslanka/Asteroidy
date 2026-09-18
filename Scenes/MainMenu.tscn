@@ -11,6 +11,9 @@
 [ext_resource type="Script" uid="uid://cdlyf2s0e6131" path="res://Scripts/MainMenu.cs" id="6_cmrfp"]
 [ext_resource type="PackedScene" uid="uid://cx574t1rwwqos" path="res://Scenes/Game.tscn" id="7_loo7a"]
 [ext_resource type="PackedScene" uid="uid://de3l5r2s834sx" path="res://Scenes/UI/SteeringScreen.tscn" id="11_if7li"]
+[ext_resource type="Script" uid="uid://4m1gs01cnqhq" path="res://Scripts/LanguagesManager.cs" id="12_8e205"]
+[ext_resource type="Texture2D" uid="uid://c47046uscryk8" path="res://Localisation/Languages Icons/en.png" id="12_rrcx7"]
+[ext_resource type="Texture2D" uid="uid://dvx3bt83ksjwy" path="res://Localisation/Languages Icons/pl.png" id="13_fh7cp"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xim88"]
 texture = ExtResource("2_ghw46")
@@ -140,6 +143,7 @@ collision_layer = 32
 collision_mask = 0
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Stuff/Border" unique_id=495632374]
+position = Vector2(47, -14)
 build_mode = 1
 polygon = PackedVector2Array(-2500, -1700, 2500, -1700, 2500, 1700, -2500, 1700)
 
@@ -222,8 +226,7 @@ layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_xim88")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_koqhg")
 theme_override_styles/hover = SubResource("StyleBoxTexture_cmrfp")
-text = "Play
-"
+text = "UI_PLAY"
 
 [node name="SteeringButton" type="Button" parent="CanvasLayer/Control/Buttons" unique_id=1771845853]
 texture_filter = 1
@@ -231,7 +234,7 @@ layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_xim88")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_koqhg")
 theme_override_styles/hover = SubResource("StyleBoxTexture_cmrfp")
-text = "Steering"
+text = "UI_STEERING"
 
 [node name="ExitButton" type="Button" parent="CanvasLayer/Control/Buttons" unique_id=1190778841]
 texture_filter = 1
@@ -239,9 +242,7 @@ layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_xim88")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_koqhg")
 theme_override_styles/hover = SubResource("StyleBoxTexture_cmrfp")
-text = "Quit
-
-"
+text = "UI_QUIT"
 
 [node name="SteeringScreen" parent="CanvasLayer/Control" unique_id=1743319844 instance=ExtResource("11_if7li")]
 visible = false
@@ -257,6 +258,40 @@ offset_right = 95.0
 offset_bottom = 106.2375
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Languages" type="HBoxContainer" parent="CanvasLayer/Control" unique_id=2090783273 node_paths=PackedStringArray("langageButtons")]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -62.0
+offset_right = 155.0
+grow_vertical = 0
+alignment = 1
+script = ExtResource("12_8e205")
+langageButtons = [NodePath("EnglishButton"), NodePath("PolishButton")]
+locales = PackedStringArray("en", "pl")
+
+[node name="EnglishButton" type="Button" parent="CanvasLayer/Control/Languages" unique_id=411706889]
+custom_minimum_size = Vector2(65, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/icon_pressed_color = Color(0.31061712, 0.31061712, 0.3106171, 1)
+theme_override_colors/icon_hover_color = Color(0.7607843, 0.7607843, 0.7607843, 1)
+icon = ExtResource("12_rrcx7")
+flat = true
+icon_alignment = 1
+expand_icon = true
+
+[node name="PolishButton" type="Button" parent="CanvasLayer/Control/Languages" unique_id=1068709775]
+custom_minimum_size = Vector2(65, 0)
+layout_mode = 2
+theme_override_colors/icon_pressed_color = Color(0.31061712, 0.31061712, 0.3106171, 1)
+theme_override_colors/icon_hover_color = Color(0.76240367, 0.76240367, 0.76240367, 1)
+icon = ExtResource("13_fh7cp")
+flat = true
+icon_alignment = 1
+expand_icon = true
 
 [node name="FadeRect" type="ColorRect" parent="CanvasLayer" unique_id=1893134638]
 z_index = 5

@@ -31,7 +31,7 @@ public partial class DeathScreen : Control
 	{
 		Visible = true;
 
-		scoreText.Text = $"Score: {GameManager.Instance.Score}";
+		scoreText.Text = $"{Tr("UI_SCORE")} {GameManager.Instance.Score}";
 
 		deathTween?.Kill();
 

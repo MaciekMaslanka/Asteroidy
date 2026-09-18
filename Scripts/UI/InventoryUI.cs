@@ -45,6 +45,8 @@ public partial class InventoryUI : Control
         {
             GameManager.Instance.PlayerReady += InitPlayer;
         }
+
+        scoreLabel.Text = $"{Tr("UI_SCORE")} 0";
     }
     private void InitInventory()
     {
@@ -157,6 +159,6 @@ public partial class InventoryUI : Control
 
     private void UpdateScore(int newAmount)
     {
-        scoreLabel.Text = $"Score: {newAmount}";
+        scoreLabel.Text = $"{Tr("UI_SCORE")} {newAmount}";
     }
 }

@@ -55,6 +55,9 @@ public partial class GameManager : Node
 	{
 		Instance = this;
 		ProcessMode = ProcessModeEnum.Always;
+		
+		TranslationServer.SetLocale("pl");
+
 		GetViewport().CanvasCullMask = 0b01;
 	}
     public override void _PhysicsProcess(double delta)

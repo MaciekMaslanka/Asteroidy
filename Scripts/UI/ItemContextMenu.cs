@@ -25,13 +25,14 @@ public partial class ItemContextMenu : PanelContainer
 	}
 	public void Open(InventorySlot slot, Vector2 mousePos)
 	{
-		ResetSize();
 		Close();
 
 		if(slot == null || slot.Item == null) return;
 
 		currentSlot = slot;
-		itemName.Text = slot.Item.ItemName;
+		itemName.Text = Tr(slot.Item.ItemName);
+
+		ResetSize();
 
 		if(currentSlot.Item.CanUse())
 		{

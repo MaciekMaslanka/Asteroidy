@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_u4l4b")
 fixAmount = 125.0
-ItemName = "Repair Kit"
+ItemName = "ITEM_REPAIR_KIT"
 Icon = ExtResource("1_csdah")
 Actions = Array[int]([0, 1])
 metadata/_custom_type_script = "uid://d06ifik6khh0d"

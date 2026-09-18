@@ -107,6 +107,10 @@ pause={
 ]
 }
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://Localisation/localisationSheet.en.translation", "res://Localisation/localisationSheet.pl.translation")
+
 [layer_names]
 
 2d_render/layer_1="normal"

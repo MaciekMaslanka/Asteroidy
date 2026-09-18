@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://cbyqlw33cidua"]
 
-[ext_resource type="Script" uid="uid://cfajv8l7us7dq" path="res://ScoreFloatingNumber.cs" id="1_wfoqi"]
+[ext_resource type="Script" uid="uid://d3vh7wev401ey" path="res://Scripts/UI/ScoreFloatingNumber.cs" id="2_265ic"]
 
 [node name="Control" type="CharacterBody2D" unique_id=1550746660 node_paths=PackedStringArray("scoreLabel")]
 z_index = 8
 motion_mode = 1
-script = ExtResource("1_wfoqi")
+script = ExtResource("2_265ic")
 speed = 50.0
 fadeOutTime = 0.25
 fadeOutDelay = 0.5

@@ -85,7 +85,7 @@ alignment = 1
 texture_filter = 1
 layout_mode = 2
 theme_override_font_sizes/font_size = 22
-text = "Score: 0"
+text = "UI_SCORE 0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -213,12 +213,12 @@ size_flags_vertical = 4
 [node name="UseButton" type="Button" parent="ItemContextMenu/VBoxContainer/Buttons" unique_id=897411864]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "Use"
+text = "UI_USE"
 
 [node name="DropButton" type="Button" parent="ItemContextMenu/VBoxContainer/Buttons" unique_id=1842828842]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "Drop"
+text = "UI_DROP"
 
 [node name="DropSlider" type="VBoxContainer" parent="ItemContextMenu/VBoxContainer" unique_id=1630696651]
 visible = false
@@ -242,4 +242,4 @@ value = 50.0
 [node name="ConfirmDropButton" type="Button" parent="ItemContextMenu/VBoxContainer/DropSlider" unique_id=939621727]
 layout_mode = 2
 theme_override_font_sizes/font_size = 18
-text = "Confirm"
+text = "UI_CONFIRM"
