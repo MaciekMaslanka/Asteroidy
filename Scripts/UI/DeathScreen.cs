@@ -6,6 +6,7 @@ public partial class DeathScreen : Control
 	[Export] private Button restartButton;
 	[Export] private Button quitButton;
 	[Export] private Label scoreText;
+	[Export] private Label highScoreText;
 	private PlayerScript connectedPlayer;
 	private Tween deathTween;
 
@@ -32,6 +33,7 @@ public partial class DeathScreen : Control
 		Visible = true;
 
 		scoreText.Text = $"{Tr("UI_SCORE")} {GameManager.Instance.Score}";
+		highScoreText.Text = $"{Tr("UI_HIGH_SCORE")} {GameManager.Instance.HighScore}";
 
 		deathTween?.Kill();
 

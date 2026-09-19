@@ -182,7 +182,7 @@ text = "UI_QUIT_TO_DESKTOP"
 visible = false
 layout_mode = 2
 
-[node name="DeathScreen" type="Control" parent="." unique_id=371451121 node_paths=PackedStringArray("restartButton", "quitButton", "scoreText")]
+[node name="DeathScreen" type="Control" parent="." unique_id=371451121 node_paths=PackedStringArray("restartButton", "quitButton", "scoreText", "highScoreText")]
 visible = false
 z_index = 10
 layout_mode = 3
@@ -195,6 +195,7 @@ script = ExtResource("11_nqsl3")
 restartButton = NodePath("VBoxContainer/RestartButton")
 quitButton = NodePath("VBoxContainer/QuitButton")
 scoreText = NodePath("VBoxContainer/NinePatchRect/ScoreText")
+highScoreText = NodePath("VBoxContainer/NinePatchRect/HighScoreText")
 
 [node name="ColorRect" type="ColorRect" parent="DeathScreen" unique_id=1319191743]
 layout_mode = 1
@@ -223,7 +224,7 @@ alignment = 1
 
 [node name="NinePatchRect" type="NinePatchRect" parent="DeathScreen/VBoxContainer" unique_id=1384825359]
 texture_filter = 1
-custom_minimum_size = Vector2(50, 84.965)
+custom_minimum_size = Vector2(50, 110)
 layout_mode = 2
 texture = ExtResource("4_b83rk")
 patch_margin_left = 5
@@ -236,7 +237,7 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_bottom = -36.964996
+offset_bottom = -62.339996
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
@@ -258,6 +259,19 @@ theme_override_constants/shadow_offset_x = 1
 theme_override_constants/shadow_offset_y = 1
 theme_override_constants/shadow_outline_size = 2
 text = "UI_SCORE NONE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HighScoreText" type="Label" parent="DeathScreen/VBoxContainer/NinePatchRect" unique_id=1910521406]
+layout_mode = 0
+offset_top = 74.0
+offset_right = 248.0
+offset_bottom = 106.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 2
+text = "UI_HIGH_SCORE NONE"
 horizontal_alignment = 1
 vertical_alignment = 1
 

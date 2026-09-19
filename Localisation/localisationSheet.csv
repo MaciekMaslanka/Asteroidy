@@ -8,6 +8,7 @@ UI_RESUME,Resume,Wznów
 UI_RESTART,Restart,Restartuj
 UI_LOADING,Loading…,Ładowanie…
 UI_SCORE,Score: ,Wynik:
+UI_HIGH_SCORE,High score: ,Rekord: 
 UI_USE,Use,Użyj
 UI_DROP,Drop,Upuść
 UI_CONFIRM,Confirm,Potwierdź

@@ -1,7 +1,9 @@
+using System.ComponentModel;
 using Godot;
 
 public partial class MainMenu : Control
 {
+	[Export] private Label highScoreLabel;
 	[Export] private Button playButton;
 	[Export] private Button steeringButton;
 	[Export] private Button exitButton;
@@ -11,6 +13,8 @@ public partial class MainMenu : Control
 
 	[Export] private Button closeSteeringButton;
 	[Export] private Control steeringScreen;
+
+	[Export] private LanguagesManager languagesManager;
 
     public override void _Ready()
     {
@@ -24,6 +28,9 @@ public partial class MainMenu : Control
 		closeSteeringButton.Pressed += () => SwitchSteeringScreen(false);
 
 		steeringScreen.Visible = false;
+
+		languagesManager.LanguageChanged += UpdateHighScoreLabel;
+		UpdateHighScoreLabel();
     }
 	private void PlayGame()
 	{
@@ -41,4 +48,23 @@ public partial class MainMenu : Control
 	{
 		steeringScreen.Visible = newState;
 	}
+	private void UpdateHighScoreLabel()
+	{
+		if(GameManager.Instance?.HighScore > 0)
+		{
+			highScoreLabel.Text = $"{Tr("UI_HIGH_SCORE")} {GameManager.Instance.HighScore}";
+			highScoreLabel.Visible = true;
+		}
+		else
+		{
+			highScoreLabel.Visible = false;
+		}
+	}
+    public override void _ExitTree()
+    {
+        if(languagesManager != null)
+		{
+			languagesManager.LanguageChanged -= UpdateHighScoreLabel;
+		}
+    }
 }

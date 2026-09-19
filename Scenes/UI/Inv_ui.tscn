@@ -8,6 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://l48phen3nfm1" path="res://Sprites/UI/Slider/SliderGrabberHover.png" id="6_xhm5s"]
 [ext_resource type="Texture2D" uid="uid://b8wksj1oc1xv5" path="res://Sprites/UI/Slider/SliderBackground.png" id="7_i243t"]
 
+[sub_resource type="Theme" id="Theme_5vqdy"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0gfek"]
 content_margin_left = 3.0
 content_margin_top = 3.0
@@ -84,6 +86,7 @@ alignment = 1
 [node name="scoreLabel" type="Label" parent="NinePatchRect/VBoxContainer" unique_id=1348720672]
 texture_filter = 1
 layout_mode = 2
+theme = SubResource("Theme_5vqdy")
 theme_override_font_sizes/font_size = 22
 text = "UI_SCORE 0"
 horizontal_alignment = 1

@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel;
 using Godot;
 
 public partial class GameManager : Node
@@ -48,15 +47,16 @@ public partial class GameManager : Node
 	public Node MainNode;
 
 	public int Score {private set; get;} = 0;
+	public int HighScore {private set; get;} = 0;
 
 	private const string mainMenuPath = "res://Scenes/MainMenu.tscn";
 
     public override void _Ready()
 	{
+		ReadHighScore();
+
 		Instance = this;
 		ProcessMode = ProcessModeEnum.Always;
-		
-		TranslationServer.SetLocale("pl");
 
 		GetViewport().CanvasCullMask = 0b01;
 	}
@@ -186,6 +186,26 @@ public partial class GameManager : Node
 		EmitSignal(SignalName.TurnOffPauseTintS);
 	}
 
+	private void ReadHighScore()
+	{
+		var config = new ConfigFile();
+
+		if(config.Load("user://save.cfg") == Error.Ok)
+		{
+			HighScore = (int) config.GetValue("Score", "HighScore");
+		}
+	}
+	public bool SetHighScore(int newHighScore)
+	{
+		if(newHighScore <= HighScore)
+			return false;
+		HighScore = newHighScore;
+		
+		var config = new ConfigFile();
+		config.SetValue("Score", "HighScore", newHighScore);
+		config.Save("user://save.cfg");
+		return true;
+	}
 	public void RestartGame()
 	{
 		Unregister();
@@ -204,11 +224,14 @@ public partial class GameManager : Node
 	public void Unregister()
 	{
 		BiomeNoise = null;
+		currentPlayerBiome = BiomeType.Normal;
+
 		Player = null;
 		Inventory = null;
 		EnemyIndicatorsManager = null;
 		Minimap = null;
 		MainNode = null;
+
 		Score = 0;
 	}
 }

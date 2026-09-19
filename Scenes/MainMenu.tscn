@@ -152,7 +152,7 @@ zoom = Vector2(0.2, 0.2)
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=843087941]
 
-[node name="Control" type="Control" parent="CanvasLayer" unique_id=147600231 node_paths=PackedStringArray("playButton", "steeringButton", "exitButton", "fadeRect", "closeSteeringButton", "steeringScreen")]
+[node name="Control" type="Control" parent="CanvasLayer" unique_id=147600231 node_paths=PackedStringArray("highScoreLabel", "playButton", "steeringButton", "exitButton", "fadeRect", "closeSteeringButton", "steeringScreen", "languagesManager")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -160,6 +160,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("6_cmrfp")
+highScoreLabel = NodePath("Buttons/HighScoreLabel")
 playButton = NodePath("Buttons/PlayButton")
 steeringButton = NodePath("Buttons/SteeringButton")
 exitButton = NodePath("Buttons/ExitButton")
@@ -167,6 +168,7 @@ gameScene = ExtResource("7_loo7a")
 fadeRect = NodePath("../FadeRect")
 closeSteeringButton = NodePath("SteeringScreen/VBoxContainer/CloseSteeringButton")
 steeringScreen = NodePath("SteeringScreen")
+languagesManager = NodePath("Languages")
 
 [node name="NinePatchRect" type="NinePatchRect" parent="CanvasLayer/Control" unique_id=503837297]
 texture_filter = 1
@@ -219,6 +221,12 @@ offset_bottom = 35.0
 grow_horizontal = 2
 grow_vertical = 2
 alignment = 1
+
+[node name="HighScoreLabel" type="Label" parent="CanvasLayer/Control/Buttons" unique_id=896595552]
+layout_mode = 2
+text = "UI_HIGH_SCORE"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="PlayButton" type="Button" parent="CanvasLayer/Control/Buttons" unique_id=1713990643]
 texture_filter = 1

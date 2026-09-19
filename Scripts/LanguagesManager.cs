@@ -2,6 +2,9 @@ using Godot;
 
 public partial class LanguagesManager : Control
 {
+	[Signal]
+	public delegate void LanguageChangedEventHandler();
+
 	[Export] private Button[] langageButtons;
 	[Export] private string[] locales;
 	[Export] private string defaultLocale = "pl";
@@ -15,7 +18,10 @@ public partial class LanguagesManager : Control
 		for(int i=0; i<count; i++)
 		{
 			string lang = locales[i];
-			langageButtons[i].Pressed += () => TranslationServer.SetLocale(lang);
+			langageButtons[i].Pressed += () => {
+				TranslationServer.SetLocale(lang);
+				EmitSignal(SignalName.LanguageChanged);
+			};
 		}
 	}
 }

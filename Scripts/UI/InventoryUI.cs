@@ -160,5 +160,10 @@ public partial class InventoryUI : Control
     private void UpdateScore(int newAmount)
     {
         scoreLabel.Text = $"{Tr("UI_SCORE")} {newAmount}";
+
+        if(GameManager.Instance.SetHighScore(newAmount))
+        {
+            scoreLabel.AddThemeColorOverride("font_color", Colors.Gold);
+        }
     }
 }
