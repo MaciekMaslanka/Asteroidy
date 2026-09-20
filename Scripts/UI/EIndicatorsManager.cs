@@ -36,8 +36,11 @@ public partial class EIndicatorsManager : Control
         Vector2 screenSize = mainViewport.GetVisibleRect().Size;
         Vector2 screenCenter = screenSize / 2f;
 
-        foreach (var (enemy, indicator) in indicators)
+        foreach (var enemy in new List<Enemy>(indicators.Keys))
         {
+            if(!indicators.TryGetValue(enemy, out EnemyIndicator indicator))
+                continue;
+            
             if (!IsInstanceValid(enemy) || enemy.IsQueuedForDeletion())
                 continue;
 

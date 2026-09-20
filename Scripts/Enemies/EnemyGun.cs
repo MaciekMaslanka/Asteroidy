@@ -1,3 +1,4 @@
+using System.Formats.Tar;
 using Godot;
 
 public partial class EnemyGun : AnimatedSprite2D
@@ -11,6 +12,8 @@ public partial class EnemyGun : AnimatedSprite2D
 	[Export] private Marker2D muzzle;
 	private PlayerScript player;
 	private Enemy enemy;
+
+	private const float spriteOffset = Mathf.Pi / 2;
 	
 
 	private float shootTimer = 0f;
@@ -39,7 +42,11 @@ public partial class EnemyGun : AnimatedSprite2D
     public override void _PhysicsProcess(double delta)
 	{
 		if(player == null)
+		{
+			Rotation = spriteOffset;
 			return;
+		}
+			
 
 		float dt = (float) delta;
 
@@ -55,15 +62,19 @@ public partial class EnemyGun : AnimatedSprite2D
 	}
 	private void HandleRotation(float dt)
 	{
-		float targetAngle = Mathf.Pi / 2;
+		float targetAngle;
 
 		if(enemy.SeesPlayer)
 		{
 			Vector2 toPlayer = player.GlobalPosition - GlobalPosition;
 			
-			float globalAngle = toPlayer.Angle() + Mathf.Pi / 2;
+			float globalAngle = toPlayer.Angle() + spriteOffset;
 			targetAngle = Mathf.AngleDifference(enemy.GlobalRotation, globalAngle);
 			targetAngle = Mathf.Clamp(targetAngle, -Mathf.DegToRad(maxAngle), Mathf.DegToRad(maxAngle));
+		}
+		else
+		{
+			targetAngle = spriteOffset;
 		}
 		Rotation = Mathf.Lerp(Rotation, targetAngle, rotationSpeed * dt);
 	}
@@ -72,7 +83,7 @@ public partial class EnemyGun : AnimatedSprite2D
 	{
 		Vector2 toPlayer = player.GlobalPosition - muzzle.GlobalPosition;
 
-		float angle = Mathf.Abs(Mathf.AngleDifference(muzzle.GlobalRotation - Mathf.Pi / 2, toPlayer.Angle()));
+		float angle = Mathf.Abs(Mathf.AngleDifference(muzzle.GlobalRotation - spriteOffset, toPlayer.Angle()));
 
 		return angle < Mathf.DegToRad(5f) && enemy.SeesPlayer;
 	}
@@ -83,7 +94,7 @@ public partial class EnemyGun : AnimatedSprite2D
 		Bullet bullet = bulletScene.Instantiate<Bullet>();
 
 		bullet.GlobalPosition = muzzle.GlobalPosition;
-		bullet.GlobalRotation = muzzle.GlobalRotation - Mathf.Pi / 2;
+		bullet.GlobalRotation = muzzle.GlobalRotation - spriteOffset;
 
 		bullet.AddCollisionExceptionWith(enemy);
 

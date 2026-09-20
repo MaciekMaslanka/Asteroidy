@@ -54,7 +54,7 @@ public partial class GameManager : Node
     public override void _Ready()
 	{
 		GD.Print("----------------------------------------");
-		GD.Print("Wersja: 1.0.1");
+		GD.Print("Wersja: 1.0.2");
 		GD.Print("----------------------------------------");
 		ReadHighScore();
 

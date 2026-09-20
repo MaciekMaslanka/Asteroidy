@@ -5,6 +5,7 @@ public partial class LoadingScreen : CanvasLayer
 	[Export] private Label loadingLabel;
 	[Export] private TextureProgressBar progressBar;
 	[Export] private PackedScene mainLevelScene;
+	[Export] private PackedScene[] particlesToLoad;
 
 	private bool isMainSceneLoaded = false;
 	private LevelGenerator generator;
@@ -41,10 +42,20 @@ public partial class LoadingScreen : CanvasLayer
 				generator.GenerationProgress += OnGenerationProgress;
 				generator.StartGeneration();
 				
+				LoadParticles();
 				isMainSceneLoaded = true;
 			}
 		}
     }
+	private void LoadParticles()
+	{
+		foreach(var particleScene in particlesToLoad)
+		{
+			var particle = particleScene.Instantiate<Node2D>();
+			particle.GlobalPosition = new Vector2(-10000, -10000); //poza ekranem
+			AddChild(particle);
+		}
+	}
 	private void OnGenerationProgress(float progress)
 	{
 		progressBar.Value = 25 + progress * 75;
@@ -58,6 +69,7 @@ public partial class LoadingScreen : CanvasLayer
 			
 			var timeTween = CreateTween();
 			timeTween.TweenMethod(new Callable(this, MethodName.UpdateTimeScale), 0.1f, 1f, transitionDuration);
+			timeTween.Finished += QueueFree;
 		}
 	}
 	private void UpdateTimeScale(double newScale)

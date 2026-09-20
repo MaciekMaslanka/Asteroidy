@@ -8,13 +8,17 @@ public partial class EnemyIndicator : Control
 	[Export] private Sprite2D chaseSprite;
 	private Sprite2D currentSprite;
 	private Tween tween = null;
+	private bool isVisible = false;
 
     public override void _Ready()
 	{
 		patrolSprite.Modulate = Colors.Transparent;
 		searchSprite.Modulate = Colors.Transparent;
 		chaseSprite.Modulate = Colors.Transparent;
+
 		currentSprite = patrolSprite;
+		Visible = true;
+		isVisible = false;
 	}
 	public void SetState(Enemy.State state)
 	{
@@ -28,7 +32,7 @@ public partial class EnemyIndicator : Control
 
 		if(newSprite == null || newSprite == currentSprite)
 			return;
-
+		
 		if(tween != null && tween.IsRunning())
 			tween.Kill();
 
@@ -42,10 +46,10 @@ public partial class EnemyIndicator : Control
 	}
 	public new void Show()
 	{
-		if(Visible)
+		if(isVisible)
 			return;
 
-		Visible = true;
+		isVisible = true;
 
 		if(tween != null && tween.IsRunning())
 			tween.Kill();
@@ -55,10 +59,10 @@ public partial class EnemyIndicator : Control
 	}
 	public new void Hide()
 	{
-		if(!Visible)
+		if(!isVisible)
 			return;
 
-		Visible = false;
+		isVisible = false;
 
 		if(tween != null && tween.IsRunning())
 			tween.Kill();
@@ -70,13 +74,13 @@ public partial class EnemyIndicator : Control
 	{
 		GD.Print($"[INDICATOR] HideAndFree, Visible={Visible}");
 		
-		if(tween!= null && tween.IsRunning())
+		if(tween != null && tween.IsRunning())
 			tween.Kill();
+
+		isVisible = false;
 
 		tween = CreateTween();
 		tween.TweenProperty(currentSprite, "modulate:a", 0f, switchDuration);
 		tween.Finished += QueueFree;
-
-		Visible = false;
 	}
 }
