@@ -8,7 +8,6 @@ public partial class EnemyIndicator : Control
 	[Export] private Sprite2D chaseSprite;
 	private Sprite2D currentSprite;
 	private Tween tween = null;
-	private new bool IsVisible = false;
 
     public override void _Ready()
 	{
@@ -26,6 +25,7 @@ public partial class EnemyIndicator : Control
 			Enemy.State.Chase => chaseSprite,
 			_ => null
 		};
+
 		if(newSprite == null || newSprite == currentSprite)
 			return;
 
@@ -33,8 +33,8 @@ public partial class EnemyIndicator : Control
 			tween.Kill();
 
 		tween = CreateTween();
-		tween.SetParallel(true);
 
+		tween.SetParallel(true);
 		tween.TweenProperty(currentSprite, "modulate:a", 0f, switchDuration);
 		tween.TweenProperty(newSprite, "modulate:a", 1f, switchDuration);
 
@@ -42,9 +42,10 @@ public partial class EnemyIndicator : Control
 	}
 	public new void Show()
 	{
-		if(IsVisible)
+		if(Visible)
 			return;
-		IsVisible = true;
+
+		Visible = true;
 
 		if(tween != null && tween.IsRunning())
 			tween.Kill();
@@ -54,9 +55,10 @@ public partial class EnemyIndicator : Control
 	}
 	public new void Hide()
 	{
-		if(!IsVisible)
+		if(!Visible)
 			return;
-		IsVisible = false;
+
+		Visible = false;
 
 		if(tween != null && tween.IsRunning())
 			tween.Kill();
@@ -66,17 +68,15 @@ public partial class EnemyIndicator : Control
 	}
 	public void HideAndFree()
 	{
-		if(!Visible)
-		{
-			QueueFree();
-			return;
-		}
+		GD.Print($"[INDICATOR] HideAndFree, Visible={Visible}");
+		
+		if(tween!= null && tween.IsRunning())
+			tween.Kill();
 
-		Hide();
+		tween = CreateTween();
+		tween.TweenProperty(currentSprite, "modulate:a", 0f, switchDuration);
+		tween.Finished += QueueFree;
 
-		if(tween != null)
-			tween.Finished += () => QueueFree();
-		else
-			QueueFree();
+		Visible = false;
 	}
 }
