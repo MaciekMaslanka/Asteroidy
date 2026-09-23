@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_1c8xf")
-ItemName = "Diamond"
+ItemName = "ITEM_DIAMOND"
 Icon = ExtResource("1_cftrs")
 Actions = Array[int]([1])
 metadata/_custom_type_script = "uid://nbarmfmf5ki"

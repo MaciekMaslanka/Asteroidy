@@ -11,20 +11,26 @@ public partial class GameManager : Node
 	public delegate void EIndicatorsManagerReadyEventHandler();
 	[Signal]
 	public delegate void MinimapReadyEventHandler();
+	
 	[Signal]
 	public delegate void BiomeSwitchedEventHandler(BiomeType newBiome);
 	[Signal]
 	public delegate void PlayerEnteredRadioactiveBiomeEventHandler();
 	[Signal]
 	public delegate void PlayerExitedRadioactiveBiomeEventHandler();
+
 	[Signal]
 	public delegate void GamePausedEventHandler();
 	[Signal]
 	public delegate void GameUnpausedEventHandler();
+
 	[Signal]
 	public delegate void TurnOnPauseTintSEventHandler();
 	[Signal]
 	public delegate void TurnOffPauseTintSEventHandler();
+
+	[Signal]
+	public delegate void ScoreChangedEventHandler(int newValue);
 
 	public static GameManager Instance {private set; get;}
 	public FastNoiseLite BiomeNoise {set; get;}
@@ -38,11 +44,23 @@ public partial class GameManager : Node
 	public Inventory Inventory {private set; get;}
 	public EIndicatorsManager EnemyIndicatorsManager {set; get;}
 	public MiniMap Minimap {private set; get;}
+	public Node MainNode;
+
+	public int Score {private set; get;} = 0;
+	public int HighScore {private set; get;} = 0;
+
+	private const string mainMenuPath = "res://Scenes/MainMenu.tscn";
 
     public override void _Ready()
 	{
+		GD.Print("----------------------------------------");
+		GD.Print("Wersja: 1.0.2");
+		GD.Print("----------------------------------------");
+		ReadHighScore();
+
 		Instance = this;
 		ProcessMode = ProcessModeEnum.Always;
+
 		GetViewport().CanvasCullMask = 0b01;
 	}
     public override void _PhysicsProcess(double delta)
@@ -136,6 +154,20 @@ public partial class GameManager : Node
 		Minimap = miniMap;
 		EmitSignal(SignalName.MinimapReady);
 	}
+	public void RegisterMainNode(Node node)
+	{
+		if(MainNode != null)
+			throw new InvalidOperationException("MainNode jest już ustawiony");
+
+		MainNode = node;
+	}
+
+	public void AddScore(int amount)
+	{
+		Score += amount;
+		EmitSignal(SignalName.ScoreChanged, Score);
+	}
+
 	public void PauseGame()
 	{
 		GetTree().Paused = true;
@@ -156,12 +188,53 @@ public partial class GameManager : Node
 	{
 		EmitSignal(SignalName.TurnOffPauseTintS);
 	}
+
+	private void ReadHighScore()
+	{
+		var config = new ConfigFile();
+
+		if(config.Load("user://save.cfg") == Error.Ok)
+		{
+			HighScore = (int) config.GetValue("Score", "HighScore");
+		}
+	}
+	public bool SetHighScore(int newHighScore)
+	{
+		if(newHighScore <= HighScore)
+			return false;
+		HighScore = newHighScore;
+		
+		var config = new ConfigFile();
+		config.SetValue("Score", "HighScore", newHighScore);
+		config.Save("user://save.cfg");
+		return true;
+	}
+	public void RestartGame()
+	{
+		Unregister();
+		GetTree().Paused = false;
+		GetTree().ReloadCurrentScene();
+	}
+	public void QuitToMenu()
+	{
+		Unregister();
+		GetTree().ChangeSceneToFile(mainMenuPath);
+	}
+	public void ExitGame()
+	{
+		GetTree().Quit();
+	}
 	public void Unregister()
 	{
 		BiomeNoise = null;
+		currentPlayerBiome = BiomeType.Normal;
+
 		Player = null;
 		Inventory = null;
 		EnemyIndicatorsManager = null;
 		Minimap = null;
+		MainNode = null;
+
+		Score = 0;
 	}
 }

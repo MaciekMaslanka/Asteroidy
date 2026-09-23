@@ -2,6 +2,12 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
+public enum ToolsEnum
+{
+	None,
+	DiggingTool,
+	GunTool
+}
 public partial class PlayerScript : RigidBody2D, IDamagable
 {
 	//sygnały
@@ -9,6 +15,10 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	public delegate void ShieldChangedEventHandler(float currentShields, float maxShields);
 	[Signal]
 	public delegate void HealthChangedEventHandler(float currentHealth, float maxHealth);
+	[Signal]
+	public delegate void ToolChangedEventHandler(ToolsEnum newTool);
+	[Signal]
+	public delegate void PlayerDiedEventHandler();
 	//hp
 	[ExportCategory("HP")]
 	[Export] float MaxHP = 500f;
@@ -18,6 +28,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	private float currentHp;
 	private float currentShields;
 	private float timeSinceLastHit = 0f;
+	public bool IsDead {private set; get;} = false;
 
 	//rotacja
 	[ExportCategory("Rotacja")]
@@ -36,31 +47,27 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	[ExportCategory("Narzedzia")]
 	[Export] private float toolRotationSpeed = 10f;
 	[Export] private float toolRotationLimit = 135f; //potem zamieniana na radiany
-	private enum ToolsEnum
-	{
-		None,
-		DiggingTool,
-		GunTool
-	}
-	private ToolsEnum currentTool = ToolsEnum.DiggingTool;
-	Node2D toolsContainer = null;
+	public ToolsEnum CurrentTool {private set; get;} = ToolsEnum.DiggingTool;
+	[Export] private Node2D toolsContainer;
 
 	//narzedzie do kopania
 	[ExportCategory("Kopanie")]
 	[Export] private float diggerRange = 100f; //potem ujemny bo dziwne rzeczy się dzieją z raycastem
 	[Export] private float diggerSpeed = 2f;
+	[Export] private RayCast2D diggerRay;
+	[Export] private Line2D diggerLine;
+	[Export] private Node2D diggerContainer;
+	[Export] private AnimatedSprite2D diggerSprite;
 	private float diggingTimer = 0f;
-	private RayCast2D diggerRay;
-	private Line2D diggerLine;
-	private Node2D diggerContainer;
 	private bool isDiggerActive = false;
 
 	//narzedzie do strzelania
 	[ExportCategory("Strzelanie")]
 	[Export] private float firingCd = 0.5f;
 	private float firingTimer = 0f;
-	private Node2D gunContainer;
-	private Node2D bulletSpawn;
+	[Export] private Node2D gunContainer;
+	[Export] private Node2D bulletSpawn;
+	[Export] private AnimatedSprite2D gunSprite;
 	[Export] PackedScene BulletScene;
 
 	//eq
@@ -78,16 +85,16 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	[ExportCategory("Particle")]
 	[Export] private PackedScene hitParticles;
 	[Export] private float particlesMinImpactSpeed = 400f;
+	[Export] private PackedScene explosionScene;
 	//inne
 	private bool isInRadioactiveBiome;
-	private Area2D enemyActivationArea;
-	private Area2D enemyDeactivationArea;
+	[Export] private Area2D enemyActivationArea;
+	[Export] private Area2D enemyDeactivationArea;
 	private EIndicatorsManager indicatorsManager;
 	private MiniMap miniMap;
 
     public override void _Ready()
 	{
-		//ważne!!- nie zmieniać nazw nodeów, bo się spieprzy
 		//hp
 		currentHp = MaxHP;
 		currentShields = MaxShields;
@@ -95,21 +102,16 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		EmitSignal(SignalName.ShieldChanged, currentShields, MaxShields);
 
 		//narzedzia
-		toolsContainer = GetNode<Node2D>("ToolContainer");
 		toolRotationLimit = Mathf.DegToRad(toolRotationLimit);
-
-		//digger
-		diggerRange = -diggerRange;
-		diggerRay = toolsContainer.GetNode<RayCast2D>("DiggingTool/RayCast2D");
-		diggerLine = toolsContainer.GetNode<Line2D>("DiggingTool/Line2D");
-		diggerContainer = toolsContainer.GetNode<Node2D>("DiggingTool");
-
-		//broń
-		gunContainer = toolsContainer.GetNode<Node2D>("GunTool");
-		bulletSpawn = toolsContainer.GetNode<Node2D>("GunTool/BulletsSpawn");
-
 		diggerContainer.Visible = true;
 		gunContainer.Visible = false;
+		
+		//digger
+		diggerRange = -diggerRange;
+
+		//stan wyłączony
+		diggerSprite.Animation = "turnOff";
+		diggerSprite.Frame = 5;
 
 		//ustawienia fizyki
 		GravityScale = 0f;
@@ -129,10 +131,7 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		pickupDetector.BodyEntered += OnPickupEnteredArea;
 		pickupDetector.BodyExited += OnPickupExitedArea;
 
-		enemyActivationArea = GetNode<Area2D>("EnemyActivationArea");
 		enemyActivationArea.BodyEntered += ActivateEnemy;
-
-		enemyDeactivationArea = GetNode<Area2D>("EnemyDeactivationArea");
 		enemyDeactivationArea.BodyExited += DeactivateEnemy;
 
 
@@ -177,10 +176,10 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		HandlePickupIndicator();
 
 		if(diggingTimer > 0)
-			diggingTimer -= (float) delta;
+			diggingTimer -= dt;
 		
 		if(firingTimer > 0)
-			firingTimer -= (float) delta;
+			firingTimer -= dt;
 	}
     public override void _IntegrateForces(PhysicsDirectBodyState2D state)
     {
@@ -213,6 +212,9 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	}
 	public void TakeDamage(float amount)
 	{
+		if(IsDead)
+			return;
+		
 		timeSinceLastHit = 0f;
 		if(currentShields > 0f)
 		{
@@ -248,7 +250,21 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	}
 	private void Die()
 	{
-		GD.Print("Zdechłeś cwelu");
+		IsDead = true;
+		LockSteering(true);
+
+		Engine.TimeScale = 0.25;
+		EmitSignal(SignalName.PlayerDied);
+
+		var explosion = explosionScene.Instantiate<Explosion>();
+		explosion.GlobalPosition = GlobalPosition;
+		explosion.GlobalRotation = GlobalRotation;
+		GetParent().AddChild(explosion);
+
+		Visible = false;
+		SetPhysicsProcess(false);
+		CollisionLayer = 0;
+		CollisionMask = 0;
 	}
 	private void HandleShieldsRegen(float dt)
 	{
@@ -300,32 +316,77 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 	private void RotateTool(float dt)
 	{
 		Vector2 direction = GetGlobalMousePosition() - toolsContainer.GlobalPosition;
+
 		float globalAngle = direction.Angle();
 		float targetAngle = globalAngle - GlobalRotation + Mathf.Pi / 2;
+
 		targetAngle = Mathf.Wrap(targetAngle, -Mathf.Pi, Mathf.Pi); //przylimituj kąt do +- 180 stopni żeby nie działy się funky rzeczy
 		targetAngle = Mathf.Clamp(targetAngle, -toolRotationLimit, toolRotationLimit);
-		toolsContainer.Rotation = Mathf.Lerp(toolsContainer.Rotation, targetAngle, toolRotationSpeed*dt);
 
-		//rotacja w godocie to dziadostwo
+		toolsContainer.Rotation = Mathf.Lerp(toolsContainer.Rotation, targetAngle, toolRotationSpeed*dt);
 	}
 	private void HandleToolChanges()
 	{
+		ToolsEnum newTool;
 		if(Input.IsActionJustPressed("diggingToolSelect"))
 		{
-			currentTool = ToolsEnum.DiggingTool;
-			diggerContainer.Visible = true;
-			gunContainer.Visible = false;
+			newTool = ToolsEnum.DiggingTool;
+			SetNewTool();
+			return;
 		}
 		if(Input.IsActionJustPressed("gunToolSelect"))
 		{
-			currentTool = ToolsEnum.GunTool;
+			newTool = ToolsEnum.GunTool;
+			SetNewTool();
+			return;
+		}
+
+		if(Input.IsActionJustPressed("nextTool") || Input.IsActionJustPressed("previousTool"))
+		{
+			newTool = CurrentTool switch
+			{
+				ToolsEnum.DiggingTool => ToolsEnum.GunTool,
+				ToolsEnum.GunTool => ToolsEnum.DiggingTool,
+				_ => ToolsEnum.DiggingTool 
+			};
+			SetNewTool();
+			return;
+		}
+
+		void SetNewTool()
+		{
+			if(newTool == CurrentTool)
+				return;
+			
+			switch(newTool)
+			{
+				case ToolsEnum.DiggingTool:
+					SelectDiggingTool();
+					break;
+
+				case ToolsEnum.GunTool:
+					SelectGunTool();
+					break;
+			}
+			EmitSignal(SignalName.ToolChanged, Variant.From(CurrentTool));
+		}
+
+		void SelectDiggingTool()
+		{
+			CurrentTool = ToolsEnum.DiggingTool;
+			diggerContainer.Visible = true;
+			gunContainer.Visible = false;
+		}
+		void SelectGunTool()
+		{
+			CurrentTool = ToolsEnum.GunTool;
 			diggerContainer.Visible = false;
 			gunContainer.Visible = true;
 		}
 	}
 	private void HandleMouseInput(float dt)
 	{
-		switch(currentTool)
+		switch(CurrentTool)
 		{
 			case ToolsEnum.DiggingTool:
 				if(Input.IsActionPressed("mouseLeft"))
@@ -349,41 +410,36 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 			isDiggerActive = true;
 			diggerRay.Enabled = true;
 			diggerLine.Visible = true;
+			diggerSprite.Play("turnOn");
 		}
+
+		if(diggerSprite.IsPlaying())
+			return;
+		
 		diggerRay.TargetPosition = new Vector2(0, diggerRange); //range lasera
 		diggerRay.ForceRaycastUpdate();
+
+		diggerLine.ClearPoints();
+		diggerLine.AddPoint(Vector2.Zero);
 
 		if(diggerRay.IsColliding())
 		{
 			Vector2 hitPoint = diggerRay.GetCollisionPoint();
 
-			if(diggerRay.GetCollider() is Asteroid asteroid)
+			if(diggerRay.GetCollider() is IDiggable diggable)
 			{
-				if(diggingTimer <= 0)
+				if(diggingTimer <= 0f)
 				{
-					asteroid.DigAt(hitPoint, 10f, 10);
-					diggingTimer = 1 / diggerSpeed;
-					SpawnParticles(hitPoint);
-				}
-			}
-			else if (diggerRay.GetCollider() is OreScript ore)
-			{
-				if(diggingTimer <= 0)
-				{
-					ore.TakeDamage(diggerSpeed);
+					diggable.Dig(diggerSpeed, hitPoint, 15f, 10);
 					diggingTimer = 1 / diggerSpeed;
 					SpawnParticles(hitPoint);
 				}
 			}
 
-			diggerLine.ClearPoints();
-			diggerLine.AddPoint(Vector2.Zero);
 			diggerLine.AddPoint(diggerLine.ToLocal(hitPoint));
 		}
 		else
 		{
-			diggerLine.ClearPoints();
-			diggerLine.AddPoint(Vector2.Zero);
 			diggerLine.AddPoint(new Vector2(0, diggerRange));
 		}
 	}
@@ -392,7 +448,10 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		if(isDiggerActive)
 		{
 			isDiggerActive = false;
+			diggerSprite.Play("turnOff");
 			diggerRay.Enabled = false;
+
+			diggerLine.ClearPoints();
 			diggerLine.Visible = false;
 		}
 	}
@@ -401,12 +460,15 @@ public partial class PlayerScript : RigidBody2D, IDamagable
 		if(firingTimer <= 0)
 		{
 			firingTimer = firingCd;
+			gunSprite.Play("shoot");
+			
 			var bullet = BulletScene.Instantiate<Bullet>();
+			
 			bullet.GlobalPosition = bulletSpawn.GlobalPosition;
 			bullet.Rotation = toolsContainer.GlobalRotation - Mathf.Pi/2;
 			bullet.AddCollisionExceptionWith(this);
 			bullet.SetCollisionMaskValue(2, true); //kolizja z enemy
-			GetTree().CurrentScene.AddChild(bullet);
+			GameManager.Instance.MainNode.AddChild(bullet);
 		}
 	}
 	public int CollectItem(InvItem item, int amount)

@@ -8,14 +8,17 @@ public partial class EnemyIndicator : Control
 	[Export] private Sprite2D chaseSprite;
 	private Sprite2D currentSprite;
 	private Tween tween = null;
-	private new bool IsVisible = false;
+	private bool isVisible = false;
 
     public override void _Ready()
 	{
 		patrolSprite.Modulate = Colors.Transparent;
 		searchSprite.Modulate = Colors.Transparent;
 		chaseSprite.Modulate = Colors.Transparent;
+
 		currentSprite = patrolSprite;
+		Visible = true;
+		isVisible = false;
 	}
 	public void SetState(Enemy.State state)
 	{
@@ -26,15 +29,16 @@ public partial class EnemyIndicator : Control
 			Enemy.State.Chase => chaseSprite,
 			_ => null
 		};
+
 		if(newSprite == null || newSprite == currentSprite)
 			return;
-
+		
 		if(tween != null && tween.IsRunning())
 			tween.Kill();
 
 		tween = CreateTween();
-		tween.SetParallel(true);
 
+		tween.SetParallel(true);
 		tween.TweenProperty(currentSprite, "modulate:a", 0f, switchDuration);
 		tween.TweenProperty(newSprite, "modulate:a", 1f, switchDuration);
 
@@ -42,9 +46,10 @@ public partial class EnemyIndicator : Control
 	}
 	public new void Show()
 	{
-		if(IsVisible)
+		if(isVisible)
 			return;
-		IsVisible = true;
+
+		isVisible = true;
 
 		if(tween != null && tween.IsRunning())
 			tween.Kill();
@@ -54,9 +59,10 @@ public partial class EnemyIndicator : Control
 	}
 	public new void Hide()
 	{
-		if(!IsVisible)
+		if(!isVisible)
 			return;
-		IsVisible = false;
+
+		isVisible = false;
 
 		if(tween != null && tween.IsRunning())
 			tween.Kill();
@@ -66,17 +72,15 @@ public partial class EnemyIndicator : Control
 	}
 	public void HideAndFree()
 	{
-		if(!Visible)
-		{
-			QueueFree();
-			return;
-		}
+		GD.Print($"[INDICATOR] HideAndFree, Visible={Visible}");
+		
+		if(tween != null && tween.IsRunning())
+			tween.Kill();
 
-		Hide();
+		isVisible = false;
 
-		if(tween != null)
-			tween.Finished += () => QueueFree();
-		else
-			QueueFree();
+		tween = CreateTween();
+		tween.TweenProperty(currentSprite, "modulate:a", 0f, switchDuration);
+		tween.Finished += QueueFree;
 	}
 }

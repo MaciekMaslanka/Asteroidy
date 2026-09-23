@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 
 
-public partial class Asteroid : RigidBody2D
+public partial class Asteroid : RigidBody2D, IDiggable
 {
 	[Export] private AsteroidSettings Settings;
 	[Export] private AsteroidShapeSettings ShapeSettings;
@@ -191,7 +191,7 @@ public partial class Asteroid : RigidBody2D
 	}
 
 	//kopanie
-	public void DigAt(Vector2 point, float radius = 10f, int segments = 10)
+	public void Dig(float _, Vector2 point, float radius = 10f, int segments = 10)
 	{
 		DiggingHandler digHandler = new DiggingHandler(ToLocal(point), radius, segments, this);
 		digHandler.NormalDigging();

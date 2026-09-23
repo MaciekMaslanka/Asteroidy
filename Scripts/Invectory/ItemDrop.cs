@@ -40,7 +40,7 @@ public partial class ItemDrop : RigidBody2D
 	public void EnablePickupIndicator()
 	{
 		pickupIndicator.Visible = true;
-		pickupIndicatorLabel.Text = $"{item.ItemName} ({quantity})";
+		pickupIndicatorLabel.Text = $"{Tr(item.ItemName)} ({quantity})";
 	}
 	public void DisablePickupIndicator()
 	{

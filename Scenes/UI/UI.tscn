@@ -10,6 +10,8 @@
 [ext_resource type="PackedScene" uid="uid://dhvnl281s2puc" path="res://Scenes/UI/MiniMap.tscn" id="5_y85ht"]
 [ext_resource type="Texture2D" uid="uid://c66mjn7u5q5uw" path="res://Sprites/UI/Background1Hover.png" id="6_7tgkj"]
 [ext_resource type="Texture2D" uid="uid://4mk1tyw3rf2" path="res://Sprites/UI/Background1Click.png" id="6_jevvu"]
+[ext_resource type="Script" uid="uid://3a0fyx8x6lw4" path="res://Scripts/UI/DeathScreen.cs" id="11_nqsl3"]
+[ext_resource type="PackedScene" uid="uid://de3l5r2s834sx" path="res://Scenes/UI/SteeringScreen.tscn" id="11_u6hof"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_oqha6"]
 texture = ExtResource("4_b83rk")
@@ -100,8 +102,9 @@ script = ExtResource("3_akgwn")
 pauseColor = Color(0.1680183, 0.1680183, 0.1680183, 0.5)
 switchDuration = 0.2
 
-[node name="PauseMenu" type="Control" parent="." unique_id=188205592 node_paths=PackedStringArray("rescumeButton", "restartButton", "quitButton")]
+[node name="PauseMenu" type="Control" parent="." unique_id=188205592 node_paths=PackedStringArray("rescumeButton", "restartButton", "steeringButton", "quitToMenuButton", "quitToDesktopButton", "steeringScreen", "closeSteeringScreenButton")]
 process_mode = 3
+visible = false
 z_index = 10
 layout_mode = 3
 anchors_preset = 15
@@ -110,9 +113,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("4_oqha6")
-rescumeButton = NodePath("CenterContainer/VBoxContainer/ResumeButton")
-restartButton = NodePath("CenterContainer/VBoxContainer/RestartButton")
-quitButton = NodePath("CenterContainer/VBoxContainer/QuitButton")
+rescumeButton = NodePath("CenterContainer/pauseMenu/ResumeButton")
+restartButton = NodePath("CenterContainer/pauseMenu/RestartButton")
+steeringButton = NodePath("CenterContainer/pauseMenu/SteeringButton")
+quitToMenuButton = NodePath("CenterContainer/pauseMenu/QuitToMenuButton")
+quitToDesktopButton = NodePath("CenterContainer/pauseMenu/QuitToDesktopButton")
+steeringScreen = NodePath("CenterContainer/SteeringScreen")
+closeSteeringScreenButton = NodePath("CenterContainer/SteeringScreen/VBoxContainer/CloseSteeringButton")
 
 [node name="CenterContainer" type="CenterContainer" parent="PauseMenu" unique_id=548029423]
 layout_mode = 1
@@ -122,34 +129,168 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PauseMenu/CenterContainer" unique_id=1285432920]
+[node name="pauseMenu" type="VBoxContainer" parent="PauseMenu/CenterContainer" unique_id=1285432920]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=1548541921]
+[node name="Label" type="Label" parent="PauseMenu/CenterContainer/pauseMenu" unique_id=1548541921]
 layout_mode = 2
 theme_override_font_sizes/font_size = 33
-text = "Paused"
+text = "UI_PAUSE_TITLE"
+horizontal_alignment = 1
 
-[node name="ResumeButton" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=1088813882]
+[node name="ResumeButton" type="Button" parent="PauseMenu/CenterContainer/pauseMenu" unique_id=1088813882]
 texture_filter = 1
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
-text = "Resume"
+text = "UI_RESUME"
 
-[node name="RestartButton" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=210449578]
+[node name="RestartButton" type="Button" parent="PauseMenu/CenterContainer/pauseMenu" unique_id=210449578]
 texture_filter = 1
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
-text = "Restart"
+text = "UI_RESTART"
 
-[node name="QuitButton" type="Button" parent="PauseMenu/CenterContainer/VBoxContainer" unique_id=425293731]
+[node name="SteeringButton" type="Button" parent="PauseMenu/CenterContainer/pauseMenu" unique_id=382820805]
 texture_filter = 1
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
 theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
-text = "Quit"
+text = "UI_STEERING"
+
+[node name="QuitToMenuButton" type="Button" parent="PauseMenu/CenterContainer/pauseMenu" unique_id=1521019552]
+texture_filter = 1
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
+text = "UI_QUIT_TO_MENU"
+
+[node name="QuitToDesktopButton" type="Button" parent="PauseMenu/CenterContainer/pauseMenu" unique_id=425293731]
+texture_filter = 1
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
+text = "UI_QUIT_TO_DESKTOP"
+
+[node name="SteeringScreen" parent="PauseMenu/CenterContainer" unique_id=1743319844 instance=ExtResource("11_u6hof")]
+visible = false
+layout_mode = 2
+
+[node name="DeathScreen" type="Control" parent="." unique_id=371451121 node_paths=PackedStringArray("restartButton", "quitButton", "scoreText", "highScoreText")]
+visible = false
+z_index = 10
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("11_nqsl3")
+restartButton = NodePath("VBoxContainer/RestartButton")
+quitButton = NodePath("VBoxContainer/QuitButton")
+scoreText = NodePath("VBoxContainer/NinePatchRect/ScoreText")
+highScoreText = NodePath("VBoxContainer/NinePatchRect/HighScoreText")
+
+[node name="ColorRect" type="ColorRect" parent="DeathScreen" unique_id=1319191743]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0, 0, 0.386)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="DeathScreen" unique_id=1322424402]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -124.0
+offset_top = -65.0
+offset_right = 124.0
+offset_bottom = 65.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 7
+alignment = 1
+
+[node name="NinePatchRect" type="NinePatchRect" parent="DeathScreen/VBoxContainer" unique_id=1384825359]
+texture_filter = 1
+custom_minimum_size = Vector2(50, 110)
+layout_mode = 2
+texture = ExtResource("4_b83rk")
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
+
+[node name="Label" type="Label" parent="DeathScreen/VBoxContainer/NinePatchRect" unique_id=1335042277]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -62.339996
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_constants/shadow_outline_size = 3
+theme_override_font_sizes/font_size = 30
+text = "UI_DIED"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScoreText" type="Label" parent="DeathScreen/VBoxContainer/NinePatchRect" unique_id=405827058]
+layout_mode = 0
+offset_top = 49.0
+offset_right = 248.0
+offset_bottom = 81.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 2
+text = "UI_SCORE NONE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HighScoreText" type="Label" parent="DeathScreen/VBoxContainer/NinePatchRect" unique_id=1910521406]
+layout_mode = 0
+offset_top = 74.0
+offset_right = 248.0
+offset_bottom = 106.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 2
+text = "UI_HIGH_SCORE NONE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RestartButton" type="Button" parent="DeathScreen/VBoxContainer" unique_id=1539960200]
+texture_filter = 1
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
+text = "UI_RESTART"
+
+[node name="QuitButton" type="Button" parent="DeathScreen/VBoxContainer" unique_id=1848775835]
+texture_filter = 1
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_styles/normal = SubResource("StyleBoxTexture_oqha6")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_w8wei")
+theme_override_styles/hover = SubResource("StyleBoxTexture_jevvu")
+text = "UI_QUIT"

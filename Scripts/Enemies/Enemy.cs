@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Godot;
 
 public partial class Enemy : RigidBody2D, IDamagable
@@ -67,6 +66,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 	private float searchTimer = 0f;
 
 	//inne
+	[ExportCategory("Inne")]
 	private PlayerScript player;
 	private Vector2 targetPosition;
 	private Vector2 desiredDirection;
@@ -74,6 +74,9 @@ public partial class Enemy : RigidBody2D, IDamagable
 	private Vector2 lastKnownPlayerPosition;
 	public State CurrentState {private set; get;} = State.Patrol;
 	public bool SeesPlayer {private set; get;} = false;
+
+	[Export] private bool isAlwaysActive = false;
+	[Export] private bool isDummy = false;
 
 	public override void _Ready()
 	{
@@ -109,13 +112,13 @@ public partial class Enemy : RigidBody2D, IDamagable
 	}
 	private void Init()
 	{
+		if(isDummy)
+			return;
+		
 		player = GameManager.Instance.Player;
 	}
     public override void _PhysicsProcess(double delta)
 	{
-		if(player == null)
-			return;
-			
 		float dt = (float) delta;
 
 		SeesPlayer = CanSeePlayer();
@@ -187,7 +190,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 		int amount = GD.RandRange(1, maxDropAmount);
 		item.SetItem(possibleDrops[dropID], amount);
 		item.GlobalPosition = GlobalPosition;
-		GetTree().CurrentScene.GetNode("ItemDrops").AddChild(item);
+		GameManager.Instance.MainNode.GetNode("ItemDrops").AddChild(item);
 	}
 	//-------------------------------------------------------------------------------------------
 	//stany
@@ -359,7 +362,7 @@ public partial class Enemy : RigidBody2D, IDamagable
 	}
 	private bool CanSeePlayer()
 	{
-		if(player == null) 
+		if(player == null || player.IsDead)
 			return false;
 
 		if(GlobalPosition.DistanceTo(player.GlobalPosition) > chaseRange)
@@ -425,12 +428,18 @@ public partial class Enemy : RigidBody2D, IDamagable
 	//aktywacja / deaktywacja
 	public void Activate()
 	{
+		if(isAlwaysActive)
+			return;
+
 		CallDeferred(MethodName.SetPhysicsProcess, true);
 		CallDeferred(MethodName.Set, "freeze", false);
 		EmitSignal(SignalName.EnemyActivated, this);
 	}
 	public void Deactivate()
 	{
+		if(isAlwaysActive)
+			return;
+
 		CurrentState = State.Patrol;
 		CallDeferred(MethodName.SetPhysicsProcess, false);
 		CallDeferred(MethodName.Set, "freeze", true);

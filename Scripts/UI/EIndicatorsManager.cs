@@ -36,8 +36,11 @@ public partial class EIndicatorsManager : Control
         Vector2 screenSize = mainViewport.GetVisibleRect().Size;
         Vector2 screenCenter = screenSize / 2f;
 
-        foreach (var (enemy, indicator) in indicators)
+        foreach (var enemy in new List<Enemy>(indicators.Keys))
         {
+            if(!indicators.TryGetValue(enemy, out EnemyIndicator indicator))
+                continue;
+            
             if (!IsInstanceValid(enemy) || enemy.IsQueuedForDeletion())
                 continue;
 
@@ -49,7 +52,6 @@ public partial class EIndicatorsManager : Control
                 indicator.Hide();
                 continue;
             }
-
             
             Vector2 dir = (enemyScreenPos - screenCenter).Normalized();
             
@@ -69,6 +71,8 @@ public partial class EIndicatorsManager : Control
     }
     public void AddEnemy(Enemy enemy)
     {
+        GD.Print($"[INDICATOR] ADD {enemy.Name}");
+
         if(!indicators.ContainsKey(enemy))
         {
             EnemyIndicator indicator = indicatorScene.Instantiate<EnemyIndicator>();
@@ -79,10 +83,18 @@ public partial class EIndicatorsManager : Control
     }
     public void RemoveEnemy(Enemy enemy)
     {
+        GD.Print($"[INDICATOR] REMOVE {enemy.Name}");
+
         if(indicators.TryGetValue(enemy, out var indicator))
         {
             indicators.Remove(enemy);
+
+            GD.Print($"[INDICATOR] HIDE+FREE {enemy.Name}");
             indicator.HideAndFree();
+        }
+        else
+        {
+            GD.PrintErr($"[INDICATOR] REMOVE called but enemy not in dictionary: {enemy.Name}");
         }
     }
 }

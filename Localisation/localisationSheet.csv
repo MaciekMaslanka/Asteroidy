@@ -1,0 +1,33 @@
+keys,en,pl
+UI_PLAY,Play,Graj
+UI_STEERING,Controls,Sterowanie
+UI_QUIT,Quit,Wyjdź
+UI_QUIT_TO_MENU,Quit to menu,Wyjdź do menu
+UI_QUIT_TO_DESKTOP,Quit to desktop,Wyjdź do pulpitu
+UI_RESUME,Resume,Wznów
+UI_RESTART,Restart,Restartuj
+UI_LOADING,Loading…,Ładowanie…
+UI_SCORE,Score: ,Wynik:
+UI_HIGH_SCORE,High score: ,Rekord: 
+UI_USE,Use,Użyj
+UI_DROP,Drop,Upuść
+UI_CONFIRM,Confirm,Potwierdź
+UI_PAUSE_TITLE,Paused,Zapauzowano
+UI_DIED,You died!,Zginąłeś!
+UI_BACK,Back,Wróć
+,,
+ITEM_REPAIR_KIT,Repair kit,Zestaw naprawczy
+ITEM_COAL,Coal,Węgiel
+ITEM_COPPER,Copper,Miedź
+ITEM_DIAMOND,Diamond,Diament
+ITEM_GOLD,Gold,Złoto
+ITEM_IRON,Iron,Żelazo
+ITEM_SILVER,Silver,Srebro
+ITEM_URANIUM,Uranium,Uran
+,,
+STEERING_MOVEMENT,Movement,Ruch
+STEERING_USE_TOOL,Use tool,Użycie narzędzia
+STEERING_OPEN_INV,Open inventory,Ekwipunek
+STEERING_SELECT_TOOL,Select tool,Wybór narzędzia
+STEERING_PICKUP,Pick up,Podnieś
+STEERING_PAUSE,Pause,Pauza

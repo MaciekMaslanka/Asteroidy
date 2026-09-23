@@ -10,6 +10,7 @@
 [ext_resource type="Resource" uid="uid://b2fcd3cw2ao5f" path="res://Resources/Ores/SilverData.tres" id="7_1b8vd"]
 [ext_resource type="Resource" uid="uid://ccip67j7tfuue" path="res://Resources/Ores/UraniumData.tres" id="8_unakf"]
 [ext_resource type="PackedScene" uid="uid://5o3wihxk8csq" path="res://Scenes/ItemDrop.tscn" id="9_uk0nu"]
+[ext_resource type="PackedScene" uid="uid://cbyqlw33cidua" path="res://Scenes/UI/ScoreFloatingNumber.tscn" id="10_stkfj"]
 
 [node name="RigidBody2D" type="StaticBody2D" unique_id=574043206]
 visibility_layer = 3
@@ -19,6 +20,7 @@ collision_mask = 11
 script = ExtResource("1_i8ymc")
 OreInfo = Array[Object]([ExtResource("2_22qmi"), ExtResource("3_uk0nu"), ExtResource("4_stkfj"), ExtResource("5_40qk6"), ExtResource("6_uh8ch"), ExtResource("7_1b8vd"), ExtResource("8_unakf")])
 itemDropScene = ExtResource("9_uk0nu")
+scoreFloatingNumberScene = ExtResource("10_stkfj")
 
 [node name="Polygon2D" type="Polygon2D" parent="." unique_id=802372938]
 texture_filter = 1

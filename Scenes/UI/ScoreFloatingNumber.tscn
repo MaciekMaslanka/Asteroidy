@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://cbyqlw33cidua"]
+
+[ext_resource type="Script" uid="uid://d3vh7wev401ey" path="res://Scripts/UI/ScoreFloatingNumber.cs" id="2_265ic"]
+
+[node name="Control" type="CharacterBody2D" unique_id=1550746660 node_paths=PackedStringArray("scoreLabel")]
+z_index = 8
+motion_mode = 1
+script = ExtResource("2_265ic")
+speed = 50.0
+fadeOutTime = 0.25
+fadeOutDelay = 0.5
+scoreLabel = NodePath("Label")
+
+[node name="Label" type="Label" parent="." unique_id=1582767495]
+offset_left = -23.0
+offset_top = -47.0
+offset_right = 23.0
+offset_bottom = -24.0
+theme_override_colors/font_color = Color(1, 0.82665706, 0, 1)
+theme_override_constants/outline_size = 3
+text = "+2137"
+horizontal_alignment = 1
+vertical_alignment = 1

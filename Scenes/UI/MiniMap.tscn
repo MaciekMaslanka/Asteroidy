@@ -3,8 +3,13 @@
 [ext_resource type="Script" uid="uid://dqjeqc2708qkj" path="res://Scripts/UI/MiniMap.cs" id="1_gmagj"]
 [ext_resource type="Texture2D" uid="uid://xkidt4jmesjy" path="res://Sprites/UI/Background1.png" id="2_3qmtr"]
 [ext_resource type="PackedScene" uid="uid://p0ypija87qn7" path="res://Scenes/UI/EnemyMinimapIcon.tscn" id="2_ymule"]
+[ext_resource type="Texture2D" uid="uid://cycxp8b74ofxt" path="res://Sprites/UI/Background2.png" id="3_ayvwg"]
 [ext_resource type="Texture2D" uid="uid://suybr5oovwg2" path="res://Sprites/UI/MapIcons/PlayerIcon.png" id="3_h50cq"]
 [ext_resource type="Texture2D" uid="uid://bxnyh624lj34h" path="res://Sprites/UI/MapIcons/MapOutline.png" id="4_dau1d"]
+[ext_resource type="Script" uid="uid://bkbl17fsr540u" path="res://Scripts/UI/ToolsSelector.cs" id="4_yxyj5"]
+[ext_resource type="Texture2D" uid="uid://2cs63e7ort3j" path="res://Sprites/Other/Bullet.png" id="5_0scdf"]
+[ext_resource type="Texture2D" uid="uid://lxa2c35qthd4" path="res://Sprites/Player/DiggerSprite.png" id="6_0scdf"]
+[ext_resource type="Texture2D" uid="uid://c66mjn7u5q5uw" path="res://Sprites/UI/Background1Hover.png" id="6_5bni0"]
 
 [node name="Minimap" type="Control" unique_id=1478904459 node_paths=PackedStringArray("subViewport", "miniCam", "minimapImage", "playerIcon")]
 custom_minimum_size = Vector2(81, 81)
@@ -17,10 +22,9 @@ size_flags_vertical = 4
 script = ExtResource("1_gmagj")
 subViewport = NodePath("SubViewport")
 miniCam = NodePath("SubViewport/Camera2D")
-minimapImage = NodePath("NinePatchRect/MinimapImage")
+minimapImage = NodePath("NinePatchRect/MinimapContainer/MinimapImage")
 zoom = 0.1
-canvasCullMask = 2
-playerIcon = NodePath("NinePatchRect/MinimapImage/PlayerIcon")
+playerIcon = NodePath("NinePatchRect/MinimapContainer/MinimapImage/PlayerIcon")
 enemyIconScene = ExtResource("2_ymule")
 
 [node name="SubViewport" type="SubViewport" parent="." unique_id=1751398717]
@@ -38,16 +42,74 @@ render_target_update_mode = 4
 [node name="NinePatchRect" type="NinePatchRect" parent="." unique_id=1628056105]
 texture_filter = 1
 layout_mode = 0
-offset_right = 81.0
-offset_bottom = 81.0
-texture = ExtResource("2_3qmtr")
+offset_top = -33.0
+offset_right = 83.0
+offset_bottom = 82.0
+texture = ExtResource("3_ayvwg")
 region_rect = Rect2(0, 0, 32, 32)
 patch_margin_left = 5
 patch_margin_top = 5
 patch_margin_right = 5
 patch_margin_bottom = 5
 
-[node name="ColorRect" type="ColorRect" parent="NinePatchRect" unique_id=1631327036]
+[node name="ToolsSelector" type="HBoxContainer" parent="NinePatchRect" unique_id=1952527891 node_paths=PackedStringArray("gunRect", "diggerRect")]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 3.0
+offset_right = 79.0
+offset_bottom = 35.0
+alignment = 1
+script = ExtResource("4_yxyj5")
+gunRect = NodePath("GunTool")
+diggerRect = NodePath("DiggingTool")
+normalBg = ExtResource("2_3qmtr")
+selectedBg = ExtResource("6_5bni0")
+
+[node name="DiggingTool" type="NinePatchRect" parent="NinePatchRect/ToolsSelector" unique_id=203301698]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("2_3qmtr")
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
+
+[node name="Sprite2D" type="Sprite2D" parent="NinePatchRect/ToolsSelector/DiggingTool" unique_id=344791573]
+position = Vector2(13, 20.000002)
+rotation = 0.7853982
+scale = Vector2(0.79594415, 0.79594415)
+texture = ExtResource("6_0scdf")
+
+[node name="GunTool" type="NinePatchRect" parent="NinePatchRect/ToolsSelector" unique_id=104983252]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+texture = ExtResource("2_3qmtr")
+patch_margin_left = 5
+patch_margin_top = 5
+patch_margin_right = 5
+patch_margin_bottom = 5
+
+[node name="Sprite2D" type="Sprite2D" parent="NinePatchRect/ToolsSelector/GunTool" unique_id=1938618084]
+position = Vector2(16, 16)
+rotation = -0.7853982
+scale = Vector2(1.375, 1.375)
+texture = ExtResource("5_0scdf")
+
+[node name="MinimapContainer" type="Control" parent="NinePatchRect" unique_id=2073722142]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -37.5
+offset_top = -78.0
+offset_right = 37.5
+offset_bottom = -3.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="ColorRect" type="ColorRect" parent="NinePatchRect/MinimapContainer" unique_id=1631327036]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -62,7 +124,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.2159017, 0.21590173, 0.2159017, 1)
 
-[node name="MinimapImage" type="TextureRect" parent="NinePatchRect" unique_id=119700554]
+[node name="MinimapImage" type="TextureRect" parent="NinePatchRect/MinimapContainer" unique_id=119700554]
 texture_filter = 1
 clip_contents = true
 custom_minimum_size = Vector2(75, 75)
@@ -80,7 +142,7 @@ grow_horizontal = 2
 grow_vertical = 2
 expand_mode = 1
 
-[node name="PlayerIcon" type="TextureRect" parent="NinePatchRect/MinimapImage" unique_id=1217538164]
+[node name="PlayerIcon" type="TextureRect" parent="NinePatchRect/MinimapContainer/MinimapImage" unique_id=1217538164]
 z_index = 1
 layout_mode = 1
 anchors_preset = 8
@@ -98,12 +160,19 @@ scale = Vector2(0.75, 0.75)
 pivot_offset_ratio = Vector2(0.5, 0.5)
 texture = ExtResource("3_h50cq")
 
-[node name="NinePatchRect" type="NinePatchRect" parent="NinePatchRect" unique_id=231706525]
-layout_mode = 0
-offset_left = 3.0
-offset_top = 3.0
-offset_right = 78.0
-offset_bottom = 78.0
+[node name="NinePatchRect" type="NinePatchRect" parent="NinePatchRect/MinimapContainer" unique_id=231706525]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -37.5
+offset_top = -37.5
+offset_right = 37.5
+offset_bottom = 37.5
+grow_horizontal = 2
+grow_vertical = 2
 texture = ExtResource("4_dau1d")
 patch_margin_left = 2
 patch_margin_top = 2

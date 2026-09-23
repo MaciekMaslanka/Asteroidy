@@ -1,24 +1,26 @@
+using System.Formats.Tar;
 using Godot;
 
-public partial class EnemyGun : Sprite2D
+public partial class EnemyGun : AnimatedSprite2D
 {
 	[Export] private float rotationSpeed = 5f;
 	[Export] private float maxAngle = 135f;
 
-	[ExportCategory("Shoot the shields")]
+	[ExportCategory("Shooting")]
 	[Export] private float cooldown = 1.5f;
 	[Export] private PackedScene bulletScene;
-
+	[Export] private Marker2D muzzle;
 	private PlayerScript player;
 	private Enemy enemy;
-	private Marker2D muzzle;
+
+	private const float spriteOffset = Mathf.Pi / 2;
+	
 
 	private float shootTimer = 0f;
 
     public override void _Ready()
     {
         enemy = GetParent<Enemy>();
-		muzzle = GetNode<Marker2D>("Muzzle");
 
 		enemy.EnemyActivated += (Enemy _) => CallDeferred(MethodName.SetPhysicsProcess, true);
 		enemy.EnemyDeactivated += (Enemy _) => CallDeferred(MethodName.SetPhysicsProcess, false);
@@ -40,7 +42,11 @@ public partial class EnemyGun : Sprite2D
     public override void _PhysicsProcess(double delta)
 	{
 		if(player == null)
+		{
+			Rotation = spriteOffset;
 			return;
+		}
+			
 
 		float dt = (float) delta;
 
@@ -56,15 +62,19 @@ public partial class EnemyGun : Sprite2D
 	}
 	private void HandleRotation(float dt)
 	{
-		float targetAngle = 0f;
+		float targetAngle;
 
 		if(enemy.SeesPlayer)
 		{
 			Vector2 toPlayer = player.GlobalPosition - GlobalPosition;
 			
-			float globalAngle = toPlayer.Angle();
+			float globalAngle = toPlayer.Angle() + spriteOffset;
 			targetAngle = Mathf.AngleDifference(enemy.GlobalRotation, globalAngle);
 			targetAngle = Mathf.Clamp(targetAngle, -Mathf.DegToRad(maxAngle), Mathf.DegToRad(maxAngle));
+		}
+		else
+		{
+			targetAngle = spriteOffset;
 		}
 		Rotation = Mathf.Lerp(Rotation, targetAngle, rotationSpeed * dt);
 	}
@@ -73,19 +83,21 @@ public partial class EnemyGun : Sprite2D
 	{
 		Vector2 toPlayer = player.GlobalPosition - muzzle.GlobalPosition;
 
-		float angle = Mathf.Abs(Mathf.AngleDifference(muzzle.GlobalRotation, toPlayer.Angle()));
+		float angle = Mathf.Abs(Mathf.AngleDifference(muzzle.GlobalRotation - spriteOffset, toPlayer.Angle()));
 
 		return angle < Mathf.DegToRad(5f) && enemy.SeesPlayer;
 	}
 	private void Shoot()
 	{
+		Play("shoot");
+
 		Bullet bullet = bulletScene.Instantiate<Bullet>();
 
 		bullet.GlobalPosition = muzzle.GlobalPosition;
-		bullet.GlobalRotation = muzzle.GlobalRotation;
+		bullet.GlobalRotation = muzzle.GlobalRotation - spriteOffset;
 
 		bullet.AddCollisionExceptionWith(enemy);
 
-		GetTree().CurrentScene.AddChild(bullet);
+		GameManager.Instance.MainNode.AddChild(bullet);
 	}
 }
