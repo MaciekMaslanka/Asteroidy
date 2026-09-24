@@ -106,16 +106,16 @@ public partial class Asteroid : RigidBody2D, IDiggable
 	public void UpdateShape(Vector2[] points, bool UpdateBackground = false)
 	{
 		currentShape = points;
-		body.Polygon = currentShape;
-		collider.Polygon = currentShape;
-
-		minimapBody.Polygon = currentShape;
+		body.Polygon = points;
 
 		if(UpdateBackground)
 		{
 			background.Polygon = currentShape;
 			minimapBG.Polygon = currentShape;
 		}
+
+		collider.Polygon = PolygonUtils.Simplify(points, 4f);
+		minimapBody.Polygon = PolygonUtils.Simplify(points, 8f);
 	}
 	private void GenerateShape()
 	{

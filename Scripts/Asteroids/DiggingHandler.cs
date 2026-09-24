@@ -96,8 +96,8 @@ public partial class DiggingHandler
 			if(fragment != null)
 				newFragments.Add(fragment);
 		}
-		DistributeOresToFragments(newFragments);
 
+		DistributeOresToFragments(newFragments);
 		parent.UpdateMass();
 	}
 	private Asteroid CreateNewFragment(Vector2[] points)

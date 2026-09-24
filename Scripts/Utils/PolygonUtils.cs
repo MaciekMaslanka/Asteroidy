@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 
 public static partial class PolygonUtils
@@ -50,5 +51,75 @@ public static partial class PolygonUtils
         centerY /= 6f * signedArea;
 
         return new Vector2(centerX, centerY);
+    }
+
+    public static Vector2[] Simplify(Vector2[] points, float epsilon)
+    {
+        if(points == null || points.Length < 6)
+            return points;
+        
+        int last = points.Length - 1;
+        
+        bool[] keep = new bool[points.Length];
+        keep[0] = true;
+        keep[last] = true;
+
+        Rdp(points, 0, last, epsilon, keep);
+
+        var result = new List<Vector2>(points.Length);
+        for(int i=0; i<points.Length; i++)
+        {
+            if(keep[i])
+                result.Add(points[i]);
+        }
+
+        if(result.Count < 3)
+            return points;
+
+        return result.ToArray();
+    }
+
+    private static void Rdp(Vector2[] points, int start, int end, float epsilon, bool[] keep)
+    {
+        if(end <= start + 1)
+            return;
+
+        float maxDist = 0f;
+        int index = -1;
+
+        Vector2 a = points[start];
+        Vector2 b = points[end];
+
+        for(int i=start+1; i<end; i++)
+        {
+            float dist = PerpDistance(points[i], a, b);
+            if(dist > maxDist)
+            {
+                maxDist = dist;
+                index = i;
+            }
+        }
+
+        if(maxDist > epsilon && index != -1)
+        {
+            keep[index] = true;
+            Rdp(points, start, index, epsilon, keep);
+            Rdp(points, index, end, epsilon, keep);
+        }
+    }
+    private static float PerpDistance(Vector2 p, Vector2 a, Vector2 b)
+    {
+        float dx = b.X - a.X;
+        float dy = b.Y - a.Y;
+
+        float lenSq = dx * dx + dy * dy;
+        if(lenSq < 0.0001f)
+            return p.DistanceTo(a);
+
+        float t = ((p.X - a.X) * dx + (p.Y - a.Y) * dy) / lenSq;
+        t = Mathf.Clamp(t, 0f, 1f);
+
+        Vector2 proj = new Vector2(a.X + t * dx, a.Y + t * dy);
+        return p.DistanceTo(proj);
     }
 }
