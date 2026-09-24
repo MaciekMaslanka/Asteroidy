@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Godot;
-
 public static partial class PolygonUtils
 {
     public static float CalculatePolygonArea(Vector2[] polygon)
